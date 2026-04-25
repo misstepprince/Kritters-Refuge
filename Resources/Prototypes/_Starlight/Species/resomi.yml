@@ -10,27 +10,23 @@
   femaleFirstNames: names_resomi_first
   lastNames: names_resomi_packs
   naming: FirstLast
-  dollPrototype: MobResomiDummy
+  dollPrototype: AppearanceResomi
   skinColoration: Hues
   minAge: 23
   youngAge: 103
   oldAge: 257
   maxAge: 430
-  # CS: CustomName cause error
-  # CS: Small enough to fit in a bag, maybe too small even
-  minHeight: 0.7
-  defaultHeight: 1
-  minWidth: 0.65
-  defaultWidth: 1
+  # CS: custom name no workie :(
+  # CS: Small enough to fit in a bag
+  minHeight: 0.6
+  defaultHeight: 0.8
+  minWidth: 0.55
+  defaultWidth: 0.8
   # End CS
-  # CS: More properties
-  sexes:
-  - Unsexed
-  - Male
-  - Female
+  # CS: Need Kind for some reason
   kind:
-  - RaptorLike
-  allowDigilegDisplacement: false
+    - BasicHumanlike
+    - BasicFurry
   # End CS
 
 - type: speciesBaseSprites
@@ -55,42 +51,24 @@
     Special: MobHumanoidAnyMarking
     Tail: MobHumanoidAnyMarking
     TailExtras: MobHumanoidAnyMarking
+    # CS Start
+    TailBehind: MobHumanoidAnyMarking
+    TailOversuit: MobHumanoidAnyMarking
+    FacialHair: MobHumanoidAnyMarking
+    Snout: MobHumanoidAnyMarking
+    Genital: MobHumanoidAnyMarking
+    RArmExtension: MobHumanoidAnyMarking # Adds Wing Slot, this will look weird as fuck
+    # End CS
 
 - type: markingPoints
   id: MobResomiMarkingLimits
-  # CS: ALlow all markings
+  onlyWhitelisted: true
   points:
-    Special:
-      points: 10
-      required: false
-    Hair:
-      points: 1
-      required: false
-    TailExtras:
-      points: 3
-      required: false
+    # CS: Unlimited markings because why not
     Tail:
-      points: 1
       required: true
+      points: 999
       defaultMarkings: [ ResomiTailFeathered ]
-    Legs:
-      points: 6
-      required: false
-    Arms:
-      points: 6
-      required: false
-    Head:
-      points: 4
-      required: false
-    HeadTop:
-      points: 4
-      required: false
-    HeadSide:
-      points: 2
-      required: false
-    Chest:
-      points: 4
-      required: false
 
 - type: humanoidBaseSprite
   id: MobResomiEyes

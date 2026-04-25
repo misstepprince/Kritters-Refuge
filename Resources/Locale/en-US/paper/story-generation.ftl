@@ -94,7 +94,6 @@ story-gen-book-character37 = dwarf
 story-gen-book-character38 = thief
 story-gen-book-character39 = wizard
 story-gen-book-character40 = slime
-
 # Starlight edit start
 story-gen-book-character41 = resomi
 story-gen-book-character42 = avali

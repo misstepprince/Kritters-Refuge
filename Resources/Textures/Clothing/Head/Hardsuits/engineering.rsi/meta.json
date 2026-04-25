@@ -11,7 +11,13 @@
             "name": "icon"
         },
         {
+            "name": "icon-unshaded"
+        },
+        {
             "name": "icon-flash"
+        },
+        {
+            "name": "light-overlay"
         },
         {
             "name": "off-equipped-HELMET",
@@ -55,6 +61,18 @@
         },
         {
             "name": "equipped-head-light-resomi",
+            "directions": 4
+        },
+        {
+            "name": "equipped-head-avali",
+            "directions": 4
+        },
+        {
+            "name": "equipped-head-unshaded-avali",
+            "directions": 4
+        },
+        {
+            "name": "equipped-head-light-avali",
             "directions": 4
         }
     ]

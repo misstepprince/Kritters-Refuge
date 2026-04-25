@@ -21,14 +21,14 @@
     turnOnBehaviourID: turn_on
   - type: LightBehaviour
     behaviours:
-    - !type:FadeBehaviour
-      id: turn_on
-      enabled: true
-      interpolate: Linear
-      startValue: 0
-      endValue: 2
-      maxDuration: 1.8
-      property: Energy
+      - !type:FadeBehaviour
+        id: turn_on
+        enabled: true
+        interpolate: Linear
+        startValue: 0
+        endValue: 2
+        maxDuration: 1.8
+        property: Energy
 
 - type: entity
   id: EffectNanitesCurrent
@@ -56,15 +56,15 @@
     blinkingBehaviourId: blinking
   - type: LightBehaviour
     behaviours:
-    - !type:PulseBehaviour
-      id: blinking
-      enabled: true
-      interpolate: Cubic
-      startValue: 1.7
-      endValue: 2.0
-      isLooped: true
-      maxDuration: 2
-      minDuration: -0.7
+      - !type:PulseBehaviour
+        id: blinking
+        enabled: true
+        interpolate: Cubic
+        startValue: 1.7
+        endValue: 2.0
+        isLooped: true
+        maxDuration: 2
+        minDuration: -0.7
 
 - type: entity
   id: EffectNanitesExit
@@ -89,11 +89,11 @@
     fadeOutBehaviourID: fade_out
   - type: LightBehaviour
     behaviours:
-    - !type:FadeBehaviour
-      id: fade_out
-      enabled: true
-      interpolate: Linear
-      startValue: 2
-      endValue: 0
-      maxDuration: 1.8
-      property: Energy
+      - !type:FadeBehaviour
+        id: fade_out
+        enabled: true
+        interpolate: Linear
+        startValue: 2
+        endValue: 0
+        maxDuration: 1.8
+        property: Energy

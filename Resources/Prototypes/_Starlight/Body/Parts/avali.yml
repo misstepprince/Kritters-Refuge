@@ -86,6 +86,7 @@
   - type: Sprite
     state: "l_leg"
   - type: MovementBodyPart
+    # CS: no body density
 
 - type: entity
   parent: [ PartAvali, BaseRightLeg ]
@@ -95,6 +96,7 @@
   - type: Sprite
     state: "r_leg"
   - type: MovementBodyPart
+    # CS: no body density
 
 - type: entity
   parent: [ PartAvali, BaseLeftFoot ]

@@ -12,6 +12,7 @@
       - Pill
       - Crayon
       - Paper
+      - AvianFood
   - type: SolutionContainerManager
     solutions:
       stomach:
@@ -69,8 +70,8 @@
   - type: Sprite
     sprite: _Starlight/Mobs/Species/Avali/organs.rsi
     layers:
-    - state: kidney-l
-    - state: kidney-r
+      - state: kidney-l
+      - state: kidney-r
 
 - type: entity
   id: OrganAvaliLungs
@@ -81,8 +82,8 @@
   - type: Sprite
     sprite: _Starlight/Mobs/Species/Avali/organs.rsi
     layers:
-    - state: lung-l
-    - state: lung-r
+      - state: lung-l
+      - state: lung-r
 
 - type: entity
   id: OrganAvaliEyes

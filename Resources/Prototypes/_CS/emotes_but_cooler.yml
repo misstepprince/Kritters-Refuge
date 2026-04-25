@@ -216,37 +216,6 @@
   - femaleyelling
 
 - type: emote
-  id: AvaliScream
-  name: AvaliScream
-#  showInWheel: false
-  category: Avali
-  icon: Interface/Actions/scream.png
-  whitelist:
-    components:
-    - Vocal
-  blacklist:
-    tags:
-    - SiliconEmotes
-  chatMessages: ["chat-emote-msg-scream"]
-  chatTriggers:
-  - avaliscream
-  - avaliscreams
-  - avaliscreaming
-  - avaliscreamed
-  - avalishriek
-  - avalishrieks
-  - avalishrieking
-  - avalishrieked
-  - avaliscreech
-  - avaliscreeches
-  - avaliscreeching
-  - avaliscreeched
-  - avaliyell
-  - avaliyells
-  - avaliyelled
-  - avaliyelling
-
-- type: emote
   id: FelinidScream
   name: FelinidScream
 #  showInWheel: false

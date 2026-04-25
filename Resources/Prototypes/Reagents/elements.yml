@@ -160,13 +160,15 @@
         damage:
           types:
             Poison: 0.1
+      # CS start
       - !type:HealthChange
         conditions:
-        - !type:OrganType # Starlight
+        - !type:OrganType
           type: Avali
         damage:
           types:
             Poison: 2
+      # End CS
     Medicine:
       effects:
       - !type:ModifyBloodLevel

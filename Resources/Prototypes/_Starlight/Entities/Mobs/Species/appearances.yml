@@ -1,0 +1,25 @@
+- type: entity
+  parent: [BaseSpeciesDummy, BaseInventoryAvali]
+  id: AppearanceAvali
+  categories: [ HideSpawnMenu ]
+  description: A dummy avali meant to be used in character setup.
+  components:
+    - type: HumanoidAppearance
+      species: Avali
+      undergarmentTop: UndergarmentTopTanktopAvali
+      undergarmentBottom: UndergarmentBottomBoxersAvali
+
+- type: entity
+  parent: [BaseSpeciesDummy, BaseInventoryResomi]
+  id: AppearanceResomi
+  categories: [ HideSpawnMenu ]
+  description: A dummy resomi meant to be used in character setup.
+  components:
+  - type: HumanoidAppearance
+    species: Resomi
+    hideLayersOnEquip:
+      - Special
+      - Head
+      - Hair
+      - HeadTop
+      - HeadSide

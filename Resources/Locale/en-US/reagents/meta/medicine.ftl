@@ -25,7 +25,6 @@ reagent-name-dermaline = dermaline
 reagent-desc-dermaline = An advanced chemical that is more effective at treating burn damage than kelotane.
 
 # Starlight Start
-# CS: TODO: Add Resomi
 reagent-name-dexalin = dexalin
 reagent-desc-dexalin = Used for treating minor oxygen deprivation and bloodloss, mildly toxic to Avali. A required reagent for dexalin plus.
 
@@ -114,8 +113,10 @@ reagent-desc-diphenylmethylamine = A more stable medicine than ethyloxyephedrine
 reagent-name-sigynate = sigynate
 reagent-desc-sigynate = A thick pink syrup useful for neutralizing acids and soothing trauma caused by acids. Tastes sweet!
 
+# Starlight Start
 reagent-name-saline = saline
-reagent-desc-saline = A mixture of salt and water. Commonly used to treat dehydration or low fluid presence in blood.
+reagent-desc-saline = A mixture of salt and water, highly toxic to Avali. Commonly used to treat dehydration or low fluid presence in blood.
+# Starlight End
 
 reagent-name-lacerinol = lacerinol
 reagent-desc-lacerinol = A fairly unreactive chemical that boosts collagen sythesis to incredible levels, healing slash trauma.

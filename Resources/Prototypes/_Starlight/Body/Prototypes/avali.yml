@@ -25,6 +25,7 @@
         stomach: OrganAvaliStomach
         liver: OrganAvaliLiver
         kidneys: OrganAvaliKidneys
+        # CS: Null organ doesn't work here
     right arm:
       part: RightArmAvali
       connections:
@@ -35,11 +36,11 @@
       - left hand
     right hand:
       part: RightHandAvali
-      # CS: Null cause error
+      # CS: Null organ cause error
     left hand:
       part: LeftHandAvali
       organs:
-      # CS: Null cause error
+      # CS: Null oragn cause error
     right leg:
       part: RightLegAvali
       connections:

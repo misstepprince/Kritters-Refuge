@@ -18,8 +18,6 @@
       collection: MaleScreams
     FemaleScream:
       collection: FemaleScreams
-    AvaliScream:
-      collection: AvaliScreams
     FelinidScream:
       collection: FelinidScreams
     LizardScream:

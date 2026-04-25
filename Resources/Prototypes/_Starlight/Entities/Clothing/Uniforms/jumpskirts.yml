@@ -5,9 +5,9 @@
   description: A gothic dress is an elegant and mysterious garment characterized by its dark and intriguing style. Deep, dark shades like black, burgundy, or navy blue add an aura of mystery and aristocratic allure. Delicate lace accents, luxurious drapery, and ruffles evoke a sense of ancient romance. Keyhole or high neckline cuts give the gothic dress uniqueness and opulence. This dress is perfect for those who want to stand out and emphasize their individuality and mystique. In it, every woman feels refined and captivating, ready to enchant at first sight.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_gothic.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_gothic.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_gothic.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_gothic.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -16,9 +16,9 @@
   description: This refined evening dress, inspired by the elegant maid's style, combines sophistication with a touch of playful femininity. Made from high-quality black satin, it is designed to highlight the refined taste and style of its wearer.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_maid.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_maid.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_maid.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_maid.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -27,9 +27,9 @@
   description: This stunning evening gown embodies passion and boldness, blended with elegance and sophistication. Crafted from deep red silk, it captivates attention and exudes luxury and sensuality.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_red.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_red.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_red.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_red.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -38,9 +38,9 @@
   description: This dress is made for tango, embodying passion and elegance. Its fitted silhouette, with a back cutout and decorative draping, accentuates feminine curves while offering freedom of movement and enhancing the beauty of the dance.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_tango.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_tango.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_tango.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_tango.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -49,9 +49,9 @@
   description: This black Victorian dress captures the essence of the era. Cutouts, lace, and cuffs add mystery, while the corset creates a refined silhouette. It's perfect for evening events where elegance and intrigue are desired.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_victorian_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_victorian_black.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_victorian_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_victorian_black.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -60,9 +60,9 @@
   description: A good reporter remains a skeptic for life.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/reporter.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/reporter.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/reporter.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/reporter.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -71,9 +71,9 @@
   description: If journalism is good, it is contradictory by nature.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/journalist.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/journalist.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/journalist.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/journalist.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -82,9 +82,9 @@
   description: Inspired by Victorian style, this red dress embodies passion and luxury. Intricate details like lace, puffed sleeves, and a voluminous skirt make it the perfect choice for special events where standing out and making an impression is key.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_victorian_red.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_victorian_red.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/dress_victorian_red.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/dress_victorian_red.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -93,9 +93,9 @@
   description: This nurse uniform combines functionality and style. Durable, comfortable pants paired with a blouse and signature cap create a professional and neat look, making it an ideal choice for healthcare staff.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/suit_nurse.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/suit_nurse.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/suit_nurse.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/suit_nurse.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -104,9 +104,9 @@
   description: The beige "pencil" style skirt exudes softness and elegance. The fitted blazer and straight skirt create a refined silhouette, making it suitable for various occasions, from business meetings to evening dinners.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pencil_tan.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pencil_tan.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pencil_tan.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pencil_tan.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -115,9 +115,9 @@
   description: A strict green "pencil" skirt exudes authority and poise. The fitted blazer and straight skirt form an elegant silhouette, suitable for various occasions, from business meetings to a captain's dismissal.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pencil_centcom_official.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pencil_centcom_official.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pencil_centcom_official.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pencil_centcom_official.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -126,9 +126,9 @@
   description: A formal black Special Operations Corps officer's "pencil" skirt embodies authority and sophistication. The tailored blazer and straight skirt create a refined silhouette, suitable for various occasions, from strategic meetings to... well, less conventional operations.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pencil_special_operations_officer.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pencil_special_operations_officer.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pencil_special_operations_officer.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pencil_special_operations_officer.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -137,9 +137,9 @@
   description: Perfectly pairs with a pickaxe, this versatile and durable skirt jumpsuit is designed for tough work, offering both practicality and a rugged, stylish appearance.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/salvage.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/salvage.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/salvage.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/salvage.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -148,9 +148,9 @@
   description: Perfectly pairs with a pickaxe, this rugged yet stylish skirt jumpsuit combines functionality and toughness, ideal for salvaging work with a practical, efficient design.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/salvageformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/salvageformal.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/salvageformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/salvageformal.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -159,9 +159,9 @@
   description: It's a snappy jumpskirt with a sturdy set of overalls. It's very dirty.
   components:
     - type: Sprite
-      sprite: _Starlight/Clothes/Uniforms/Jumpskirt/salvagelead.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpskirt/salvagelead.rsi
     - type: Clothing
-      sprite: _Starlight/Clothes/Uniforms/Jumpskirt/salvagelead.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpskirt/salvagelead.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -170,9 +170,9 @@
   description: A suit passed down through many generations. a fine layer of dust trails behind it.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/mining.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/mining.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/mining.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/mining.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -181,9 +181,9 @@
   description: An official jumpsuit skirt combines practicality with a professional appearance. The tailored design offers comfort and mobility, while maintaining a structured look suitable for work settings requiring efficiency and formality.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/cargoformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/cargoformal.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/cargoformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/cargoformal.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -192,9 +192,9 @@
   description: A uniform for discerning scientists, best paired with a matching tie, offering a blend of professionalism and intellectual flair. Perfect for prestigious events or high-level research settings.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/scientist_formal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/scientist_formal.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/scientist_formal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/scientist_formal.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -203,9 +203,9 @@
   description: Made from specialized fibers offering minimal protection against biological hazards, this jumpsuit proves that style doesn’t have to die with the patients. Perfect for the professional with a sense of dark humor.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/coroner.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/coroner.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/coroner.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/coroner.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -214,9 +214,9 @@
   description: It's a suitskirt worn by CentComm's highest-tier Commanders.
   components:
     - type: Sprite
-      sprite: _Starlight/Clothes/Uniforms/Jumpskirt/centcom_official.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpskirt/centcom_official.rsi
     - type: Clothing
-      sprite: _Starlight/Clothes/Uniforms/Jumpskirt/centcom_official.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpskirt/centcom_official.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -225,9 +225,9 @@
   description: A skirt version of the CentComm turtleneck, rarer and more sought after than the original.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/centcom_officer.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/centcom_officer.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/centcom_officer.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/centcom_officer.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -236,9 +236,9 @@
   description: Call me master and bring me some beer.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/elegantmaid.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/elegantmaid.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/elegantmaid.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/elegantmaid.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -247,9 +247,9 @@
   description: A multi-colored jumpskirt!
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/rainbow.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/rainbow.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/rainbow.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/rainbow.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -258,9 +258,9 @@
   description: Stylish and comfortable school skirt.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/schoolskirt.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/schoolskirt.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/schoolskirt.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/schoolskirt.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -269,9 +269,9 @@
   description: True captain's turtleneck.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/cap_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/cap_turtleneck.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/cap_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/cap_turtleneck.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -280,9 +280,9 @@
   description: It's Head of Personal's turtleneck.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/hop_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/hop_turtleneck.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/hop_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/hop_turtleneck.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -291,9 +291,9 @@
   description: It's Head of Security's black skirt.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/hos_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/hos_black.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/hos_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/hos_black.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -302,9 +302,9 @@
   description: It's Research Director's classical skirt.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/rd_classical.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/rd_classical.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/rd_classical.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/rd_classical.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -313,9 +313,9 @@
   description: Smoke clings to it, heavy and suffocating. Somehow, it makes you want to cry. Care for another round, sir?
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/alt_purplebartender.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/alt_purplebartender.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/alt_purplebartender.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/alt_purplebartender.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -324,9 +324,9 @@
   description: "A voluminous white blouse with a black skirt-perfect for highlighting your beauty, darling!"
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/lady.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/lady.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpskirt/lady.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/lady.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -335,6 +335,6 @@
   description: A delicate pastry dress made from light, comfortable fabric with an elegant cut.
   components:
     - type: Sprite
-      sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pastry.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pastry.rsi
     - type: Clothing
-      sprite: _Starlight/Clothes/Uniforms/Jumpskirt/pastry.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpskirt/pastry.rsi

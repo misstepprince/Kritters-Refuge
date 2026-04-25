@@ -3,7 +3,7 @@
   id: GenitalBellyObese1
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_1_obese
@@ -12,7 +12,7 @@
   id: GenitalBellyObese2
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_2_obese
@@ -21,7 +21,7 @@
   id: GenitalBellyObese3
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_3_obese
@@ -30,7 +30,7 @@
   id: GenitalBellyObese4
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_4_obese
@@ -39,7 +39,7 @@
   id: GenitalBellyObese5
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_5_obese
@@ -48,7 +48,7 @@
 #  id: GenitalBellyObese6
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -61,7 +61,7 @@
 #  id: GenitalBellyObese7
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -74,7 +74,7 @@
 #  id: GenitalBellyObese8
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -87,7 +87,7 @@
 #  id: GenitalBellyObese9
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -100,7 +100,7 @@
 #  id: GenitalBellyObese10
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -113,7 +113,7 @@
 #  id: GenitalBellyObese11
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -127,7 +127,7 @@
   id: GenitalBellyTummy1
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_1_tummy
@@ -136,7 +136,7 @@
   id: GenitalBellyTummy2
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_2_tummy
@@ -145,7 +145,7 @@
   id: GenitalBellyTummy3
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_3_tummy
@@ -154,7 +154,7 @@
   id: GenitalBellyTummy4
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_4_tummy
@@ -163,7 +163,7 @@
   id: GenitalBellyTummy5
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_5_tummy
@@ -172,7 +172,7 @@
 #  id: GenitalBellyTummy6
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -185,7 +185,7 @@
 #  id: GenitalBellyTummy7
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -198,7 +198,7 @@
 #  id: GenitalBellyTummy8
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -211,7 +211,7 @@
 #  id: GenitalBellyTummy9
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -224,7 +224,7 @@
 #  id: GenitalBellyTummy10
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -237,7 +237,7 @@
 #  id: GenitalBellyTummy11
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -251,7 +251,7 @@
   id: GenitalBellyUdders1
   bodyPart: Genital
   markingCategory: Genital
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   sprites:
   - sprite: Mobs/Customization/Markings/Genital/belly.rsi
     state: belly_1_udders
@@ -260,7 +260,7 @@
 #  id: GenitalBellyUdders2
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -273,7 +273,7 @@
 #  id: GenitalBellyUdders3
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -286,7 +286,7 @@
 #  id: GenitalBellyUdders4
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -299,7 +299,7 @@
 #  id: GenitalBellyUdders5
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -312,7 +312,7 @@
 #  id: GenitalBellyUdders6
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -325,7 +325,7 @@
 #  id: GenitalBellyUdders7
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -338,7 +338,7 @@
 #  id: GenitalBellyUdders8
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -351,7 +351,7 @@
 #  id: GenitalBellyUdders9
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -364,7 +364,7 @@
 #  id: GenitalBellyUdders10
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -377,7 +377,7 @@
 #  id: GenitalBellyUdders11
 #  bodyPart: Genital
 #  markingCategory: Genital
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  coloring:
 #    default:
 #      type: null
@@ -394,7 +394,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_2_0_FRONT: Genital
     butt_pair_2_0_MID: Genital
@@ -411,7 +411,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_3_0_FRONT: Genital
     butt_pair_3_0_MID: Genital
@@ -428,7 +428,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_4_0_FRONT: Genital
     butt_pair_4_0_MID: Genital
@@ -445,7 +445,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_5_0_FRONT: Genital
     butt_pair_5_0_MID: Genital
@@ -462,7 +462,7 @@
 #  bodyPart: Genital
 #  markingCategory: Genital
 #  speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  layering:
 #    butt_pair_6_0_FRONT: Genital
 #    butt_pair_6_0_MID: Genital
@@ -479,7 +479,7 @@
 #  bodyPart: Genital
 #  markingCategory: Genital
 #  speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  layering:
 #    butt_pair_7_0_FRONT: Genital
 #    butt_pair_7_0_MID: Genital
@@ -496,7 +496,7 @@
 #  bodyPart: Genital
 #  markingCategory: Genital
 #  speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  layering:
 #    butt_pair_8_0_FRONT: Genital
 #    butt_pair_8_0_MID: Genital
@@ -514,7 +514,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_2_s_0_FRONT: Genital
     butt_pair_2_s_0_MID: Genital
@@ -531,7 +531,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_3_s_0_FRONT: Genital
     butt_pair_3_s_0_MID: Genital
@@ -548,7 +548,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_4_s_0_FRONT: Genital
     butt_pair_4_s_0_MID: Genital
@@ -565,7 +565,7 @@
   bodyPart: Genital
   markingCategory: Genital
   speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
   layering:
     butt_pair_5_s_0_FRONT: Genital
     butt_pair_5_s_0_MID: Genital
@@ -582,7 +582,7 @@
 #  bodyPart: Genital
 #  markingCategory: Genital
 #  speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  layering:
 #    butt_pair_6_s_0_FRONT: Genital
 #    butt_pair_6_s_0_MID: Genital
@@ -599,7 +599,7 @@
 #  bodyPart: Genital
 #  markingCategory: Genital
 #  speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  layering:
 #    butt_pair_7_s_0_FRONT: Genital
 #    butt_pair_7_s_0_MID: Genital
@@ -616,7 +616,7 @@
 #  bodyPart: Genital
 #  markingCategory: Genital
 #  speciesRestriction: [Vulpkanin, Rodentia, SlimePerson, Human, Harpy, IPC, Arachne, Felinid, Oni, Kitsune]
-#  kindAllowance: [BasicHumanlike, BasicFurry, Resomi, Avali, VoxLike]
+#  kindAllowance: [BasicHumanlike, BasicFurry, VoxLike]
 #  layering:
 #    butt_pair_8_s_0_FRONT: Genital
 #    butt_pair_8_s_0_MID: Genital

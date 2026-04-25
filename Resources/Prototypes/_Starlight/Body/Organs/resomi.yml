@@ -3,9 +3,9 @@
   parent: OrganHumanEyes
   name: eyes
   suffix: Resomi
-  description: "The eyes of a resomi." # CS: Since we have no nightvision, this is purely cosmetic.
-  # CS: No OrganVisualization
-  # CS: No FunctionalOrgan
+  # CS: Since we don't have an OrganVisualizer or FunctionalOrgans, use the default description
+  description: "The eyes of a resomi."
+  # CS: No OrganVisualizer and FunctionalOrgans
 
 - type: entity # Starlight
   id: OrganResomiHeart
@@ -18,8 +18,67 @@
     metabolizerTypes: [Resomi]
     groups:
     - id: Medicine
-    - id: Cryogenic # Frontier
     - id: Poison
     - id: Narcotic
-    - id: Aphrodisiacs # CS: Necessary to detect aphrodisiac injected solutions.
-    - id: AphrodisiacDrinks # CS: Necessary to detect aphrodisiac injected solutions.
+  - type: Sprite
+    sprite: _Starlight/Mobs/Species/Resomi/organs.rsi
+    state: heart-on
+
+- type: entity
+  id: OrganResomiLiver
+  parent: OrganHumanLiver
+  name: liver
+  suffix: Resomi
+  description: "The liver of a resomi."
+  components:
+  - type: Sprite
+    sprite: _Starlight/Mobs/Species/Resomi/organs.rsi
+    state: liver
+
+- type: entity
+  id: OrganResomiKidneys
+  parent: OrganHumanKidneys
+  name: kidney
+  suffix: Resomi
+  description: "The kidneys of a resomi."
+  components:
+  - type: Sprite
+    sprite: _Starlight/Mobs/Species/Resomi/organs.rsi
+    layers:
+      - state: kidney-l
+      - state: kidney-r
+
+- type: entity
+  id: OrganResomiLungs
+  parent: OrganHumanLungs
+  name: lungs
+  suffix: Resomi
+  description: "The lungs of a resomi."
+  components:
+  - type: Sprite
+    sprite: _Starlight/Mobs/Species/Resomi/organs.rsi
+    layers:
+      - state: lung-l
+      - state: lung-r
+
+- type: entity
+  id: OrganResomiBrain
+  parent: OrganHumanBrain
+  name: brain
+  suffix: Resomi
+  description: "The brain of a Resomi. Where Resomi think of evil thoughts."
+  components:
+  - type: Sprite
+    sprite: _Starlight/Mobs/Species/Resomi/organs.rsi
+    state: brain
+
+- type: entity
+  id: OrganResomiStomach
+  parent: OrganHumanStomach
+  name: stomach
+  suffix: Resomi
+  description: "The dual chamber stomach of a resomi."
+  components:
+  - type: Sprite
+    sprite: _Starlight/Mobs/Species/Resomi/organs.rsi
+    state: stomach

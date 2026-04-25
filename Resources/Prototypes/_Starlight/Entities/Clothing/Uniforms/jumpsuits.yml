@@ -6,9 +6,9 @@
   description: This plaid suit blends formality and style. The expertly tailored blazer and straight trousers create a modern silhouette, while the plaid pattern adds a fashionable touch. Perfect for office meetings and everyday business gatherings.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/suit_checkered.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/suit_checkered.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/suit_checkered.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/suit_checkered.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -17,9 +17,9 @@
   description: This chocolate-colored evening suit embodies luxury and elegance. The fitted blazer and flared trousers create a refined silhouette, while the rich chocolate hue adds warmth and sophistication. Perfect for special evening events.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/suit_tan.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/suit_tan.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/suit_tan.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/suit_tan.rsi
 
 - type: entity
   parent: ClothingUniformSkirtBase
@@ -28,9 +28,9 @@
   description: This waiter uniform combines style and comfort. The collared blouse and cuffed trousers create a formal yet relaxed look. Additional details like the apron and bowtie add a playful touch, completing the stylish appearance of a waiter serving with grace and professionalism.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/suit_waiter.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/suit_waiter.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/suit_waiter.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/suit_waiter.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -39,9 +39,9 @@
   description: A sexy mime costume with white pants combines playful charm and allure. The outfit typically features a fitted top, suspenders, and white trousers, with bold black-and-white details. It's perfect for an entertaining yet chic look, exuding both mystery and flirtation.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/sexy-mime.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/sexy-mime.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/sexy-mime.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/sexy-mime.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -50,9 +50,9 @@
   description: A sexy mime costume with black pants combines playful charm and allure. The outfit typically features a fitted top, suspenders, and white trousers, with bold black-and-white details. It's perfect for an entertaining yet chic look, exuding both mystery and flirtation.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/sexy-mime-black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/sexy-mime-black.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/sexy-mime-black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/sexy-mime-black.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -61,9 +61,9 @@
   description: A good suit for supply department workers combines practicality and professionalism. Featuring durable fabric, functional pockets, and a comfortable fit, it ensures ease of movement while maintaining a neat and polished appearance. Ideal for day-to-day operations and meetings.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/cargo.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/cargo.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/cargo.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/cargo.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -72,9 +72,9 @@
   description: Designed for fashion shows on a conveyor belt, this sleek and structured cargo jumpsuit blends utility with high-fashion appeal. Perfect for showcasing bold, industrial-inspired looks with a refined edge.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/cargoformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/cargoformal.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/cargoformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/cargoformal.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -83,9 +83,9 @@
   description: A practical and durable outfit designed for waste management and reclamation tasks, combining functionality with a professional look. Perfect for those in the field, ensuring comfort, efficiency, and a polished appearance.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/salvageformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/salvageformal.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/salvageformal.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/salvageformal.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -94,9 +94,9 @@
   description: Issued to qualified and trained professionals, this jumpsuit features the phrase "I don't just work with the dead, I dance with them on their final parade!" adding a unique touch of dark humor to the professional uniform.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/coroner.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/coroner.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/coroner.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/coroner.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -105,9 +105,9 @@
   description: Guaranteed to protect your wardrobe from bloody details, but we can't make any promises. Ideal for medical professionals who need both protection and a touch of uncertainty.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/coroneralt.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/coroneralt.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/coroneralt.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/coroneralt.rsi
 
 
 - type: entity
@@ -117,9 +117,9 @@
   description: Flare cut trousers and a dirty shirt that might have been classy before someone took a piss in the armpits. It's the dress of a superstar.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/disco.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/disco.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/disco.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/disco.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -128,9 +128,9 @@
   description: A crisp and well-pressed suit; professional, comfortable and curiously authoritative.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/kim.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/kim.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/kim.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/kim.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -139,9 +139,9 @@
   description: Special Operations Officer uniform, nothing like that. Although... If you have time to read this, it's too late...
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/centcom_officer_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/centcom_officer_black.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/centcom_officer_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/centcom_officer_black.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -150,9 +150,9 @@
   description: True captain's turtleneck.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/cap_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/cap_turtleneck.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/cap_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/cap_turtleneck.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -161,9 +161,9 @@
   description: A more classical and elegant style of clothing, designed to emulate the fashion of old earth nobility.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/captainnoble.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/captainnoble.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/captainnoble.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/captainnoble.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -172,9 +172,9 @@
   description: It's Head of Personal's turtleneck.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/hop_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/hop_turtleneck.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/hop_turtleneck.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/hop_turtleneck.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -183,9 +183,9 @@
   description: It's Head of Security's black suit.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/hos_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/hos_black.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/hos_black.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/hos_black.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -194,9 +194,9 @@
   description: It's Research Director's сlassical suit.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/rd_classical.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/rd_classical.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/rd_classical.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/rd_classical.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -205,9 +205,9 @@
   description: An aristocratic suit reeking of blood and lost dreams.
   components:
   - type: Sprite
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/ari.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/ari.rsi
   - type: Clothing
-    sprite: _Starlight/Clothes/Uniforms/Jumpsuit/ari.rsi
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/ari.rsi
 
 - type: entity
   parent: ClothingUniformBase
@@ -216,6 +216,6 @@
   description: A blue noble suit that exudes elegance and refinement.
   components:
     - type: Sprite
-      sprite: _Starlight/Clothes/Uniforms/Jumpsuit/belpero.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpsuit/belpero.rsi
     - type: Clothing
-      sprite: _Starlight/Clothes/Uniforms/Jumpsuit/belpero.rsi
+      sprite: _Starlight/Clothing/Uniforms/Jumpsuit/belpero.rsi
