@@ -2623,3 +2623,10 @@ Entries:
   id: 301
   time: '2026-04-24T04:41:46.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1176
+- author: Khaomi
+  changes:
+    - type: Fix
+      message: 'Fix Resomi and Avali not being ported correctly from Starlight '
+  id: 302
+  time: '2026-04-27T04:02:12.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1177
