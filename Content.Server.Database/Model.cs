@@ -434,6 +434,7 @@ namespace Content.Server.Database
         public List<Job> Jobs { get; } = new();
         public List<Antag> Antags { get; } = new();
         public List<Trait> Traits { get; } = new();
+        // Stored in the base profile model (not _CS-scoped) because character preferences are shared across forks/clients.
         [Column("hidden_emote_categories")]
         public string HiddenEmoteCategories { get; set; } = string.Empty;
 

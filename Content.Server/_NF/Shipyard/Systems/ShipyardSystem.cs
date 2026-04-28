@@ -48,6 +48,17 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     private bool _enabled;
     private float _baseSaleRate;
 
+    private enum PostPurchaseAtmosFix
+    {
+        RebuildAndStandardPressurize,
+    }
+
+    // Add ship map paths here as needed when they require post-purchase atmos correction.
+    private static readonly Dictionary<string, PostPurchaseAtmosFix> PostPurchaseAtmosFixes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["/Maps/_CS/Shuttles/Scrap/khonsu.yml"] = PostPurchaseAtmosFix.RebuildAndStandardPressurize,
+    };
+
     // The type of error from the attempted sale of a ship.
     public enum ShipyardSaleError
     {
@@ -177,27 +188,36 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         shuttleGrid = grid.Value.Owner;
 
-        // Keep purchase-time atmos refresh scoped to Khonsu to avoid disturbing other ship setups.
-        if (shuttlePath.ToString().EndsWith("khonsu.yml", StringComparison.OrdinalIgnoreCase))
+        // Implemented in this shipyard path (outside _CS) because the purchase/spawn pipeline runs from the shared _NF flow.
+        if (PostPurchaseAtmosFixes.TryGetValue(shuttlePath.ToString().Replace('\\', '/'), out var atmosFix))
         {
-            if (!_atmosphere.RebuildGridAtmosphere(shuttleGrid.Value))
-            {
-                _sawmill.Warning($"Failed to refresh atmosphere data for shuttle {shuttlePath} on grid {ToPrettyString(shuttleGrid.Value)}.");
-            }
-            else
-            {
-                PressurizeKhonsuGridAirMix(shuttleGrid.Value);
-            }
+            ApplyPostPurchaseAtmosFix(atmosFix, shuttlePath, shuttleGrid.Value);
         }
 
         return true;
     }
 
-    private void PressurizeKhonsuGridAirMix(EntityUid gridUid)
+    private void ApplyPostPurchaseAtmosFix(PostPurchaseAtmosFix fix, ResPath shuttlePath, EntityUid gridUid)
+    {
+        switch (fix)
+        {
+            case PostPurchaseAtmosFix.RebuildAndStandardPressurize:
+                if (!_atmosphere.RebuildGridAtmosphere(gridUid))
+                {
+                    _sawmill.Warning($"Failed to refresh atmosphere data for shuttle {shuttlePath} on grid {ToPrettyString(gridUid)}.");
+                    return;
+                }
+
+                PressurizeStandardAirMix(shuttlePath, gridUid);
+                break;
+        }
+    }
+
+    private void PressurizeStandardAirMix(ResPath shuttlePath, EntityUid gridUid)
     {
         if (!TryComp(gridUid, out GridAtmosphereComponent? _))
         {
-            _sawmill.Warning($"Khonsu lower-deck pressurization skipped; missing atmosphere components on {ToPrettyString(gridUid)}.");
+            _sawmill.Warning($"Post-purchase atmos pressurization skipped for shuttle {shuttlePath}; missing atmosphere components on {ToPrettyString(gridUid)}.");
             return;
         }
 

@@ -212,6 +212,7 @@ namespace Content.Server.Database
             var jobs = profile.Jobs.ToDictionary(j => new ProtoId<JobPrototype>(j.JobName), j => (JobPriority) j.Priority);
             var antags = profile.Antags.Select(a => new ProtoId<AntagPrototype>(a.AntagName));
             var traits = profile.Traits.Select(t => new ProtoId<TraitPrototype>(t.TraitName));
+            // Keep this in the base DB converter so profile persistence works regardless of _CS-specific content.
             var hiddenEmoteCategories = new HashSet<EmoteCategory>();
 
             if (!string.IsNullOrWhiteSpace(profile.HiddenEmoteCategories))
@@ -392,6 +393,7 @@ namespace Content.Server.Database
                         .Select(t => new Trait {TraitName = t})
             );
 
+            // Persist as a stable comma-separated list for cross-provider compatibility.
             profile.HiddenEmoteCategories = string.Join(",",
                 humanoid.HiddenEmoteCategories
                     .Where(category => category is not EmoteCategory.Invalid and not EmoteCategory.Sex and not EmoteCategory.Vocal)

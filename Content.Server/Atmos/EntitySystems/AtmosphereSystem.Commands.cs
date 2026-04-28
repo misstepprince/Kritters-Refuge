@@ -181,7 +181,7 @@ public sealed partial class AtmosphereSystem
             return false;
         }
 
-        // Prefer an immediate full rebuild so callers can safely modify tile air right after this call.
+        // Kept in the shared atmos system (not _CS) so any caller can perform deterministic post-load gas edits.
         if (TryComp(uid, out GasTileOverlayComponent? overlay)
             && TryComp(uid, out TransformComponent? xform))
         {
