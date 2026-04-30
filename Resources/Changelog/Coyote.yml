@@ -2644,3 +2644,22 @@ Entries:
   id: 304
   time: '2026-04-30T06:11:37.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1180
+- author: QTNeen
+  changes:
+    - type: Add
+      message: >-
+        Interdiction option in shuttle console. No preference by default |
+        Enabled = Yes Pirates | Disabled = No Pirates 
+    - type: Tweak
+      message: NPC pathing adjusted, they don't give up chase as easily.
+    - type: Add
+      message: Heat & Rut to the custom character examine to be more easily toggled.
+    - type: Tweak
+      message: Expedition NPCs no longer become dumb on shuttles. Be careful..
+    - type: Add
+      message: '''Khonsu'' up for sale in the Scrapyard.'
+    - type: Add
+      message: Emote Configuration added to Trait tab in Character Setup
+  id: 305
+  time: '2026-04-30T06:32:45.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1179
