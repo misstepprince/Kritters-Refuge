@@ -42,13 +42,19 @@
       hideLayersOnEquip:
       - Tail
       - HeadTop
+    # Coyote: use Needs instead of Hunger
+    - type: Needs
+      needs:
+        - NeedHungerAvali
+        - NeedThirstDefault
+    # End Coyote
     - type: Body
       prototype: Avali
       requiredLegs: 2
     - type: Butcherable
       butcheringType: Spike
       spawned:
-        - id: FoodMeatChicken
+        - id: FoodMeatResomi # Coyote: FoodMeatChicken<FoodMeatResomi
           amount: 5
     - type: Speech
       speechVerb: Parrot # RMC did it right.

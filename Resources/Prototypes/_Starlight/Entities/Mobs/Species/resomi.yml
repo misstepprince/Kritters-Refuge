@@ -54,10 +54,14 @@
         - MobMask
         layer:
         - MobLayer
-  # Coyote: No Hunger
+  # Coyote: use Needs instead of Hunger
+  - type: Needs
+    needs:
+      - NeedHungerAvali
+      - NeedThirstDefault
+  # End Coyote
   - type: Puller
     needsHands: false
-  # Coyote: No Thirst
   - type: Icon
     sprite: _Starlight/Mobs/Species/Resomi/parts.rsi
     state: full
