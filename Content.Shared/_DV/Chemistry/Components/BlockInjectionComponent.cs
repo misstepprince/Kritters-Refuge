@@ -18,7 +18,7 @@ public sealed partial class BlockInjectionComponent : Component
     /// If true, this component will block injections from hypospray.
     /// </summary>
     [DataField]
-    public bool BlockHypospray;
+    public bool BlockHypospray = false; //Coyote: set to false by default
 
     /// <summary>
     /// If true, this component will block injections from projectile.

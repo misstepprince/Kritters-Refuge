@@ -24,6 +24,7 @@
     solution: hypospray
   - type: Hypospray
     onlyAffectsMobs: false
+    bypassBlockInjection: false #Coyote: Shelegs cannot be injected
   - type: UseDelay
     delay: 0.5
   - type: StaticPrice
@@ -65,6 +66,7 @@
     solution: hypospray
   - type: Hypospray
     onlyAffectsMobs: false
+    bypassBlockInjection: false #Coyote: Shelegs cannot be injected
   - type: UseDelay
     delay: 0.5
   - type: Appearance
@@ -105,6 +107,7 @@
     solution: hypospray
   - type: Hypospray
     onlyAffectsMobs: false
+    bypassBlockInjection: false #Coyote: Shelegs cannot be injected
   - type: UseDelay
     delay: 0.5
 
@@ -678,6 +681,7 @@
     heldOnly: true # Allow examination only when held in hand.
   - type: Hypospray
     onlyAffectsMobs: false
+    bypassBlockInjection: false #Coyote: Shelegs cannot be injected
   - type: UseDelay
     delay: 0.5
   - type: StaticPrice # A new shitcurity meta

@@ -327,6 +327,7 @@
     solution: hypospray
   - type: Hypospray
     onlyAffectsMobs: false
+    bypassBlockInjection: false #Coyote: Shelegs cannot be injected
   - type: UseDelay
     delay: 0.5
   - type: StaticPrice
@@ -363,6 +364,7 @@
     solution: hypospray
   - type: Hypospray
     onlyAffectsMobs: false
+    bypassBlockInjection: false #Coyote; Shelegs cannot be injected
   - type: UseDelay
     delay: 0.75
   - type: StaticPrice

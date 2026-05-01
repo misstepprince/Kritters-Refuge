@@ -116,7 +116,8 @@ public sealed class HypospraySystem : SharedHypospraySystem
 
         var doAfterDelay = TimeSpan.FromSeconds(0);
 
-        if (!entity.Comp.BypassBlockInjection && TryComp<BlockInjectionComponent>(target, out var blockComponent)) // DeltaV
+        if (!entity.Comp.BypassBlockInjection && TryComp<BlockInjectionComponent>(target, out var blockComponent) // DeltaV
+            && blockComponent.BlockHypospray) //Coyote
         {
             var msg = Loc.GetString($"injector-component-deny-user",
                 ("target", Identity.Entity(target, EntityManager)));
