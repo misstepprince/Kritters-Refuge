@@ -16,6 +16,7 @@ salvage-expedition-abort-wipe = [color=Red]Oh dear, everyone's dead.[/color] Abo
 salvage-expedition-shuttle-not-found = Cannot locate shuttle.
 salvage-expedition-not-everyone-aboard = Not all crew aboard! {CAPITALIZE(THE($target))} is still out there!
 salvage-expedition-failed = Expedition is failed.
+salvage-expedition-no-valid-landing-zone = No valid landing zone found.
 
 # Salvage mods
 salvage-time-mod-standard-time = Normal Duration

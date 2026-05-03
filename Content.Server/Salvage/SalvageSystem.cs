@@ -34,6 +34,7 @@ namespace Content.Server.Salvage
         [Dependency] private readonly BiomeSystem _biome = default!;
         [Dependency] private readonly DungeonSystem _dungeon = default!;
         [Dependency] private readonly GravitySystem _gravity = default!;
+        [Dependency] private readonly EntityLookupSystem _lookup = default!;
         [Dependency] private readonly MapLoaderSystem _loader = default!;
         [Dependency] private readonly MetaDataSystem _metaData = default!;
         [Dependency] private readonly RadioSystem _radioSystem = default!;

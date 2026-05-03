@@ -27,3 +27,13 @@
   cost: 4000
   category: cargoproduct-category-name-engineering
   group: market
+
+- type: cargoProduct
+  id: NFEngineSingularityCollectorCrate
+  icon:
+    sprite: Structures/Power/Generation/Singularity/collector.rsi
+    state: ca_on
+  product: CrateEngineeringSingularityCollector
+  cost: 3500
+  category: cargoproduct-category-name-engineering
+  group: market

@@ -8,10 +8,15 @@ public sealed class ExpeditionSpawnCompleteEvent : EntityEventArgs
     public EntityUid Station;
     public bool Success;
     public ushort MissionIndex;
-    public ExpeditionSpawnCompleteEvent(EntityUid station, bool success, ushort missionIndex)
+    public EntityUid MapUid;
+    public string EconomyId;
+
+    public ExpeditionSpawnCompleteEvent(EntityUid station, bool success, ushort missionIndex, EntityUid mapUid, string economyId)
     {
         Station = station;
         Success = success;
         MissionIndex = missionIndex;
+        MapUid = mapUid;
+        EconomyId = economyId;
     }
 }

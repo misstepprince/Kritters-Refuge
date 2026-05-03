@@ -24,3 +24,28 @@
     transmitFrequencyId: SurveillanceCamera
   - type: WiredNetworkConnection
   - type: SurveillanceCameraMonitor
+  - type: CameraBugBroadcast
+
+- type: entity
+  id: CameraBugCamera
+  name: covert device
+  description: You shouldn't be seeing this.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Eye
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: SurveillanceCameraEntertainment
+    transmitFrequencyId: SurveillanceCamera
+  - type: SurveillanceCamera
+    id: covert device
+    networkSet: true
+    nameSet: true
+  - type: SurveillanceCameraMicrophone
+    blacklist:
+      components:
+        - SurveillanceCamera
+        - SurveillanceCameraMonitor
+        - RadioSpeaker
+  - type: ActiveListener
+    range: 6

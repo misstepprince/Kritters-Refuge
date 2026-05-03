@@ -153,6 +153,14 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
                         && !component.KnownSubnets.ContainsKey(subnet))
                     {
                         component.KnownSubnets.Add(subnet, args.SenderAddress);
+
+                        // If the monitor was previously connected to this subnet (e.g. after a power
+                        // restore or grid change) and has no active subnet right now, reconnect automatically.
+                        if (string.IsNullOrEmpty(component.ActiveSubnet)
+                            && subnet == component.LastActiveSubnet)
+                        {
+                            SetActiveSubnet(uid, subnet, component);
+                        }
                     }
 
                     UpdateUserInterface(uid, component);
@@ -192,9 +200,19 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
     {
         if (!args.Powered)
         {
+            // Save the active subnet so we can reconnect when power is restored.
+            if (!string.IsNullOrEmpty(component.ActiveSubnet))
+                component.LastActiveSubnet = component.ActiveSubnet;
+
             RemoveActiveCamera(uid, component);
             component.NextCameraAddress = null;
             component.ActiveSubnet = string.Empty;
+        }
+        else
+        {
+            // Re-discover the camera network. When routers respond, OnPacketReceived
+            // will attempt to auto-reconnect to the last active subnet.
+            RefreshSubnets(uid, component);
         }
     }
 
@@ -298,6 +316,7 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
         DisconnectFromSubnet(uid, monitor.ActiveSubnet);
         DisconnectCamera(uid, true, monitor);
         monitor.ActiveSubnet = subnet;
+        monitor.LastActiveSubnet = subnet;
         monitor.KnownCameras.Clear();
         UpdateUserInterface(uid, monitor);
 

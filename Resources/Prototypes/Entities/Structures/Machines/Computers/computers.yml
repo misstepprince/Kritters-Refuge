@@ -1435,6 +1435,7 @@
   - type: Speech
     speechVerb: Robotic
   - type: SurveillanceCameraSpeaker
+    requiresEntertainmentCamera: true # Frontier: only relay speech from entertainment cameras
   - type: SurveillanceCameraMonitor
   - type: ActivatableUI
     key: enum.SurveillanceCameraMonitorUiKey.Key

@@ -129,17 +129,16 @@ public sealed partial class SalvageSystem
         if (!TryComp<SalvageExpeditionComponent>(args.MapUid, out var component))
             return;
 
+        var station = _station.GetOwningStation(args.Entity);
+        if (station is { Valid: true } stationUid && TryComp<SalvageExpeditionDataComponent>(stationUid, out var stationData))
+        {
+            stationData.CanFinish = true;
+            UpdateStationConsoles(stationUid);
+        }
+
         // Someone FTLd there so start announcement
         if (component.Stage != ExpeditionStage.Added)
             return;
-
-        // Frontier: early finish
-        if (TryComp<SalvageExpeditionDataComponent>(component.Station, out var data))
-        {
-            data.CanFinish = true;
-            UpdateConsoles((component.Station, data));
-        }
-        // End Frontier: early finish
 
         var arrivalRemaining = component.EndTime - _timing.CurTime;
         var arrivalMinutes = GetDisplayedRemainingMinutes(arrivalRemaining);
@@ -193,13 +192,17 @@ public sealed partial class SalvageSystem
 
     private void OnFTLStarted(ref FTLStartedEvent ev)
     {
-        if (!TryComp<SalvageExpeditionComponent>(ev.FromMapUid, out var expedition) ||
-            !TryComp<SalvageExpeditionDataComponent>(expedition.Station, out var station))
+        if (!TryComp<SalvageExpeditionComponent>(ev.FromMapUid, out var expedition))
         {
             return;
         }
 
-        station.CanFinish = false; // Frontier
+        var stationUid = _station.GetOwningStation(ev.Entity);
+        if (stationUid is { Valid: true } participantStation && TryComp<SalvageExpeditionDataComponent>(participantStation, out var station))
+        {
+            station.CanFinish = false;
+            UpdateStationConsoles(participantStation);
+        }
 
         // Check if any shuttles remain.
         var query = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
@@ -258,6 +261,7 @@ public sealed partial class SalvageSystem
                 {
                     pausedRemaining = remaining;
                     _pausedExpeditionRemaining[uid] = pausedRemaining;
+                    Dirty(uid, comp);
                 }
 
                 // Keep pushing EndTime forward while preserving the exact frozen remaining time.
@@ -269,6 +273,7 @@ public sealed partial class SalvageSystem
             {
                 comp.EndTime = _timing.CurTime + resumeRemaining;
                 remaining = resumeRemaining;
+                Dirty(uid, comp);
             }
             // End Frontier: expedition duration extension
 
@@ -805,6 +810,7 @@ public sealed partial class SalvageSystem
 
         component.Stage = ExpeditionStage.FinalCountdown;
         component.EndTime = newEndTime;
+        Dirty(mapUid, component);
 
     }
 

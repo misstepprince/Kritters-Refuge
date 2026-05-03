@@ -12,6 +12,16 @@
     intervalSeconds: 240
     minimumEntitiesSpawned: 1
     maximumEntitiesSpawned: 3
+  - type: SalvageObjectiveNpcSpawner
+    spawnIntervalSeconds: 76
+    nearbyRange: 15
+    maxNearby: 5
+    nearbyFactions:
+    - AberrantFleshExpeditionNF
+    spawnPrototypes:
+    - SpawnMobAberrantFleshExpeditions
+    - SpawnMobAberrantFleshNewbornExpeditions
+    - MobHorrorExpeditions
   - type: Fixtures
     fixtures:
       fix1:

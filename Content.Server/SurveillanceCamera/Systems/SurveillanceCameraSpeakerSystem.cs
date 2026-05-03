@@ -2,6 +2,7 @@ using Content.Server.Chat.Systems;
 using Content.Server.Speech;
 using Content.Shared.Speech;
 using Content.Shared.Chat;
+using Content.Shared.DeviceNetwork.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
 
@@ -17,6 +18,8 @@ public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
     [Dependency] private readonly ChatSystem _chatSystem = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
 
+    private const string EntertainmentFrequencyId = "SurveillanceCameraEntertainment";
+
     /// <inheritdoc/>
     public override void Initialize()
     {
@@ -29,6 +32,18 @@ public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
         if (!component.SpeechEnabled)
         {
             return;
+        }
+
+        // If restricted to entertainment cameras, verify the monitor's active camera is on that subnet.
+        if (component.RequiresEntertainmentCamera)
+        {
+            if (!TryComp<SurveillanceCameraMonitorComponent>(uid, out var monitor)
+                || monitor.ActiveCamera == null
+                || !TryComp<DeviceNetworkComponent>(monitor.ActiveCamera.Value, out var devNet)
+                || devNet.ReceiveFrequencyId != EntertainmentFrequencyId)
+            {
+                return;
+            }
         }
 
         var time = _gameTiming.CurTime;

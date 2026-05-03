@@ -41,4 +41,9 @@ public sealed partial class SurveillanceCameraMonitorComponent : Component
     [ViewVariables]
     // The subnets known by this camera monitor.
     public Dictionary<string, string> KnownSubnets { get; } = new();
+
+    // The last subnet the user explicitly selected. Persists through power cycles so
+    // the monitor can automatically reconnect after power is restored.
+    [ViewVariables]
+    public string LastActiveSubnet { get; set; } = string.Empty;
 }

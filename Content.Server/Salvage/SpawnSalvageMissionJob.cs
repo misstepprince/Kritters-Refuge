@@ -44,6 +44,8 @@ namespace Content.Server.Salvage;
 
 public sealed class SpawnSalvageMissionJob : Job<bool>
 {
+    private static readonly ProtoId<LocalizedDatasetPrototype> NamesDataset = "NamesBorer";
+
     private readonly IEntityManager _entManager;
     private readonly IGameTiming _timing;
     private readonly IPrototypeManager _prototypeManager;
@@ -58,6 +60,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
 
     public readonly EntityUid Station;
     public readonly EntityUid? CoordinatesDisk;
+    private readonly string _economyId;
     private readonly SalvageMissionParams _missionParams;
 
     private readonly ISawmill _sawmill;
@@ -85,6 +88,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         SalvageSystem salvageSystem, // Frontier
         EntityUid station,
         EntityUid? coordinatesDisk,
+        string economyId,
         SalvageMissionParams missionParams,
         CancellationToken cancellation = default) : base(maxTime, cancellation)
     {
@@ -101,6 +105,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         _salvage = salvageSystem; // Frontier
         Station = station;
         CoordinatesDisk = coordinatesDisk;
+        _economyId = economyId;
         _missionParams = missionParams;
         _sawmill = logManager.GetSawmill("salvage_job");
 #if !DEBUG
@@ -119,8 +124,8 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         }
         finally
         {
-            ExpeditionSpawnCompleteEvent ev = new(Station, success, _missionParams.Index);
-            _entManager.EventBus.RaiseLocalEvent(Station, ev);
+            ExpeditionSpawnCompleteEvent ev = new(Station, success, _missionParams.Index, mapUid, _economyId);
+            _entManager.EventBus.RaiseEvent(EventSource.Local, ev);
             if (errorStackTrace != null)
                 _sawmill.Error("salvage", $"Expedition generation failed with exception: {errorStackTrace}!");
             if (!success)
@@ -149,7 +154,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         destComp.Enabled = true;
         _metaData.SetEntityName(
             mapUid,
-            _entManager.System<SharedSalvageSystem>().GetFTLName(_prototypeManager.Index<LocalizedDatasetPrototype>("NamesBorer"), _missionParams.Seed));
+            _entManager.System<SharedSalvageSystem>().GetFTLName(_prototypeManager.Index(NamesDataset), _missionParams.Seed));
         _entManager.AddComponent<FTLBeaconComponent>(mapUid);
 
         // Saving the mission mapUid to a CD is made optional, in case one is somehow made in a process without a CD entity
@@ -207,6 +212,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
 
         // Setup expedition
         var expedition = _entManager.AddComponent<SalvageExpeditionComponent>(mapUid);
+        expedition.EconomyId = _economyId;
         expedition.Station = Station;
         expedition.EndTime = _timing.CurTime + mission.Duration;
         expedition.MissionParams = _missionParams;
@@ -246,6 +252,9 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
             dungeonBox = dungeonBox.ExtendToContain(tile);
         }
 
+        expedition.DungeonBounds = dungeonBox;
+        expedition.ParticipantStations.Add(Station);
+
         var stationData = _entManager.GetComponent<StationDataComponent>(Station);
 
         // Get ship bounding box relative to largest grid coords
@@ -265,6 +274,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         Vector2 shuttleProjection = new Vector2(shuttleBox.Width * -sin / 2, shuttleBox.Height * cos / 2); // Note: sine is negative because of CCW rotation (starting north, then west)
         Vector2 coords = dungeonBox.Center - dungeonProjection - dungeonOffset - shuttleProjection - shuttleBox.Center; // Coordinates to spawn the ship at to center it with the dungeon's bounding boxes
         coords = coords.Rounded(); // Ensure grid is aligned to map coords
+        expedition.ReservedLandingZones.Add(shuttleBox.Translated(coords).Enlarged(4f));
 
         // List<Vector2i> reservedTiles = new();
 
@@ -417,7 +427,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
             {
                 var tile = availableTiles.RemoveSwap(random.Next(availableTiles.Count));
 
-                if (!_anchorable.TileFree(grid, tile, (int)CollisionGroup.MachineLayer,
+                if (!_anchorable.TileFree((mapUid, grid), tile, (int)CollisionGroup.MachineLayer,
                         (int)CollisionGroup.MachineLayer))
                 {
                     continue;
@@ -490,7 +500,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
             {
                 var tile = availableTiles.RemoveSwap(random.Next(availableTiles.Count));
 
-                if (!_anchorable.TileFree(grid, tile, (int)CollisionGroup.MachineLayer,
+                if (!_anchorable.TileFree((mapUid, grid), tile, (int)CollisionGroup.MachineLayer,
                         (int)CollisionGroup.MachineLayer))
                 {
                     continue;
@@ -531,7 +541,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
             {
                 var tile = availableTiles.RemoveSwap(random.Next(availableTiles.Count));
 
-                if (!_anchorable.TileFree(grid, tile, (int)CollisionGroup.MachineLayer,
+                if (!_anchorable.TileFree((mapUid, grid), tile, (int)CollisionGroup.MachineLayer,
                         (int)CollisionGroup.MachineLayer))
                 {
                     continue;

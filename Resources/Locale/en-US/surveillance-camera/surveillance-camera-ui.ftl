@@ -9,5 +9,11 @@ surveillance-camera-monitor-ui-status-disconnected = Disconnected
 surveillance-camera-monitor-ui-no-subnets = No Subnets
 
 surveillance-camera-setup = Setup
+
+## Camera bug broadcast
+camera-bug-broadcast-enable = Enable Broadcast
+camera-bug-broadcast-disable = Disable Broadcast
+camera-bug-broadcast-started = Broadcast enabled.
+camera-bug-broadcast-stopped = Broadcast disabled.
 surveillance-camera-setup-ui-set = Set
 

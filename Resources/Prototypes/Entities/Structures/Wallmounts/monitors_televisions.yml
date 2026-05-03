@@ -29,6 +29,8 @@
           - TabletopMachineMask
         layer:
           - TabletopMachineLayer
+  - type: SurveillanceCameraSpeaker # Frontier: only relay speech from entertainment cameras
+    requiresEntertainmentCamera: true
 
 - type: entity
   parent: [BaseStructureWallmount, BaseComputer] # Frontier: add BaseStructureWallmount
@@ -169,6 +171,7 @@
   - type: DeviceNetworkRequiresPower
   - type: Speech
   - type: SurveillanceCameraSpeaker
+    requiresEntertainmentCamera: true # Frontier: only relay speech from entertainment cameras
   - type: SurveillanceCameraMonitor
   - type: ActivatableUI
     key: enum.SurveillanceCameraMonitorUiKey.Key

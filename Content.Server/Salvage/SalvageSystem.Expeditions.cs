@@ -3,6 +3,7 @@ using System.Threading;
 using Content.Server.Salvage.Expeditions;
 using Content.Server.Salvage.Expeditions.Structure;
 using Content.Shared.CCVar;
+using Content.Shared.Popups;
 using Content.Shared.Examine;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Salvage.Expeditions;
@@ -49,7 +50,7 @@ public sealed partial class SalvageSystem
         SubscribeLocalEvent<SalvageExpeditionConsoleComponent, ComponentInit>(OnSalvageConsoleInit);
         SubscribeLocalEvent<SalvageExpeditionConsoleComponent, EntParentChangedMessage>(OnSalvageConsoleParent);
         SubscribeLocalEvent<SalvageExpeditionConsoleComponent, ClaimSalvageMessage>(OnSalvageClaimMessage);
-        SubscribeLocalEvent<SalvageExpeditionDataComponent, ExpeditionSpawnCompleteEvent>(OnExpeditionSpawnComplete); // Frontier: more gracefully handle expedition generation failures
+        SubscribeLocalEvent<ExpeditionSpawnCompleteEvent>(OnExpeditionSpawnComplete); // Frontier: more gracefully handle expedition generation failures
         SubscribeLocalEvent<SalvageExpeditionConsoleComponent, FinishSalvageMessage>(OnSalvageFinishMessage); // Frontier: For early finish
 
         SubscribeLocalEvent<SalvageExpeditionComponent, MapInitEvent>(OnExpeditionMapInit);
@@ -83,11 +84,11 @@ public sealed partial class SalvageSystem
         // Update the active cooldowns if we change it.
         var diff = obj - _cooldown;
 
-        var query = AllEntityQuery<SalvageExpeditionDataComponent>();
-
-        while (query.MoveNext(out var comp))
+        foreach (var board in _sharedExpeditionBoards.Values)
         {
-            comp.NextOffer += TimeSpan.FromSeconds(diff);
+            board.NextOffer += TimeSpan.FromSeconds(diff);
+            board.CooldownTime = TimeSpan.FromSeconds(obj);
+            UpdateEconomyConsoles(board.EconomyId);
         }
 
         _cooldown = obj;
@@ -159,48 +160,75 @@ public sealed partial class SalvageSystem
             }
         }
 
-        var query = EntityQueryEnumerator<SalvageExpeditionDataComponent>();
-        while (query.MoveNext(out var uid, out var comp))
+        foreach (var board in _sharedExpeditionBoards.Values)
         {
-            // Update offers
-            if (comp.NextOffer > currentTime || comp.Claimed)
+            if (board.NextOffer > currentTime)
                 continue;
 
-            // Frontier: disable cooldown when still in FTL
-            if (!TryComp<StationDataComponent>(uid, out var stationData)
-                || !HasComp<FTLComponent>(_station.GetLargestGrid(stationData)))
-            {
-                comp.Cooldown = false;
-            }
-            // End Frontier: disable cooldown when still in FTL
-            // comp.NextOffer += TimeSpan.FromSeconds(_cooldown); // Frontier
-            comp.NextOffer = currentTime + TimeSpan.FromSeconds(_cooldown); // Frontier
-            comp.CooldownTime = TimeSpan.FromSeconds(_cooldown); // Frontier
-            GenerateMissions(comp);
-            UpdateConsoles((uid, comp));
+            board.Cooldown = false;
+            board.NextOffer = currentTime + TimeSpan.FromSeconds(_cooldown);
+            board.CooldownTime = TimeSpan.FromSeconds(_cooldown);
+            board.ActiveMission = 0;
+            board.JoinableExpedition = null;
+            ClearPendingClaims(board);
+            GenerateMissions(board);
+            UpdateEconomyConsoles(board.EconomyId);
         }
     }
 
     private void FinishExpedition(Entity<SalvageExpeditionDataComponent> expedition, SalvageExpeditionComponent expeditionComp, EntityUid uid)
     {
-        var component = expedition.Comp;
+        var announcement = expeditionComp.Completed
+            ? Loc.GetString("salvage-expedition-completed")
+            : Loc.GetString("salvage-expedition-failed");
+
+        var participantCooldownSecs = expeditionComp.Completed ? _cooldown : _failedCooldown;
+        foreach (var participant in expeditionComp.ParticipantStations)
+        {
+            if (!TryComp<SalvageExpeditionDataComponent>(participant, out var data))
+                continue;
+
+            data.ActiveMission = 0;
+            data.CanFinish = false;
+            data.Cooldown = true;
+            data.NextOffer = _timing.CurTime + TimeSpan.FromSeconds(participantCooldownSecs);
+            data.CooldownTime = TimeSpan.FromSeconds(participantCooldownSecs);
+            UpdateStationConsoles(participant);
+        }
+
+        if (_sharedExpeditionBoards.TryGetValue(expeditionComp.EconomyId, out var board) &&
+            board.JoinableExpedition == uid)
+        {
+            board.JoinableExpedition = null;
+            if (board.ActiveMission == expeditionComp.MissionParams.Index)
+                board.ActiveMission = 0;
+
+            board.Cooldown = true;
+            board.Missions.Clear();
+            var boardCooldownSecs = expeditionComp.Completed ? _cooldown : _failedCooldown;
+            board.NextOffer = _timing.CurTime + TimeSpan.FromSeconds(boardCooldownSecs);
+            board.CooldownTime = TimeSpan.FromSeconds(boardCooldownSecs);
+            ClearPendingClaims(board);
+            UpdateEconomyConsoles(board.EconomyId);
+        }
+
+        expedition.Comp.ActiveMission = 0;
+        expedition.Comp.CanFinish = false;
         // Frontier: separate timeout/announcement for success/failures
         if (expeditionComp.Completed)
         {
-            component.NextOffer = _timing.CurTime + TimeSpan.FromSeconds(_cooldown);
-            component.CooldownTime = TimeSpan.FromSeconds(_cooldown);
-            Announce(uid, Loc.GetString("salvage-expedition-completed"));
+            expedition.Comp.NextOffer = _timing.CurTime + TimeSpan.FromSeconds(_cooldown);
+            expedition.Comp.CooldownTime = TimeSpan.FromSeconds(_cooldown);
         }
         else
         {
-            component.NextOffer = _timing.CurTime + TimeSpan.FromSeconds(_failedCooldown);
-            component.CooldownTime = TimeSpan.FromSeconds(_failedCooldown);
-            Announce(uid, Loc.GetString("salvage-expedition-failed"));
+            expedition.Comp.NextOffer = _timing.CurTime + TimeSpan.FromSeconds(_failedCooldown);
+            expedition.Comp.CooldownTime = TimeSpan.FromSeconds(_failedCooldown);
         }
         // End Frontier: separate timeout/announcement for success/failures
-        component.ActiveMission = 0;
-        component.Cooldown = true;
+        expedition.Comp.Cooldown = true;
         UpdateConsoles(expedition);
+        Announce(uid, announcement);
     }
 
     private void GenerateMissions(SalvageExpeditionDataComponent component)
@@ -243,13 +271,43 @@ public sealed partial class SalvageSystem
         // End Frontier: generate missions from an arbitrary set of difficulties
     }
 
-    private SalvageExpeditionConsoleState GetState(SalvageExpeditionDataComponent component)
+    private void GenerateMissions(SharedExpeditionBoard board)
     {
-        var missions = component.Missions.Values.ToList();
-        return new SalvageExpeditionConsoleState(component.NextOffer, component.Claimed, component.Cooldown, component.ActiveMission, missions, component.CanFinish, component.CooldownTime); // Frontier: add CanFinish, CooldownTime
+        board.Missions.Clear();
+
+        if (_missionDifficulties.Count <= 0)
+        {
+            Log.Error("No expedition mission difficulties to pick from!");
+            return;
+        }
+
+        var allDifficulties = _missionDifficulties.ToList();
+        _random.Shuffle(allDifficulties);
+        var difficulties = allDifficulties.Take(MissionLimit).ToList();
+
+        while (difficulties.Count < MissionLimit)
+        {
+            var difficultyIndex = _random.Next(_missionDifficulties.Count);
+            difficulties.Add(_missionDifficulties[difficultyIndex]);
+        }
+
+        difficulties.Sort((x, y) => Comparer<int>.Default.Compare(x.value, y.value));
+
+        for (var i = 0; i < MissionLimit; i++)
+        {
+            var mission = new SalvageMissionParams
+            {
+                Index = board.NextIndex,
+                MissionType = (SalvageMissionType) _random.NextByte((byte) SalvageMissionType.Max + 1),
+                Seed = _random.Next(),
+                Difficulty = difficulties[i].id,
+            };
+
+            board.Missions[board.NextIndex++] = mission;
+        }
     }
 
-    private void SpawnMission(SalvageMissionParams missionParams, EntityUid station, EntityUid? coordinatesDisk)
+    private void SpawnMission(SalvageMissionParams missionParams, EntityUid station, EntityUid? coordinatesDisk, string economyId)
     {
         var cancelToken = new CancellationTokenSource();
         var job = new SpawnSalvageMissionJob(
@@ -268,6 +326,7 @@ public sealed partial class SalvageSystem
             this, // Frontier
             station,
             coordinatesDisk,
+            economyId,
             missionParams,
             cancelToken.Token);
 
@@ -282,14 +341,59 @@ public sealed partial class SalvageSystem
 
     // Frontier: exped job handling, ghost reparenting
     // Handle exped spawn job failures gracefully - reset the console
-    private void OnExpeditionSpawnComplete(EntityUid uid, SalvageExpeditionDataComponent component, ExpeditionSpawnCompleteEvent ev)
+    private void OnExpeditionSpawnComplete(ExpeditionSpawnCompleteEvent ev)
     {
-        if (component.ActiveMission == ev.MissionIndex && !ev.Success)
+        if (!_sharedExpeditionBoards.TryGetValue(ev.EconomyId, out var board))
+            return;
+
+        if (!ev.Success)
         {
-            component.ActiveMission = 0;
-            component.Cooldown = false;
-            UpdateConsoles((uid, component));
+            board.ActiveMission = 0;
+            board.JoinableExpedition = null;
+            ClearPendingClaims(board);
+            if (TryComp<SalvageExpeditionDataComponent>(ev.Station, out var stationData))
+            {
+                stationData.ActiveMission = 0;
+                stationData.Cooldown = false;
+                UpdateConsoles((ev.Station, stationData));
+            }
+            UpdateEconomyConsoles(board.EconomyId);
+            return;
         }
+
+        if (board.ActiveMission != ev.MissionIndex || !ev.MapUid.IsValid())
+            return;
+
+        board.JoinableExpedition = ev.MapUid;
+
+        if (!TryComp<SalvageExpeditionComponent>(ev.MapUid, out var expedition))
+        {
+            UpdateEconomyConsoles(board.EconomyId);
+            return;
+        }
+
+        foreach (var pending in board.PendingClaims.ToArray())
+        {
+            if (TryJoinExistingExpedition(board, pending.Station, pending.ConsoleUid, ev.MapUid, expedition))
+                continue;
+
+            if (!TryComp<SalvageExpeditionDataComponent>(pending.Station, out var pendingData))
+                continue;
+
+            pendingData.ActiveMission = 0;
+            pendingData.CanFinish = false;
+
+            if (EntityManager.EntityExists(pending.ConsoleUid))
+            {
+                PlayDenySound((pending.ConsoleUid, Comp<SalvageExpeditionConsoleComponent>(pending.ConsoleUid)));
+                _popupSystem.PopupEntity(Loc.GetString("salvage-expedition-no-valid-landing-zone"), pending.ConsoleUid, Content.Shared.Popups.PopupType.MediumCaution);
+            }
+
+            UpdateStationConsoles(pending.Station);
+        }
+
+        board.PendingClaims.Clear();
+        UpdateEconomyConsoles(board.EconomyId);
     }
 
     // Send all ghosts (relevant for admins) back to the default map so they don't lose their stuff.

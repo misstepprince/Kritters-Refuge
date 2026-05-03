@@ -55,6 +55,12 @@ public sealed partial class SalvageExpeditionConsoleComponent : Component
     /// </summary>
     [DataField]
     public bool Debug = false;
+    
+    /// <summary>
+    /// Consoles with the same economy id share expedition offers.
+    /// </summary>
+    [DataField]
+    public string EconomyId = "Frontier";
     // End Frontier: 
 }
 

@@ -50,10 +50,11 @@ public sealed class SalvageExpeditionConsoleBoundUserInterface : BoundUserInterf
         _window.Progression = null;
         _window.Cooldown = current.CooldownTime;
         _window.NextOffer = current.NextOffer;
-        _window.Claimed = current.Claimed;
+        _window.Claimed = false;
         _window.SetFinishDisabled(!current.CanFinish); // Frontier
         _window.ClearOptions();
         var salvage = _entManager.System<SalvageSystem>();
+        var missionActive = current.ActiveMission != 0;
 
         for (var i = 0; i < current.Missions.Count; i++)
         {
@@ -186,7 +187,7 @@ public sealed class SalvageExpeditionConsoleBoundUserInterface : BoundUserInterf
             };
 
             offering.Claimed = current.ActiveMission == missionParams.Index;
-            offering.Disabled = current.Claimed || current.Cooldown;
+            offering.Disabled = current.Cooldown || current.Claimed || (missionActive && current.ActiveMission != missionParams.Index);
 
             _window.AddOption(offering);
         }

@@ -15,12 +15,32 @@ namespace Content.Server.Salvage.Expeditions;
 public sealed partial class SalvageExpeditionComponent : SharedSalvageExpeditionComponent
 {
     public SalvageMissionParams MissionParams = default!;
+    
+    /// <summary>
+    /// Consoles sharing this expedition's offer pool economy.
+    /// </summary>
+    public string EconomyId = "Frontier";
 
     /// <summary>
     /// Where the dungeon is located for initial announcement.
     /// </summary>
     [DataField("dungeonLocation")]
     public Vector2 DungeonLocation = Vector2.Zero;
+
+    /// <summary>
+    /// Bounding box of the generated expedition objective area.
+    /// </summary>
+    public Box2 DungeonBounds;
+
+    /// <summary>
+    /// Reserved shuttle landing zones in expedition-map coordinates.
+    /// </summary>
+    public List<Box2> ReservedLandingZones = new();
+
+    /// <summary>
+    /// Stations currently participating in this expedition.
+    /// </summary>
+    public HashSet<EntityUid> ParticipantStations = new();
 
     /// <summary>
     /// When the expeditions ends.
