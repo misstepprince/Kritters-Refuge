@@ -10,10 +10,16 @@ namespace Content.Client.Buckle;
 
 internal sealed class BuckleSystem : SharedBuckleSystem
 {
+    private const int BehindViewTopDepth = Robust.Shared.GameObjects.DrawDepth.Default + 7;
+
     [Dependency] private readonly RotationVisualizerSystem _rotationVisualizerSystem = default!;
     [Dependency] private readonly IEyeManager _eye = default!;
     [Dependency] private readonly SharedTransformSystem _xformSystem = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
+
+    private readonly Dictionary<EntityUid, int> _originalStrapDepth = new();
+    private readonly List<EntityUid> _staleDepthKeys = new();
+    private float _cleanupAccumulator;
 
     public override void Initialize()
     {
@@ -23,6 +29,29 @@ internal sealed class BuckleSystem : SharedBuckleSystem
         SubscribeLocalEvent<BuckleComponent, BuckledEvent>(OnBuckledEvent);
         SubscribeLocalEvent<BuckleComponent, UnbuckledEvent>(OnUnbuckledEvent);
         SubscribeLocalEvent<BuckleComponent, AttemptMobCollideEvent>(OnMobCollide);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        _cleanupAccumulator += frameTime;
+        if (_cleanupAccumulator >= 1f)
+        {
+            _cleanupAccumulator = 0f;
+            CleanupMissingStrapDepthEntries();
+        }
+
+        var query = EntityQueryEnumerator<StrapComponent, SpriteComponent>();
+        while (query.MoveNext(out var uid, out var strap, out var strapSprite))
+        {
+            UpdateBehindViewStrapDepth(uid, strap, strapSprite);
+
+            if (strap.BuckledEntities.Count == 0)
+                continue;
+
+            UpdateBuckledDrawDepth(uid, strap, strapSprite);
+        }
     }
 
     private void OnMobCollide(Entity<BuckleComponent> ent, ref AttemptMobCollideEvent args)
@@ -59,9 +88,12 @@ internal sealed class BuckleSystem : SharedBuckleSystem
         if (!TryComp<SpriteComponent>(uid, out var strapSprite))
             return;
 
-        var angle = _xformSystem.GetWorldRotation(uid) + _eye.CurrentEye.Rotation; // Get true screen position, or close enough
+        UpdateBuckledDrawDepth(uid, component, strapSprite);
+    }
 
-        var isNorth = angle.GetCardinalDir() == Direction.North;
+    private void UpdateBuckledDrawDepth(EntityUid uid, StrapComponent component, SpriteComponent strapSprite)
+    {
+        var isNorth = IsFacingScreenNorth(uid);
         foreach (var buckledEntity in component.BuckledEntities)
         {
             if (!TryComp<BuckleComponent>(buckledEntity, out var buckle))
@@ -84,6 +116,66 @@ internal sealed class BuckleSystem : SharedBuckleSystem
         }
     }
 
+    private bool IsFacingScreenNorth(EntityUid uid)
+    {
+        var angle = _xformSystem.GetWorldRotation(uid) + _eye.CurrentEye.Rotation; // Get true screen position, or close enough
+        return angle.GetCardinalDir() == Direction.North;
+    }
+
+    private void UpdateBehindViewStrapDepth(EntityUid uid, StrapComponent strap, SpriteComponent strapSprite)
+    {
+        if (!strap.RenderOnTopWhenBehind)
+        {
+            RestoreStrapDrawDepth(uid, strapSprite);
+            return;
+        }
+
+        if (!IsFacingScreenNorth(uid))
+        {
+            RestoreStrapDrawDepth(uid, strapSprite);
+            return;
+        }
+
+        if (!_originalStrapDepth.ContainsKey(uid))
+            _originalStrapDepth[uid] = strapSprite.DrawDepth;
+
+        if (strapSprite.DrawDepth < BehindViewTopDepth)
+            _sprite.SetDrawDepth((uid, strapSprite), BehindViewTopDepth);
+    }
+
+    private void RestoreStrapDrawDepth(EntityUid uid, SpriteComponent? strapSprite = null)
+    {
+        if (!_originalStrapDepth.TryGetValue(uid, out var originalDepth))
+            return;
+
+        if (strapSprite == null && !TryComp(uid, out strapSprite))
+        {
+            _originalStrapDepth.Remove(uid);
+            return;
+        }
+
+        _sprite.SetDrawDepth((uid, strapSprite), originalDepth);
+        _originalStrapDepth.Remove(uid);
+    }
+
+    private void CleanupMissingStrapDepthEntries()
+    {
+        if (_originalStrapDepth.Count == 0)
+            return;
+
+        _staleDepthKeys.Clear();
+        foreach (var uid in _originalStrapDepth.Keys)
+        {
+            if (!EntityManager.EntityExists(uid))
+                _staleDepthKeys.Add(uid);
+        }
+
+        foreach (var uid in _staleDepthKeys)
+        {
+            _originalStrapDepth.Remove(uid);
+        }
+    }
+
     /// <summary>
     /// Lower the draw depth of the buckled entity without needing for the strap entity to rotate/move.
     /// Only do so when the entity is facing screen-local north
@@ -101,9 +193,7 @@ internal sealed class BuckleSystem : SharedBuckleSystem
             return;
         // End Frontier
 
-        var angle = _xformSystem.GetWorldRotation(args.Strap) + _eye.CurrentEye.Rotation; // Get true screen position, or close enough
-
-        if (angle.GetCardinalDir() != Direction.North)
+        if (!IsFacingScreenNorth(args.Strap))
             return;
 
         ent.Comp.OriginalDrawDepth ??= buckledSprite.DrawDepth;

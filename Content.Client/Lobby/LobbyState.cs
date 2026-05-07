@@ -49,6 +49,11 @@ namespace Content.Client.Lobby
             if (_initialized)
                 return true;
 
+            // Can occur briefly during client run-level transitions before systems are started.
+            // Defer initialization until the entity manager has started its systems.
+            if (_entityManager is not EntityManager { Started: true })
+                return false;
+
             if (_userInterfaceManager.ActiveScreen is not LobbyGui lobbyGui)
                 return false;
 

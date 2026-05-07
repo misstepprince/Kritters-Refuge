@@ -109,6 +109,13 @@ public sealed partial class StrapComponent : Component
     /// </summary>
     [DataField, Access(typeof(SharedBuckleSystem))]
     public bool MaintainSpriteLayers;
+
+    /// <summary>
+    /// If true, this strap's sprite is raised above normal content when viewed from behind.
+    /// Intended for furniture like chairs/sofas to avoid same-tile sprites drawing in front from the back view.
+    /// </summary>
+    [DataField, Access(typeof(SharedBuckleSystem))]
+    public bool RenderOnTopWhenBehind;
     // End Frontier: fix vehicles unbuckling
 }
 

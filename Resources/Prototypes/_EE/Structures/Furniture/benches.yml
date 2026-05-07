@@ -199,6 +199,8 @@
   id: BenchSofaMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Strap
+    renderOnTopWhenBehind: true
   - type: Sprite
     sprite: _EE/Structures/Furniture/Benches/sofa.rsi
   - type: Construction # Frontier
@@ -270,6 +272,8 @@
   id: BenchSofaCorpMiddle
   parent: BenchBaseMiddle
   components:
+  - type: Strap
+    renderOnTopWhenBehind: true
   - type: Sprite
     sprite: _EE/Structures/Furniture/Benches/sofa_corp.rsi
   - type: Construction # Frontier

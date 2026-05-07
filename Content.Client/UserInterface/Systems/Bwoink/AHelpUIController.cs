@@ -108,8 +108,11 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
     {
         CommandBinds.Unregister<AHelpUIController>();
 
-        DebugTools.Assert(_bwoinkSystem != null);
-        _bwoinkSystem!.OnBwoinkTextMessageRecieved -= ReceivedBwoink;
+        // Unload can be invoked in shutdown paths where this controller did not finish loading.
+        // Keep this idempotent to avoid debug-assert crashes during connect/disconnect transitions.
+        if (_bwoinkSystem != null)
+            _bwoinkSystem.OnBwoinkTextMessageRecieved -= ReceivedBwoink;
+
         _bwoinkSystem = null;
     }
 

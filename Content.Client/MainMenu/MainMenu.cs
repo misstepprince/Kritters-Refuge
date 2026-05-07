@@ -30,7 +30,6 @@ namespace Content.Client.MainMenu
 
         private MainMenuControl _mainMenuControl = default!;
         private bool _isConnecting;
-        private bool _pendingDirectConnect;
 
         // ReSharper disable once InconsistentNaming
         private static readonly Regex IPv6Regex = new(@"\[(.*:.*:.*)](?::(\d+))?");
@@ -119,7 +118,6 @@ namespace Content.Client.MainMenu
             }
 
             _setConnectingState(true);
-            _pendingDirectConnect = true;
             _netManager.ConnectFailed += _onConnectFailed;
             try
             {
@@ -131,7 +129,6 @@ namespace Content.Client.MainMenu
                 _userInterfaceManager.Popup($"Unable to connect: {e.Message}", "Connection error.");
                 _sawmill.Warning(e.ToString());
                 _netManager.ConnectFailed -= _onConnectFailed;
-                _pendingDirectConnect = false;
                 _setConnectingState(false);
             }
         }
@@ -144,12 +141,10 @@ namespace Content.Client.MainMenu
                     _setConnectingState(true);
                     break;
                 case ClientRunLevel.Connected:
-                    _pendingDirectConnect = false;
                     _setConnectingState(false);
 
                     break;
                 case ClientRunLevel.Initialize:
-                    _pendingDirectConnect = false;
                     _setConnectingState(false);
                     _netManager.ConnectFailed -= _onConnectFailed;
                     break;
@@ -266,7 +261,6 @@ namespace Content.Client.MainMenu
         {
             _userInterfaceManager.Popup(Loc.GetString("main-menu-failed-to-connect",("reason", args.Reason)));
             _netManager.ConnectFailed -= _onConnectFailed;
-            _pendingDirectConnect = false;
             _setConnectingState(false);
         }
 
