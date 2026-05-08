@@ -2748,3 +2748,16 @@ Entries:
   id: 314
   time: '2026-05-08T07:10:44.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1194
+- author: SpotsDots16
+  changes:
+    - type: Add
+      message: Space cleaner dispenser to janitor closet.
+    - type: Add
+      message: Mop bucket to janitor locker.
+    - type: Add
+      message: Wide sink to janitor closet.
+    - type: Remove
+      message: Trash cart in janitor closet.
+  id: 315
+  time: '2026-05-08T07:40:34.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1193
