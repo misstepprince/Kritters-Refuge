@@ -53,6 +53,10 @@ public sealed class BorgSystem : SharedBorgSystem
         if (!Resolve(uid, ref component, ref appearance, ref sprite))
             return;
 
+        // Pose-enabled borgs own indicator visuals in BorgVisualPoseSystem.
+        if (HasComp<BorgVisualPoseComponent>(uid))
+            return;
+
         if (_appearance.TryGetData<MobState>(uid, MobStateVisuals.State, out var state, appearance))
         {
             if (state != MobState.Alive)

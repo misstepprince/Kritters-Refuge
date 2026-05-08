@@ -20,6 +20,7 @@
     - id: Medicine
     - id: Poison
     - id: Narcotic
+    - id: Cryogenic # Frontier
   - type: Sprite
     sprite: _Starlight/Mobs/Species/Resomi/organs.rsi
     state: heart-on

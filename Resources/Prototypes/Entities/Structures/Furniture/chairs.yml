@@ -57,6 +57,8 @@
   parent: SeatBase
   abstract: true
   components:
+  - type: Strap
+    renderOnTopWhenBehind: true
   - type: Anchorable
   - type: Rotatable
 

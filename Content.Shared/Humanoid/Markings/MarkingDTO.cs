@@ -62,6 +62,11 @@ namespace Content.Shared.Humanoid.Markings
         public string? TakeOffVerb2p { get; set; }
 
         /// <summary>
+        ///     If this marking should render over clothing when possible.
+        /// </summary>
+        public bool? RenderOverClothing { get; set; }
+
+        /// <summary>
         ///     Per-color glow intensities from 0 to 1.
         /// </summary>
         public List<float>? GlowLevels { get; set; }

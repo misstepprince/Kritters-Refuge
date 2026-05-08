@@ -179,6 +179,7 @@ public sealed partial class MarkingPicker : Control
         CanPutOnByOtherToggle.OnToggled += x => SetOtherCanToggle(x.Pressed);
         HideTogglePopupToggle.OnToggled += x => SetHideTogglePopup(x.Pressed);
         StartVisibleToggle.OnToggled += x => SetVisible(x.Pressed);
+        RenderOverClothingToggle.OnToggled += x => SetRenderOverClothing(x.Pressed);
 
         CustomNameTextEdit.OnTextChanged += x => SetCustomText();
         PutOnTextEdit.OnTextChanged += x => SetCustomText();
@@ -788,6 +789,7 @@ public sealed partial class MarkingPicker : Control
         }
         // Coyote End
         StartVisibleToggle.Pressed = marking.ShowAtStart;
+        RenderOverClothingToggle.Pressed = marking.RenderOverClothing;
         CanPutOnToggle.Pressed = marking.CanToggleVisible;
         CanPutOnByOtherToggle.Pressed = marking.OtherCanToggleVisible;
         HideTogglePopupToggle.Pressed = marking.HideTogglePopup;
@@ -799,6 +801,11 @@ public sealed partial class MarkingPicker : Control
         MarkingData.Visible = true;
         CMarkingColors.Visible = true;
         SampleButton.Visible = true;
+
+        var canRenderOverClothing = prototype.BodyPart == HumanoidVisualLayers.Genital;
+        RenderOverClothingLabel.Visible = canRenderOverClothing;
+        RenderOverClothingToggle.Visible = canRenderOverClothing;
+
         SetCheckboxVisibility();
     }
 
@@ -953,6 +960,21 @@ public sealed partial class MarkingPicker : Control
 
         var marking = new Marking(_currentMarkings.Markings[_selectedMarkingCategory][markingIndex]);
         marking.ShowAtStart = visible;
+        _currentMarkings.Replace(_selectedMarkingCategory, markingIndex, marking);
+
+        OnMarkingDataChanged?.Invoke(_currentMarkings);
+    }
+
+    private void SetRenderOverClothing(bool renderOverClothing)
+    {
+        if (_selectedMarking is null) return;
+        var markingPrototype = (MarkingPrototype)_selectedMarking.Metadata!;
+        int markingIndex = _currentMarkings.FindIndexOf(_selectedMarkingCategory, markingPrototype.ID);
+
+        if (markingIndex < 0) return;
+
+        var marking = new Marking(_currentMarkings.Markings[_selectedMarkingCategory][markingIndex]);
+        marking.RenderOverClothing = renderOverClothing;
         _currentMarkings.Replace(_selectedMarkingCategory, markingIndex, marking);
 
         OnMarkingDataChanged?.Invoke(_currentMarkings);

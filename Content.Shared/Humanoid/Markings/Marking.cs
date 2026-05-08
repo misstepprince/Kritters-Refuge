@@ -155,6 +155,7 @@ namespace Content.Shared.Humanoid.Markings
             TakeOffVerb = other.TakeOffVerb;
             TakeOffVerb2p = other.TakeOffVerb2p;
             ShowAtStart = other.ShowAtStart;
+            RenderOverClothing = other.RenderOverClothing;
             _markingGlow = new(other.MarkingGlow);
             _legacyGlow = other._legacyGlow;
             _markingScale = other._markingScale; // Coyote
@@ -184,6 +185,7 @@ namespace Content.Shared.Humanoid.Markings
             PutOnVerb2p = other.PutOnVerb2p ?? PutOnVerb2p;
             TakeOffVerb = other.TakeOffVerb ?? TakeOffVerb;
             TakeOffVerb2p = other.TakeOffVerb2p ?? TakeOffVerb2p;
+            RenderOverClothing = other.RenderOverClothing ?? RenderOverClothing;
             _markingGlow = NormalizeGlowLevels(other.GlowLevels, _markingColors.Count, other.Glow ?? 0f);
             _legacyGlow = other.Glow ?? 0f;
             _markingScale = Math.Clamp(other.Scale ?? 1.0f, 0.1f, 4.0f); // Coyote
@@ -241,6 +243,12 @@ namespace Content.Shared.Humanoid.Markings
         /// </summary>
         [DataField("showAtStart")]
         public bool ShowAtStart = true;
+
+        /// <summary>
+        ///     If true, this marking should render over worn clothing when supported.
+        /// </summary>
+        [DataField("renderOverClothing")]
+        public bool RenderOverClothing = false;
 
         /// <summary>
         ///     If this marking is can be toggled on or off by the user.
@@ -414,6 +422,7 @@ namespace Content.Shared.Humanoid.Markings
                 && TakeOffVerb == other.TakeOffVerb
                 && TakeOffVerb2p == other.TakeOffVerb2p
                 && ShowAtStart == other.ShowAtStart
+                && RenderOverClothing == other.RenderOverClothing
                 && _markingGlow.SequenceEqual(other._markingGlow)
                 && _markingScale == other._markingScale // Coyote
                 && _markingOffsetX == other._markingOffsetX // Coyote
@@ -443,6 +452,7 @@ namespace Content.Shared.Humanoid.Markings
                 PutOnVerb2p = PutOnVerb2p,
                 TakeOffVerb = TakeOffVerb,
                 TakeOffVerb2p = TakeOffVerb2p,
+                RenderOverClothing = RenderOverClothing,
                 GlowLevels = _markingGlow.ToList(),
                 Glow = _markingGlow.FirstOrDefault(),
                 Scale = _markingScale, // Coyote

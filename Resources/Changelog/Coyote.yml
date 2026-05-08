@@ -2700,3 +2700,44 @@ Entries:
   id: 310
   time: '2026-05-04T04:19:51.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1187
+- author: QTNeen
+  changes:
+    - type: Add
+      message: >-
+        Shared open contract expeditions have been added. These are bigger, and
+        harder, but multiple ships can claim them at once.
+    - type: Tweak
+      message: >-
+        TVs and camera broadcasts are more reliable and transmit emotes and
+        midis. They can be muted by right clicking the TV
+    - type: Add
+      message: Expeditions have weather cycles now. Might need to wait out the storm..
+    - type: Add
+      message: >-
+        NPCs will now track your movement behind closed crates and fire at you
+        if they have LOS.
+  id: 311
+  time: '2026-05-07T02:41:47.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1189
+- author: QTNeen
+  changes:
+    - type: Add
+      message: 'Dog borgs added. '
+    - type: Tweak
+      message: >-
+        Cyborgs no longer have their designation injected into everything and
+        can just have names.
+    - type: Add
+      message: Genital markings now have a "Show Over Clothing" toggle
+  id: 312
+  time: '2026-05-07T02:42:34.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1190
+- author: QTNeen
+  changes:
+    - type: Tweak
+      message: Sofa logic improved
+    - type: Fix
+      message: You can now be tucked under sheets and blankets
+  id: 313
+  time: '2026-05-07T07:12:09.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1192

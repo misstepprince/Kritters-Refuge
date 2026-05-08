@@ -94,6 +94,12 @@ public sealed partial class BorgTypePrototype : IPrototype
     //
 
     /// <summary>
+    /// RSI path used for this borg's body and indicator layers.
+    /// </summary>
+    [DataField]
+    public string SpriteRsiPath { get; set; } = "Mobs/Silicon/chassis.rsi";
+
+    /// <summary>
     /// The sprite state for the main borg body.
     /// </summary>
     [DataField]
@@ -106,11 +112,35 @@ public sealed partial class BorgTypePrototype : IPrototype
     public string? SpriteBodyMovementState { get; set; }
 
     /// <summary>
+    /// An optional idle/resting sprite state used after the borg has stood still for a while.
+    /// </summary>
+    [DataField]
+    public string? SpriteBodyRestState { get; set; }
+
+    /// <summary>
+    /// An optional body sprite state used while the borg is lying down.
+    /// </summary>
+    [DataField]
+    public string? SpriteBodyLyingState { get; set; }
+
+    /// <summary>
+    /// An optional body sprite state used while the borg is dead.
+    /// </summary>
+    [DataField]
+    public string? SpriteBodyDeadState { get; set; }
+
+    /// <summary>
     /// Sprite state used to indicate that the borg has a mind in it.
     /// </summary>
     /// <seealso cref="BorgChassisComponent.HasMindState"/>
     [DataField]
     public string SpriteHasMindState { get; set; } = "robot_e";
+
+    /// <summary>
+    /// Optional movement sprite state used to indicate that the borg has a mind in it.
+    /// </summary>
+    [DataField]
+    public string? SpriteHasMindMovementState { get; set; }
 
     /// <summary>
     /// Sprite state used to indicate that the borg has no mind in it.
@@ -120,10 +150,28 @@ public sealed partial class BorgTypePrototype : IPrototype
     public string SpriteNoMindState { get; set; } = "robot_e_r";
 
     /// <summary>
+    /// Optional movement sprite state used to indicate that the borg has no mind in it.
+    /// </summary>
+    [DataField]
+    public string? SpriteNoMindMovementState { get; set; }
+
+    /// <summary>
     /// Sprite state used when the borg's flashlight is on.
     /// </summary>
     [DataField]
     public string SpriteToggleLightState { get; set; } = "robot_l";
+
+    /// <summary>
+    /// Optional movement sprite state used when the borg's flashlight is on.
+    /// </summary>
+    [DataField]
+    public string? SpriteToggleLightMovementState { get; set; }
+
+    /// <summary>
+    /// Time the borg must be idle before the resting state is shown.
+    /// </summary>
+    [DataField]
+    public TimeSpan SpriteBodyRestDelay { get; set; } = TimeSpan.FromSeconds(5);
 
     //
     // Minor information

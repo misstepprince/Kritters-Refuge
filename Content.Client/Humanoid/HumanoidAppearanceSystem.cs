@@ -397,9 +397,17 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
 
     private void ApplyMarkingSet(EntityUid uid, HumanoidAppearanceComponent humanoid, SpriteComponent sprite)
     {
-        // I am lazy and I CBF resolving the previous mess, so I'm just going to nuke the markings.
-        // Really, markings should probably be a separate component altogether.
-        ClearAllMarkings(humanoid, sprite);
+        // Only nuke and rebuild sprite layers when the marking set actually changed.
+        // Skipping ClearAllMarkings when markings are unchanged avoids the expensive
+        // AddLayer/RemoveLayer churn that causes a camera hitch on every clothing equip/unequip.
+        // ApplyMarking checks LayerMapTryGet before adding, so existing layers are cheaply
+        // updated in-place (visibility, color, scale) without being removed and re-added.
+        var markingsUnchanged =
+            humanoid.MarkingSet.Markings.Count == humanoid.ClientOldMarkings.Markings.Count
+            && humanoid.MarkingSet.Equals(humanoid.ClientOldMarkings);
+
+        if (!markingsUnchanged)
+            ClearAllMarkings(humanoid, sprite);
 
         // var censorNudity = _configurationManager.GetCVar(CCVars.AccessibilityClientCensorNudity) ||
         //                    _configurationManager.GetCVar(CCVars.AccessibilityServerCensorNudity);
@@ -430,6 +438,7 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
                     newMarking.MarkingColors,
                     newMarking.MarkingGlow,
                     newMarking.Visible,
+                    newMarking.RenderOverClothing,
                     humanoid,
                     sprite,
                     // Coyote Start
@@ -539,6 +548,7 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
         IReadOnlyList<Color>? colors,
         IReadOnlyList<float>? glowLevels,
         bool visible,
+        bool renderOverClothing,
         HumanoidAppearanceComponent humanoid,
         SpriteComponent sprite,
         // Coyote Start
@@ -620,6 +630,11 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
                 {
                     layerSlot = Enum.Parse<HumanoidVisualLayers>(layerName);
                 }
+            }
+
+            if (renderOverClothing && layerSlot == HumanoidVisualLayers.Genital)
+            {
+                layerSlot = HumanoidVisualLayers.TailOversuit;
             }
             // update the layerDict
             // if it doesnt have this, add it at 0, otherwise increment it
@@ -831,7 +846,7 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
                 if (_markingManager.TryGetMarking(marking, out var markingPrototype) && markingPrototype.BodyPart == layer)
                 {
                     // Coyote Start
-                    ApplyMarking(markingPrototype, marking.MarkingColors, marking.MarkingGlow, marking.Visible, ent, sprite, marking.MarkingScale, marking.GetOffset(facingDirection));
+                    ApplyMarking(markingPrototype, marking.MarkingColors, marking.MarkingGlow, marking.Visible, marking.RenderOverClothing, ent, sprite, marking.MarkingScale, marking.GetOffset(facingDirection));
                     // Coyote End
                 }
             }

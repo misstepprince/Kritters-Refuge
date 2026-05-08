@@ -13,6 +13,7 @@ marking-slot-remove = Remove
 marking-slot = Slot {$number}
 marking-custom-name = Custom Name
 visible-at-start = Starts enabled
+marking-render-over-clothing = Render over worn clothing
 marking-can-toggle = Can be toggled on/off in game by you
 marking-can-toggle-other = Can be toggled on/off in game by others
 marking-hide-toggle-popup = Hide toggle popup text

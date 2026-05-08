@@ -72,6 +72,8 @@
             <LineEdit Name="CustomNameTextEdit" HorizontalExpand="True"></LineEdit>
             <Label Text="{Loc visible-at-start}"></Label>
             <CheckBox Name="StartVisibleToggle" HorizontalExpand="True"></CheckBox>
+            <Label Name="RenderOverClothingLabel" Text="{Loc marking-render-over-clothing}"></Label>
+            <CheckBox Name="RenderOverClothingToggle" HorizontalExpand="True"></CheckBox>
             <Label Text="{Loc marking-can-toggle}"></Label>
             <CheckBox Name="CanPutOnToggle" HorizontalExpand="True"></CheckBox>
             <Label Name="PutOnTextEditLabel" Text="{Loc marking-put-on-text-label}"></Label>
