@@ -66,6 +66,6 @@ public static class SalvageExpeditionReservation
         var reserveByBounds = expedition.ReservedTiles.Count == 0 && IntersectsDungeonBounds(expedition, tileBox);
 
         return reserveByBounds ||
-             IntersectsReservedLandingZone(expedition, tileBox, MinimumLandingClearanceTiles);
+               IntersectsReservedLandingZone(expedition, tileBox);
     }
 }
