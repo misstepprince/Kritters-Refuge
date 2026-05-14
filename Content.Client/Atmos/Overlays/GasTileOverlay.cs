@@ -44,6 +44,10 @@ namespace Content.Client.Atmos.Overlays
         private readonly int[] _fireFrameCounter = new int[FireStates];
         private readonly Texture[][] _fireFrames = new Texture[FireStates][];
 
+        // _CS Start: reuse map-atmos exclusion storage to avoid per-frame allocations
+        private readonly HashSet<Vector2i> _excludedTilesScratch = new();
+        // _CS End: reuse map-atmos exclusion storage to avoid per-frame allocations
+
         private int _gasCount;
 
         public const int GasOverlayZIndex = (int) Shared.DrawDepth.DrawDepth.Effects; // Under ghosts, above mostly everything else
@@ -277,11 +281,53 @@ namespace Content.Client.Atmos.Overlays
             var bottomLeft = args.WorldAABB.BottomLeft.Floored();
             var topRight = args.WorldAABB.TopRight.Ceiled();
 
+            // _CS Start: exclude landed shuttle/non-expedition grids from map gas visuals
+            var excludedTiles = _excludedTilesScratch;
+            excludedTiles.Clear();
+            if (mapGrid)
+            {
+                var state = (map, excludedTiles, _xformSys, bottomLeft, topRight, args.WorldAABB);
+                _mapManager.FindGridsIntersecting(
+                    args.MapId,
+                    args.WorldAABB,
+                    ref state,
+                    static (EntityUid uid, MapGridComponent grid,
+                        ref (EntityUid mapUid, HashSet<Vector2i> excludedTiles, SharedTransformSystem xformSys, Vector2i bottomLeft, Vector2i topRight, Box2 worldBounds) data) =>
+                    {
+                        // Keep drawing for the expedition/dungeon grid itself; clip any other landed grids (shuttles).
+                        if (uid == data.mapUid)
+                            return true;
+
+                        // Only exclude tiles that are actually occupied by this landed grid.
+                        var worldMatrix = data.xformSys.GetWorldMatrix(uid);
+                        foreach (var tile in grid.GetTilesIntersecting(data.worldBounds, ignoreEmpty: true))
+                        {
+                            var localCenter = new Vector2(tile.GridIndices.X + 0.5f, tile.GridIndices.Y + 0.5f);
+                            var worldCenter = Vector2.Transform(localCenter, worldMatrix);
+                            var worldTile = worldCenter.Floored();
+
+                            if (worldTile.X < data.bottomLeft.X || worldTile.X > data.topRight.X
+                                || worldTile.Y < data.bottomLeft.Y || worldTile.Y > data.topRight.Y)
+                                continue;
+
+                            data.excludedTiles.Add(worldTile);
+                        }
+
+                        return true;
+                    });
+            }
+            // _CS End: exclude landed shuttle/non-expedition grids from map gas visuals
+
             for (var x = bottomLeft.X; x <= topRight.X; x++)
             {
                 for (var y = bottomLeft.Y; y <= topRight.Y; y++)
                 {
                     var tilePosition = new Vector2(x, y);
+
+                    // _CS Start: skip map atmosphere overlay inside excluded landed-grid areas
+                    if (excludedTiles.Contains(new Vector2i(x, y)))
+                        continue;
+                    // _CS End: skip map atmosphere overlay inside excluded landed-grid areas
 
                     for (var i = 0; i < atmos.OverlayData.Opacity.Length; i++)
                     {

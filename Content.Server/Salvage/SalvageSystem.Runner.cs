@@ -332,6 +332,16 @@ public sealed partial class SalvageSystem
                 }
             }
 
+            // _CS Start: keep atmosphere-exclusion zones in sync with released landing reservations
+            if (TryComp<ExpeditionAtmosphereExclusionComponent>(expeditionMap, out var atmosExclusion))
+            {
+                foreach (var zone in releasedZones)
+                {
+                    atmosExclusion.ExcludedZones.Remove(zone);
+                }
+            }
+            // _CS End: keep atmosphere-exclusion zones in sync with released landing reservations
+
             Dirty(expeditionMap, expedition);
         }
     }

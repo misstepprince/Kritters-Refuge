@@ -347,6 +347,14 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         coords = coords.Rounded(); // Ensure grid is aligned to map coords
         expedition.ReservedLandingZones.Add(SalvageExpeditionReservation.GetLandingZone(shuttleBox, coords, SharedLandingBufferTiles));
 
+        // _CS Start: exclude landing zones from map atmosphere
+        var atmosExclusion = _entManager.AddComponent<ExpeditionAtmosphereExclusionComponent>(mapUid);
+        foreach (var zone in expedition.ReservedLandingZones)
+        {
+            atmosExclusion.ExcludedZones.Add(zone);
+        }
+        // _CS End: exclude landing zones from map atmosphere
+
         // List<Vector2i> reservedTiles = new();
 
         // foreach (var tile in _map.GetTilesIntersecting(mapUid, grid, new Circle(Vector2.Zero, landingPadRadius), false))
@@ -816,6 +824,22 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
                     "MobMercenaryBreacherShotgun",
                 };
                 break;
+            // _CS Start
+            case "BloodCollector":
+                spawner.NearbyFactions = new() { "BloodCultNF" };
+                spawner.SpawnPrototypes = new()
+                {
+                    "SpawnMobBloodCultistZealotMelee",
+                    "SpawnMobBloodCultLeech",
+                    "SpawnMobBloodCultistZealotRanged",
+                    "SpawnMobBloodCultistCaster",
+                    "SpawnMobBloodCultistAcolyte",
+                    "SpawnMobBloodCultistPriest",
+                    "SpawnMobBloodCultistJanitor",
+                    "MobBloodCultistAscended",
+                };
+                break;
+            // _CS End
         }
     }
 

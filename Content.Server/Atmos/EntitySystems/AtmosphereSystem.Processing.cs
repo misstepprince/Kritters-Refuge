@@ -1,5 +1,9 @@
 using Content.Server.Atmos.Components;
 using Content.Server.Atmos.Piping.Components;
+// _CS Start: expedition landing atmosphere exclusions
+using Content.Server._NF.Salvage.Expeditions;
+using System.Numerics;
+// _CS End: expedition landing atmosphere exclusions
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Maps;
@@ -204,6 +208,16 @@ namespace Content.Server.Atmos.EntitySystems
 
             if (mapAtmosphere)
             {
+                // _CS Start: check if tile is in an excluded landing zone
+                if (TryGetAtmosphereExclusion(ent.Owner, ent.Comp3, tile.GridIndices, out var isExcluded) && isExcluded)
+                {
+                    // This tile is in a reserved landing zone, don't apply map atmosphere
+                    if (tile.MapAtmosphere)
+                        RemoveMapAtmos(ent.Comp1, tile);
+                    return;
+                }
+                // _CS End: check if tile is in an excluded landing zone
+
                 if (!tile.MapAtmosphere)
                 {
                     (tile.Air, tile.Space) = GetDefaultMapAtmosphere(mapAtmos);
@@ -712,6 +726,40 @@ namespace Content.Server.Atmos.EntitySystems
             // We finished processing all atmospheres successfully, therefore we won't be paused next tick.
             _simulationPaused = false;
         }
+
+        // _CS Start: check if tile is in an excluded landing zone
+        /// <summary>
+        /// Checks if a grid tile is within an expedition's excluded landing zone.
+        /// </summary>
+        private bool TryGetAtmosphereExclusion(EntityUid gridEntity, MapGridComponent grid, Vector2i tileIndices, out bool isExcluded)
+        {
+            isExcluded = false;
+
+            if (!EntityManager.TryGetComponent<ExpeditionAtmosphereExclusionComponent>(gridEntity, out var exclusion))
+                return false;
+
+            // Convert grid tile indices to world-space bounding box
+            var tileSize = grid.TileSize;
+            var localMin = new Vector2(tileIndices.X * tileSize, tileIndices.Y * tileSize);
+            var localMax = new Vector2((tileIndices.X + 1) * tileSize, (tileIndices.Y + 1) * tileSize);
+            var localBox = new Box2(localMin, localMax);
+
+            // Transform to world coordinates
+            var worldBox = _transformSystem.GetWorldMatrix(gridEntity).TransformBox(localBox);
+
+            // Check against all excluded zones
+            foreach (var zone in exclusion.ExcludedZones)
+            {
+                if (zone.Intersects(worldBox))
+                {
+                    isExcluded = true;
+                    return true;
+                }
+            }
+
+            return true;
+        }
+        // _CS End: check if tile is in an excluded landing zone
     }
 
     public enum AtmosphereProcessingState : byte
