@@ -894,6 +894,15 @@ public sealed partial class ChatSystem : SharedChatSystem
     private void SendShipOOC(EntityUid source, ICommonSession player, string message, bool hideChat)
     {
         var name = FormattedMessage.EscapeText(Identity.Name(source, EntityManager));
+        var shipName = Loc.GetString("chat-manager-entity-ship-ooc-unknown");
+
+        if (TryComp(source, out TransformComponent? transform))
+        {
+            if (transform.GridUid is not null && TryComp(transform.GridUid, out MetaDataComponent? metadata))
+            {
+                shipName = metadata.EntityName;
+            }
+        }
 
         if (_adminManager.IsAdmin(player))
         {
@@ -904,6 +913,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             return;
         var wrappedMessage = Loc.GetString(
             "chat-manager-entity-ship-ooc-wrap-message",
+            ("shipName", shipName),
             ("entityName", name),
             ("message", FormattedMessage.EscapeText(message)));
 
