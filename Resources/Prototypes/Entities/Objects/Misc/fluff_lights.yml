@@ -161,6 +161,8 @@
     closeable: true
     closeSound:
       collection: bottleCloseSounds
+  - type: Drink
+    solution: drink
   - type: SolutionContainerManager
     solutions:
       drink:

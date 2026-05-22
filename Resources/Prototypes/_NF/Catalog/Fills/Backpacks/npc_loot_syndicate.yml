@@ -77,6 +77,8 @@
       - id: NFSpeedLoaderPistol45Uranium
       - id: NFSpeedLoaderPistol45Uranium
       - id: SpaceCash5000
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
@@ -107,6 +109,8 @@
       - id: NFSpeedLoaderPistol45Incendiary
       - id: NFSpeedLoaderPistol45Incendiary
       - id: SpaceCash2500
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
@@ -136,6 +140,8 @@
       - id: NFSpeedLoaderPistol45
       - id: NFSpeedLoaderPistol45Overpressure
       - id: SpaceCash2500
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
@@ -163,6 +169,8 @@
   - type: SpawnItemsOnUse
     items:
       - id: SpaceCash2500
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
@@ -194,6 +202,8 @@
       - id: ClothingOuterHardsuitSyndieElite
         prob: 0.067
       - id: SpaceCash2500
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
@@ -224,6 +234,8 @@
       - id: ClothingOuterHardsuitSyndieElite
         prob: 0.067
       - id: SpaceCash2500
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
@@ -252,6 +264,8 @@
     items:
       - id: PowerCellHighPrinted
       - id: SpaceCash2500
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
@@ -280,6 +294,8 @@
     items:
       - id: SpaceCash1000
       - id: SpaceCash500
+      - id: EnergyShield
+        prob: 0.15
       # Bonus Loot T3
       - id: SpaceCash1000
         prob: 0.9
