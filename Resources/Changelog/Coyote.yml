@@ -2799,3 +2799,19 @@ Entries:
   id: 319
   time: '2026-05-17T11:16:44.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1198
+- author: QTNeen
+  changes:
+    - type: Add
+      message: Lava lamps, now available in the Cuddlycritter vend.
+    - type: Tweak
+      message: The sector now operates on the credit system.
+  id: 320
+  time: '2026-05-21T05:28:13.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1200
+- author: QTNeen
+  changes:
+    - type: Tweak
+      message: Lava lamps can now be drank from
+  id: 321
+  time: '2026-05-22T03:47:24.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1201
