@@ -145,13 +145,6 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
                         component.KnownCameras.Add(address, name);
                     }
 
-                    if (component.ActiveCamera == null
-                        && component.NextCameraAddress == null
-                        && component.ActiveSubnet == subnetData)
-                    {
-                        TrySwitchCameraByAddress(uid, address, component);
-                    }
-
                     UpdateUserInterface(uid, component);
                     break;
                 case SurveillanceCameraSystem.CameraSubnetData:
@@ -164,7 +157,7 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
                         // If the monitor was previously connected to this subnet (e.g. after a power
                         // restore or grid change) and has no active subnet right now, reconnect automatically.
                         if (string.IsNullOrEmpty(component.ActiveSubnet)
-                            && (subnet == component.LastActiveSubnet || string.IsNullOrEmpty(component.LastActiveSubnet)))
+                            && subnet == component.LastActiveSubnet)
                         {
                             SetActiveSubnet(uid, subnet, component);
                         }
@@ -524,7 +517,7 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
             return;
         }
 
-        var state = new SurveillanceCameraMonitorUiState(GetNetEntity(monitor.ActiveCamera));
+        var state = new SurveillanceCameraMonitorUiState(GetNetEntity(monitor.ActiveCamera), monitor.KnownSubnets.Keys.ToHashSet(), monitor.ActiveCameraAddress, monitor.ActiveSubnet, monitor.KnownCameras);
         _userInterface.SetUiState(uid, SurveillanceCameraMonitorUiKey.Key, state);
     }
 }
