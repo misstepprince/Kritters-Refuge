@@ -20,7 +20,6 @@ namespace Content.Server.SurveillanceCamera;
 /// </summary>
 public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
 {
-    // _CS Start: TV relay controls and MIDI synchronization
     private const float MinRelayVolumeDb = -20f;
     private const float RelayVolumeStepDb = 5f;
     private static readonly TimeSpan MidiRelayIdleTimeout = TimeSpan.FromSeconds(1.5f);
@@ -272,6 +271,7 @@ public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
         if (TryComp<InstrumentComponent>(args.Source, out var srcInstrument) &&
             TryComp<InstrumentComponent>(uid, out var tvInstrument))
         {
+            // _CS Start: Mirror source bank/program and per-channel filter state onto the relay instrument.
             if (tvInstrument.InstrumentProgram != srcInstrument.InstrumentProgram ||
                 tvInstrument.InstrumentBank != srcInstrument.InstrumentBank)
             {
@@ -295,6 +295,7 @@ public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
                         [Robust.Shared.Audio.Midi.RobustMidiEvent.AllNotesOff((byte) channel, 0)]);
                 }
             }
+            // _CS End: Mirror source bank/program and per-channel filter state onto the relay instrument.
         }
 
         component.RelayMidiSources[args.Source] = _gameTiming.CurTime;
@@ -313,6 +314,7 @@ public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
         if (args.Channel < 0 || args.Channel >= Robust.Shared.Audio.Midi.RobustMidiEvent.MaxChannels)
             return;
 
+        // _CS Start: Apply explicit channel filter sync payloads and stop ringing notes when filtering on.
         // Only mutate when needed; this keeps the sync path cheap for rapid channel clicks.
         if (tvInstrument.FilteredChannels[args.Channel] == args.Filtered)
             return;
@@ -324,7 +326,7 @@ public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
             _instrumentSystem.RelayMidiEvents(uid,
                 [Robust.Shared.Audio.Midi.RobustMidiEvent.AllNotesOff((byte) args.Channel, 0)]);
         }
+        // _CS End: Apply explicit channel filter sync payloads and stop ringing notes when filtering on.
     }
 
-    // _CS End: TV relay controls and MIDI synchronization
 }

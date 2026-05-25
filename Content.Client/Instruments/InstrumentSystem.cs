@@ -365,6 +365,7 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
             return;
         }
 
+        // _CS Start: Stabilize relay tick anchoring to prevent MIDI schedule drift/backlog spikes.
         var minTick = midiEv.MidiEvent.Min(x => x.Tick);
 
         var sqrtLag = MathF.Sqrt((_netManager.ServerChannel?.Ping ?? 0) / 1000f);
@@ -391,6 +392,7 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
         }
 
         SendMidiEvents(midiEv.MidiEvent, instrument);
+        // _CS End: Stabilize relay tick anchoring to prevent MIDI schedule drift/backlog spikes.
     }
 
     private void SendMidiEvents(IReadOnlyList<RobustMidiEvent> midiEvents, InstrumentComponent instrument)
@@ -409,6 +411,7 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
             // I am surprised this doesn't take uint...
             var ev = midiEvents[(int)i];
 
+            // _CS Start: Clamp late relay events to near-future ticks instead of replaying in the past.
             var relativeTick = (long) ev.Tick - instrument.SequenceStartTick;
             var scheduled = (long) instrument.SequenceDelay + relativeTick;
 
@@ -422,6 +425,7 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
             // The order of events with the same timestamp is undefined in Fluidsynth's sequencer...
             // Therefore we add the event index to the scheduled time to ensure every event has an unique timestamp.
             instrument.Renderer?.ScheduleMidiEvent(ev, scheduledTick + i, true);
+            // _CS End: Clamp late relay events to near-future ticks instead of replaying in the past.
         }
     }
 

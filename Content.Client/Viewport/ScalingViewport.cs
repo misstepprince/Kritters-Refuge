@@ -24,7 +24,9 @@ namespace Content.Client.Viewport
         [Dependency] private readonly IClyde _clyde = default!;
         [Dependency] private readonly IEntityManager _entityManager = default!;
         [Dependency] private readonly IInputManager _inputManager = default!;
+        // _CS Start: Use frame timing to throttle optional low-priority viewport redraws.
         [Dependency] private readonly IGameTiming _timing = default!;
+        // _CS End: Use frame timing to throttle optional low-priority viewport redraws.
 
         // Internal viewport creation is deferred.
         private IClydeViewport? _viewport;
@@ -37,6 +39,7 @@ namespace Content.Client.Viewport
         private int _fixedRenderScale = 1;
 
         private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
+        // _CS Start: Track next allowed render time for per-viewport max render-rate limiting.
         private TimeSpan _nextRenderTime = TimeSpan.Zero;
 
         /// <summary>
@@ -45,6 +48,7 @@ namespace Content.Client.Viewport
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
         public float MaxRenderRate { get; set; } = 0f;
+        // _CS End: Track next allowed render time for per-viewport max render-rate limiting.
 
         public int CurrentRenderScale => _curRenderScale;
 
@@ -160,6 +164,7 @@ namespace Content.Client.Viewport
             DebugTools.AssertNotNull(_viewport);
             var viewport = _viewport!;
 
+            // _CS Start: Throttle rendering for camera feeds unless a screenshot is explicitly requested.
             var forceRender = _queuedScreenshots.Count != 0;
             if (forceRender || MaxRenderRate <= 0f || _timing.RealTime >= _nextRenderTime)
             {
@@ -170,6 +175,7 @@ namespace Content.Client.Viewport
                     _nextRenderTime = _timing.RealTime + TimeSpan.FromSeconds(1f / MaxRenderRate);
                 }
             }
+            // _CS End: Throttle rendering for camera feeds unless a screenshot is explicitly requested.
 
             if (_queuedScreenshots.Count != 0)
             {

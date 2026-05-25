@@ -140,6 +140,7 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
                         DisconnectFromSubnet(uid, subnetData);
                     }
 
+                    // _CS Start: Only publish UI state when discovered camera data actually changes.
                     var camerasChanged = !component.KnownCameras.TryGetValue(address, out var existingName)
                         || existingName != name;
 
@@ -148,8 +149,10 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
                         component.KnownCameras[address] = name;
                         UpdateUserInterface(uid, component);
                     }
+                    // _CS End: Only publish UI state when discovered camera data actually changes.
                     break;
                 case SurveillanceCameraSystem.CameraSubnetData:
+                    // _CS Start: Gate subnet UI updates to real subnet-list mutations.
                     var subnetsChanged = false;
 
                     if (args.Data.TryGetValue(SurveillanceCameraSystem.CameraSubnetData, out string? subnet)
@@ -172,6 +175,7 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
                     {
                         UpdateUserInterface(uid, component);
                     }
+                    // _CS End: Gate subnet UI updates to real subnet-list mutations.
                     break;
             }
         }
