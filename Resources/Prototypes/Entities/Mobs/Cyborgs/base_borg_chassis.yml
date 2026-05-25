@@ -17,6 +17,7 @@
       collection: MetalThud
   - type: CombatMode
   - type: NoSlip
+  - type: Stripping # Coyote: Let borgs strip people
   - type: StaticPrice
     price: 1250
   - type: Fixtures
