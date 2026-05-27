@@ -2831,3 +2831,10 @@ Entries:
   id: 323
   time: '2026-05-25T02:57:05.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1202
+- author: DrekkCuga
+  changes:
+    - type: Tweak
+      message: Allowed Emotes and Subtle messages while sleeping.
+  id: 324
+  time: '2026-05-27T22:35:17.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1209
