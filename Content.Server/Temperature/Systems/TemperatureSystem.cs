@@ -255,6 +255,9 @@ public sealed class TemperatureSystem : EntitySystem
         if (!HasComp<DamageableComponent>(uid))
             return;
 
+        if (!float.IsFinite(temperature.CurrentTemperature))
+            return;
+
         // See this link for where the scaling func comes from:
         // https://www.desmos.com/calculator/0vknqtdvq9
         // Based on a logistic curve, which caps out at MaxDamage
@@ -265,6 +268,9 @@ public sealed class TemperatureSystem : EntitySystem
 
         var heatDamageThreshold = temperature.ParentHeatDamageThreshold ?? temperature.HeatDamageThreshold;
         var coldDamageThreshold = temperature.ParentColdDamageThreshold ?? temperature.ColdDamageThreshold;
+
+        if (!float.IsFinite(heatDamageThreshold) || !float.IsFinite(coldDamageThreshold))
+            return;
 
         if (temperature.CurrentTemperature >= heatDamageThreshold)
         {
@@ -287,8 +293,9 @@ public sealed class TemperatureSystem : EntitySystem
             }
 
             var diff = Math.Abs(temperature.CurrentTemperature - coldDamageThreshold);
+            var coldDamageScaleThreshold = Math.Max(Math.Abs(coldDamageThreshold), Atmospherics.MinimumTemperatureDeltaToConsider);
             var tempDamage =
-                Math.Sqrt(diff * (Math.Pow(temperature.DamageCap.Double(), 2) / coldDamageThreshold));
+                Math.Sqrt(diff * (Math.Pow(temperature.DamageCap.Double(), 2) / coldDamageScaleThreshold));
             _damageable.TryChangeDamage(uid, temperature.ColdDamage * tempDamage, ignoreResistances: true, interruptsDoAfters: false);
         }
         else if (temperature.TakingDamage)

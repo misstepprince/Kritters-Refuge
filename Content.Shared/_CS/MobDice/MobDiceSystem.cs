@@ -131,9 +131,11 @@ public sealed class MobDiceSystem : EntitySystem
 
     private MobDiceResult? RollDice(EntityUid player, EntityUid? target = null)
     {
-        if (!TryComp<MobDiceComponent>(player, out var comp))
-            throw new InvalidOperationException($"Tried to roll mob dice for entity {ToPrettyString(player)} which does not have a {nameof(MobDiceComponent)}.");
-        int sides = comp.Sides;
+        int sides = 20;
+        if (TryComp<MobDiceComponent>(player, out var comp)) {
+            sides = comp.Sides;
+        }
+
         int roll = _rand.Next(1, sides + 1);
         TimeSpan when = _time.CurTime;
         MobDiceResult result = new (
@@ -142,7 +144,10 @@ public sealed class MobDiceSystem : EntitySystem
             roll,
             player,
             target);
-        comp.RollHistory[when] = result;
+
+        if(comp is not null)
+            comp.RollHistory[when] = result;
+
         return result;
     }
 

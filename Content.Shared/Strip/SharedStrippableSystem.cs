@@ -659,6 +659,19 @@ public abstract class SharedStrippableSystem : EntitySystem
         if (!HasComp<StrippingComponent>(user))
             return false;
 
+        var range = _ui.GetUiRange(target.Owner, StrippingUiKey.Key);
+        if (range > 0f &&
+            !HasComp<IgnoreUIRangeComponent>(user) &&
+            user != target.Owner &&
+            Transform(target.Owner).ParentUid != user &&
+            !_interactionSystem.InRangeAndAccessible(user, target.Owner, range))
+        {
+            return false;
+        }
+
+        if (range <= 0f && !_interactionSystem.IsAccessible(user, target.Owner))
+            return false;
+
         _ui.OpenUi(target.Owner, StrippingUiKey.Key, user);
         return true;
     }
