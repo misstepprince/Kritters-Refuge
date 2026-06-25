@@ -442,6 +442,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             ? shuttleConsole.ProximityAlertEnabled
             : false;
         var proximityAlertRadius = shuttleConsole?.ProximityAlertRadius ?? 128f;
+        var targetEntity = GetTargetNetEntity(entity.Owner, entity.Comp1);
 
         return new NavInterfaceState(
             entity.Comp1.MaxRange,
@@ -451,12 +452,26 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             _shuttle.NfGetInertiaDampeningMode(entity), // Frontier
             _shuttle.NfGetServiceFlags(entity), // Frontier
             entity.Comp1.Target, // Frontier
-            GetNetEntity(entity.Comp1.TargetEntity), // Frontier
+            targetEntity, // Frontier
             entity.Comp1.HideTarget, // Frontier
             proximityAlertEnabled, // Frontier
             proximityAlertRadius, // Frontier
             autopilotState.Enabled, // Wayfarer
             autopilotState.HasServer); // Wayfarer
+    }
+
+    public NetEntity? GetTargetNetEntity(EntityUid uid, RadarConsoleComponent? component)
+    {
+        if (component?.TargetEntity is not { } target)
+            return null;
+
+        if (EntityManager.TryGetNetEntity(target, out var netEntity))
+            return netEntity;
+
+        component.TargetEntity = null;
+        component.TargetEntityName = null;
+        Dirty(uid, component);
+        return null;
     }
 
     /// <summary>

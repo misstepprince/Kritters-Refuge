@@ -69,7 +69,7 @@ public sealed partial class RadarConsoleSystem : SharedRadarConsoleSystem // Fro
                 state.MaxIffRange = component.MaxIffRange.Value;
             state.HideCoords = component.HideCoords;
             state.Target = component.Target;
-            state.TargetEntity = GetNetEntity(component.TargetEntity);
+            state.TargetEntity = _console.GetTargetNetEntity(uid, component);
             state.HideTarget = component.HideTarget;
             // End Frontier
 

@@ -1,8 +1,8 @@
 using System.Numerics;
 using Content.Server.Storage.Components;
+using Content.Server.Storage.EntitySystems;
 using Content.Shared.Storage;
 using Content.Shared.Storage.Components;
-using Content.Shared.Storage.EntitySystems;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
@@ -17,6 +17,8 @@ namespace Content.Server._CS.SpaceJanitor;
 public sealed class SpaceJanitorSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private readonly EntityStorageSystem _entityStorage = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!;
 
     private const int MinutesBetweenChecks = 29;
     private const int MinutesBeforeCleanup = 1; // 12 hours
@@ -65,8 +67,12 @@ public sealed class SpaceJanitorSystem : EntitySystem
     private bool NakedAndInSpace(EntityUid uid, SpaceJanitorComponent comp)
     {
         var xform = Transform(uid);
+        if (_container.IsEntityOrParentInContainer(uid, xform: xform))
+            return false;
+
         if (xform.LocalPosition == Vector2.Zero)
             return false;
+
         // clean up empty casings, whether in space or not, but only while not carried by something.
         if (comp.IsCasing
             && TryComp<CartridgeAmmoComponent>(uid, out var cartridge)
@@ -100,13 +106,11 @@ public sealed class SpaceJanitorSystem : EntitySystem
         if (TryComp<EntityStorageComponent>(uid, out var storage)
             && !storage.DeleteContentsOnDestruction)
         {
-            var sess = IoCManager.Resolve<SharedEntityStorageSystem>();
-            sess.EmptyContents(uid, storage);
+            _entityStorage.EmptyContents(uid, storage);
         }
         if (TryComp<StorageComponent>(uid, out var storage2))
         {
-            var storo = IoCManager.Resolve<SharedContainerSystem>();
-            storo.EmptyContainer(storage2.Container);
+            _container.EmptyContainer(storage2.Container);
         }
         var myCoords = Transform(uid).LocalPosition;
         Log.Info($"Space janitor sent entity {ToPrettyString(uid)} at {myCoords} to the shadow realm for being in space too long.");
