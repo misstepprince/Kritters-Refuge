@@ -1,0 +1,14 @@
+- type: entity
+  parent: Jug
+  suffix: cobalt
+  id: JugCobalt
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Label
+    currentLabel: reagent-name-cobalt
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        reagents:
+        - ReagentId: Cobalt
+          Quantity: 200

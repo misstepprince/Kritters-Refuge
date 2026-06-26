@@ -118,6 +118,8 @@
         reagents:
         - ReagentId: Iron
           Quantity: 10
+        - ReagentId: Cobalt # Kritters
+          Quantity: 2
   - type: Item
     heldPrefix: iron
 
@@ -434,4 +436,3 @@
   components:
   - type: Stack
     count: 1
-
