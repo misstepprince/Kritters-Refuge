@@ -33,6 +33,7 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
         SubscribeLocalEvent<JukeboxComponent, JukeboxSetTimeMessage>(OnJukeboxSetTime);
         SubscribeLocalEvent<JukeboxComponent, ComponentInit>(OnComponentInit);
         SubscribeLocalEvent<JukeboxComponent, ComponentShutdown>(OnComponentShutdown);
+        SubscribeLocalEvent<JukeboxAudioStreamComponent, EntityTerminatingEvent>(OnAudioStreamTerminating);
 
         SubscribeLocalEvent<JukeboxComponent, ComponentStartup>(OnComponentStartup); // Frontier
         SubscribeLocalEvent<JukeboxComponent, PowerChangedEvent>(OnPowerChanged);
@@ -86,6 +87,9 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
             }
 
             component.AudioStream = Audio.PlayPvs(jukeboxProto.Path, uid, AudioParams.Default.WithMaxDistance(10f))?.Entity;
+
+            if (component.AudioStream is { } audioStream)
+                AddComp<JukeboxAudioStreamComponent>(audioStream).Jukebox = uid;
 
             // Frontier: wallmount jukebox, shuffle state
             if (TryComp<TransformComponent>(component.AudioStream, out var xform))
@@ -212,6 +216,20 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
         component.AudioStream = Audio.Stop(component.AudioStream);
     }
 
+    private void OnAudioStreamTerminating(
+        Entity<JukeboxAudioStreamComponent> entity,
+        ref EntityTerminatingEvent args)
+    {
+        if (!TryComp<JukeboxComponent>(entity.Comp.Jukebox, out var jukebox) ||
+            jukebox.AudioStream != entity.Owner)
+        {
+            return;
+        }
+
+        jukebox.AudioStream = null;
+        Dirty(entity.Comp.Jukebox, jukebox);
+    }
+
     private void DirectSetVisualState(EntityUid uid, JukeboxVisualState state)
     {
         _appearanceSystem.SetData(uid, JukeboxVisuals.VisualState, state);
@@ -231,4 +249,10 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
 
         _appearanceSystem.SetData(uid, JukeboxVisuals.VisualState, finalState);
     }
+}
+
+[RegisterComponent]
+public sealed partial class JukeboxAudioStreamComponent : Component
+{
+    public EntityUid Jukebox;
 }

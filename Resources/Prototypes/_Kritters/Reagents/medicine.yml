@@ -1,0 +1,46 @@
+- type: reagent
+  id: Cobaxalin
+  name: reagent-name-cobaxalin
+  group: Medicine
+  desc: reagent-desc-cobaxalin
+  physicalDesc: reagent-physical-desc-cloudy
+  flavor: medicine
+  color: "#908d60"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:HealthChange
+        # Coyote Start
+        conditions:
+        - !type:OrganType
+          type: Avali
+          shouldHave: false
+        damage:
+          types:
+            Asphyxiation: -3.5
+            Bloodloss: -3
+        # End Coyote
+      - !type:AdjustReagent
+        conditions:
+        - !type:ReagentThreshold
+          reagent: HeartbreakerToxin
+          min: 1
+        reagent: HeartbreakerToxin
+        amount: -3
+      - !type:HealthChange
+        conditions:
+        - !type:ReagentThreshold
+          min: 25
+        damage:
+          types:
+            Asphyxiation: 5
+            Cold: 3
+      - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Avali
+        damage:
+          types:
+            Poison: 2.5 # Avali blood is ammonia based, so chems made to treat normal bloodloss poison them instead. Dex+ is worse. (Lethal Dose: 15u)
+            Asphyxiation: 1.5
+            Bloodloss: 1

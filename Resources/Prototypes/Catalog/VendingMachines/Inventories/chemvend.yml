@@ -6,6 +6,7 @@
     JugAluminium: 4
     JugCarbon: 4
     JugChlorine: 4
+    JugCobalt: 4 # Kritters
     JugCopper: 4
     JugEthanol: 4
     JugFluorine: 4
@@ -37,6 +38,7 @@
     JugAluminium: 2
     JugCarbon: 4
     JugChlorine: 1
+    JugCobalt: 2 # Kritters
     JugCopper: 2
     JugEthanol: 2
     JugFluorine: 1
@@ -64,4 +66,3 @@
     ChemistryBottleMuteToxin: 3
     ChemistryBottleLead: 2
     ChemistryBottleToxin: 1
-

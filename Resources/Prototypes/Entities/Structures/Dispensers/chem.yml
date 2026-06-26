@@ -66,6 +66,7 @@
       - id: JugAluminium
       - id: ReinforcedJugCarbon # Frontier
       - id: ReinforcedJugChlorine # Frontier
+      - id: JugCobalt # Kritters
       - id: JugCopper
       - id: ReinforcedJugEthanol # Frontier
       - id: JugFluorine

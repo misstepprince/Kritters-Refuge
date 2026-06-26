@@ -1,0 +1,18 @@
+- type: reagent
+  id: Cobalt
+  name: reagent-name-cobalt
+  group: Elements
+  desc: reagent-desc-cobalt
+  physicalDesc: reagent-physical-desc-metallic
+  flavor: metallic
+  color: "#66676B"
+  boilingPoint: 2927.0
+  meltingPoint: 1495.0
+  metabolisms:
+    Poison:
+      metabolismRate: 0.1
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Poison: 0.15

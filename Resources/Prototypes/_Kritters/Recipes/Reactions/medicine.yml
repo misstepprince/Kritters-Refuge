@@ -1,0 +1,11 @@
+- type: reaction
+  id: Cobaxalin
+  reactants:
+    Dexalin:
+      amount: 1
+    Carbon:
+      amount: 1
+    Cobalt:
+      amount: 1
+  products:
+    Cobaxalin: 3
