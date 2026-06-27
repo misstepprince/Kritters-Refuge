@@ -1,0 +1,15 @@
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesGlassesMesonBRNZ
+  name: bronze engineering goggles #less confusion
+  description: Bronze-tinted goggles using a proprietary polymer that provides protection from eye damage of all types.
+  components:
+  - type: Sprite
+    sprite: _Kritters/Clothing/Eyes/Glasses/brnzmeson.rsi
+  - type: Clothing
+    sprite: _Kritters/Clothing/Eyes/Glasses/brnzmeson.rsi
+  - type: EyeProtection
+  - type: IdentityBlocker
+    coverage: EYES
+  - type: StaticPrice # Frontier
+    price: 135 # Frontier
