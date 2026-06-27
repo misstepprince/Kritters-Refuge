@@ -1,0 +1,46 @@
+- type: entity
+  parent: IngotBase
+  id: IngotCobalt
+  name: cobalt bar
+  suffix: Full
+  components:
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Cobalt: 100
+  - type: Stack
+    stackType: Cobalt
+    baseLayer: base
+    layerStates:
+    - cobalt
+    - cobalt_2
+    - cobalt_3
+  - type: Sprite
+    sprite: _Kritters/Objects/Materials/ingots.rsi
+    state: cobalt_3
+    layers:
+    - state: cobalt_3
+      map: ["base"]
+  - type: Item
+    sprite: _Kritters/Objects/Materials/ingots.rsi
+  - type: Appearance
+  - type: Extractable
+    grindableSolutionName: cobalt
+  - type: SolutionContainerManager
+    solutions:
+      cobalt:
+        reagents:
+        - ReagentId: Cobalt
+          Quantity: 10
+
+- type: entity
+  parent: IngotCobalt
+  id: IngotCobalt1
+  name: cobalt bar
+  suffix: Single
+  components:
+  - type: Sprite
+    sprite: _Kritters/Objects/Materials/ingots.rsi
+    state: cobalt
+  - type: Stack
+    count: 1

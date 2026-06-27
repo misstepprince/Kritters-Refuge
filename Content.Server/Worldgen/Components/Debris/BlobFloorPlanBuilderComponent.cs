@@ -1,4 +1,5 @@
-﻿using Content.Server.Worldgen.Systems.Debris;
+﻿using Content.Server.Worldgen.Systems; // Kritters
+using Content.Server.Worldgen.Systems.Debris;
 using Content.Shared.Maps;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.List;
 
@@ -8,9 +9,17 @@ namespace Content.Server.Worldgen.Components.Debris;
 ///     This is used for constructing asteroid debris.
 /// </summary>
 [RegisterComponent]
-[Access(typeof(BlobFloorPlanBuilderSystem))]
+[Access(typeof(BlobFloorPlanBuilderSystem), typeof(LocalityLoaderSystem))] // Kritters
 public sealed partial class BlobFloorPlanBuilderComponent : Component
 {
+    // Kritters: LocalityLoader must not populate deferred blob grids before their tiles exist.
+    [ViewVariables]
+    public bool Built;
+
+    // Kritters: prevents duplicate LocalStructureLoadedEvent population passes.
+    [ViewVariables]
+    public bool Populated;
+
     /// <summary>
     ///     The probability that placing a floor tile will add up to three-four neighboring tiles as well.
     /// </summary>
@@ -34,4 +43,3 @@ public sealed partial class BlobFloorPlanBuilderComponent : Component
     [DataField("floorPlacements", required: true)]
     public int FloorPlacements { get; private set; }
 }
-

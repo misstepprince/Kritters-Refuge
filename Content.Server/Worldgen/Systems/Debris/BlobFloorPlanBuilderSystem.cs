@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server.Worldgen.Components; // Kritters
 using Content.Server.Worldgen.Components.Debris;
 using Content.Shared.CCVar;
 using Content.Shared.Maps;
@@ -123,6 +124,14 @@ public sealed class BlobFloorPlanBuilderSystem : BaseWorldSystem
         }
 
         _map.SetTiles(gridUid, grid, tiles);
+        comp.Built = true; // Kritters: signals that tile-backed populator passes can safely run.
+
+        if (comp.Populated)
+            return;
+
+        // Kritters: blob debris is tile-backed, so populate immediately after deferred tile placement.
+        comp.Populated = true;
+        RaiseLocalEvent(gridUid, new LocalStructureLoadedEvent());
+        RemCompDeferred<LocalityLoaderComponent>(gridUid);
     }
 }
-

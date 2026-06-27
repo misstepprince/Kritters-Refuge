@@ -1,0 +1,17 @@
+- type: material
+  id: Cobalt
+  stackEntity: IngotCobalt1
+  name: materials-cobalt
+  unit: materials-unit-bar
+  icon: { sprite: _Kritters/Objects/Materials/ingots.rsi, state: cobalt }
+  color: "#66676B"
+  price: 0.15
+
+- type: material
+  id: RawCobalt
+  stackEntity: CobaltOre1
+  name: materials-raw-cobalt
+  unit: materials-unit-chunk
+  icon: { sprite: _Kritters/Objects/Materials/ore.rsi, state: cobalt }
+  color: "#66676B"
+  price: 0.05
