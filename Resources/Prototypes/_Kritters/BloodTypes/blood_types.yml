@@ -1,0 +1,110 @@
+# Kritters: Blood type declarations layer ordinary blood reagents with compatibility tags.
+- type: krittersBloodType
+  id: KrittersBloodIron
+  name: kritters-blood-type-iron-name
+  description: kritters-blood-type-iron-desc
+  scannerName: kritters-blood-scanner-iron
+  bloodReagent: Blood
+  tags:
+  - KrittersBloodBaseIron
+  - KrittersBloodMetabolismWarm
+  species:
+  - Human
+  - Dwarf
+  - Reptilian
+  - Felinid
+  - Feroxi
+  - Harpy
+  - Oni
+  - Ovinia
+  - Rodentia
+  - Tajaran
+  - Vulpkanin
+  - Anthromorph
+
+- type: krittersBloodType
+  id: KrittersBloodIronCold
+  name: kritters-blood-type-iron-cold-name
+  description: kritters-blood-type-iron-cold-desc
+  scannerName: kritters-blood-scanner-iron
+  bloodReagent: Blood
+  tags:
+  - KrittersBloodBaseIron
+  - KrittersBloodMetabolismCold
+  species:
+  - Human
+  - Dwarf
+  - Reptilian
+  - Felinid
+  - Feroxi
+  - Harpy
+  - Oni
+  - Ovinia
+  - Rodentia
+  - Tajaran
+  - Vulpkanin
+  - Anthromorph
+
+- type: krittersBloodType
+  id: KrittersBloodCopper
+  name: kritters-blood-type-copper-name
+  description: kritters-blood-type-copper-desc
+  scannerName: kritters-blood-scanner-copper
+  bloodReagent: CopperBlood
+  tags:
+  - KrittersBloodBaseCopper
+  - KrittersBloodMetabolismCold
+  species:
+  - Arachnid
+  - Anthromorph
+
+- type: krittersBloodType
+  id: KrittersBloodInsect
+  name: kritters-blood-type-insect-name
+  description: kritters-blood-type-insect-desc
+  scannerName: kritters-blood-scanner-insect
+  bloodReagent: InsectBlood
+  tags:
+  - KrittersBloodBaseInsect
+  - KrittersBloodMetabolismCold
+  species:
+  - Moth
+  - Chitinid
+  - Anthromorph
+
+- type: krittersBloodType
+  id: KrittersBloodAmmonia
+  name: kritters-blood-type-ammonia-name
+  description: kritters-blood-type-ammonia-desc
+  scannerName: kritters-blood-scanner-ammonia
+  bloodReagent: AmmoniaBlood
+  tags:
+  - KrittersBloodBaseAmmonia
+  - KrittersBloodMetabolismCold
+  species:
+  - Vox
+  - Anthromorph
+
+- type: krittersBloodType
+  id: KrittersBloodPlantSap
+  name: kritters-blood-type-plant-sap-name
+  description: kritters-blood-type-plant-sap-desc
+  scannerName: kritters-blood-scanner-sap
+  bloodReagent: Sap
+  tags:
+  - KrittersBloodBasePlant
+  species:
+  - Diona
+  - Anthromorph
+
+- type: krittersBloodType
+  id: KrittersBloodSlime
+  name: kritters-blood-type-slime-name
+  description: kritters-blood-type-slime-desc
+  scannerName: kritters-blood-scanner-slime
+  bloodReagent: Slime
+  tags:
+  - KrittersBloodBaseSlime
+  species:
+  - SlimePerson
+  - Anthromorph

@@ -1,0 +1,48 @@
+- type: entity
+  parent: BaseItem
+  id: KrittersBloodBag
+  name: blood bag
+  description: A sterile IV bag that can only hold blood.
+  components:
+  - type: KrittersBloodTypesOnly
+  - type: KrittersBloodOnlyContainer
+    solution: bag
+    reagentWhitelist:
+    - Blood
+    - CopperBlood
+    - InsectBlood
+    - AmmoniaBlood
+    - Sap
+    - Slime
+  - type: KrittersBloodBag
+    solution: bag
+    transferRate: 5
+    maxConnectionRange: 2
+  - type: Sprite
+    sprite: Objects/Specific/Medical/medical.rsi
+    layers:
+    - state: bloodpack-empty
+    - state: bloodpack-liquid-1
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
+  - type: Item
+    size: Small
+    sprite: Objects/Specific/Medical/medical.rsi
+    heldPrefix: bloodpack
+  - type: SolutionContainerManager
+    solutions:
+      bag:
+        maxVol: 50
+  - type: RefillableSolution
+    solution: bag
+  - type: ExaminableSolution
+    solution: bag
+  - type: SolutionItemStatus
+    solution: bag
+  - type: Appearance
+  - type: SolutionContainerVisuals
+    solutionName: bag
+    maxFillLevels: 5
+    fillBaseName: bloodpack-liquid-
+  - type: StaticPrice
+    price: 10
