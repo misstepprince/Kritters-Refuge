@@ -5,7 +5,7 @@
   group: Biological
   desc: reagent-desc-cobalt-blood #Burger-King-blood for Dog
   flavor: metallic
-  color: "#FFF000"
+  color: "#E8D22A"
   recognizable: true
   physicalDesc: reagent-physical-desc-metallic
 
