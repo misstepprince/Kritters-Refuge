@@ -20,10 +20,10 @@
     transferRate: 5
     maxConnectionRange: 2
   - type: Sprite
-    sprite: Objects/Specific/Medical/medical.rsi
+    sprite: _Kritters/Objects/Specific/Medical/kritters_blood_bag.rsi
     layers:
-    - state: bloodpack-empty
-    - state: bloodpack-liquid-1
+    - state: bloodbag-empty
+    - state: bloodbag-liquid-11
       map: ["enum.SolutionContainerLayers.Fill"]
       visible: false
   - type: Item
@@ -43,7 +43,7 @@
   - type: Appearance
   - type: SolutionContainerVisuals
     solutionName: bag
-    maxFillLevels: 5
-    fillBaseName: bloodpack-liquid-
+    maxFillLevels: 11
+    fillBaseName: bloodbag-liquid-
   - type: StaticPrice
     price: 10

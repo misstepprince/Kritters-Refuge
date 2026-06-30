@@ -1,0 +1,47 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Sprites created for Kritters Refuge.",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "bloodbag-empty"
+        },
+        {
+            "name": "bloodbag-liquid-1"
+        },
+        {
+            "name": "bloodbag-liquid-2"
+        },
+        {
+            "name": "bloodbag-liquid-3"
+        },
+        {
+            "name": "bloodbag-liquid-4"
+        },
+        {
+            "name": "bloodbag-liquid-5"
+        },
+        {
+            "name": "bloodbag-liquid-6"
+        },
+        {
+            "name": "bloodbag-liquid-7"
+        },
+        {
+            "name": "bloodbag-liquid-8"
+        },
+        {
+            "name": "bloodbag-liquid-9"
+        },
+        {
+            "name": "bloodbag-liquid-10"
+        },
+        {
+            "name": "bloodbag-liquid-11"
+        }
+    ]
+}
