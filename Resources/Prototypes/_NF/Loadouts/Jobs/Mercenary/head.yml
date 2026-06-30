@@ -42,3 +42,11 @@
   price: 500
   equipment:
     head: ClothingHeadHatBeretCommander
+
+# Kritters
+- type: loadout
+  id: MercenaryClothingHeadHatCampaignCover
+  price: 0
+  equipment:
+    head: ClothingHeadHatCampaignCover
+# Kritters End

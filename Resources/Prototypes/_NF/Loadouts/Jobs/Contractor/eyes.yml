@@ -60,6 +60,17 @@
   equipment:
     eyes: ClothingEyesGlassesMeson
 
+# Kritters
+- type: loadout
+  id: ContractorClothingEyesGlassesMesonBRNZ
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT1
+  price: 0 # Mono
+  equipment:
+    eyes: ClothingEyesGlassesMesonBRNZ
+# Kritters End
+
 - type: loadout
   id: ContractorClothingEyesHudMedical
   effects:
@@ -108,4 +119,3 @@
   price: 1250
   equipment:
     eyes: ClothingEyesEyepatchHudMedical
-

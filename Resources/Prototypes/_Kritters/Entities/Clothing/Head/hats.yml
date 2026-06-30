@@ -1,0 +1,13 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatCampaignCover
+  name: Campaign Cover
+  description: A battered brown campaign cover.
+  components:
+  - type: Sprite
+    sprite: _Kritters/Clothing/Head/campaign_cover.rsi
+  - type: Clothing
+    sprite: _Kritters/Clothing/Head/campaign_cover.rsi
+  - type: Tag
+    tags:
+    - ClothMade
