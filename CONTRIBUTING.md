@@ -1,29 +1,29 @@
 # Contributing to Coyote Sector
 
-If you're considering contributing to Coyote Sector, [Wizard's Den's PR guidelines](https://docs.spacestation14.com/en/general-development/codebase-info/pull-request-guidelines.html) are a good starting point for code quality and version tracking etiquette. Note that we do not have the same master/stable branch distinction.
+If you're considering contributing to Kritters Refuge, [Wizard's Den's PR guidelines](https://docs.spacestation14.com/en/general-development/codebase-info/pull-request-guidelines.html) are a good starting point for code quality and version tracking etiquette. Note that we do not have the same master/stable branch distinction.
 
 Importantly, do not make webedits. From the text above:
 > Do not use GitHub's web editor to create PRs. PRs submitted through the web editor may be closed without review.
 
 "Upstream" refers to the [new-frontiers-14/frontier-station-14](https://github.com/new-frontiers-14/frontier-station-14/) repository that this fork was created from.
 
-# Coyote-specific content
+# Kritters-specific content
 
-In general, anything you create from scratch (vs. modifying something that exists from upstream) should go in a Coyote-specific subfolder, `_CS`.
+In general, anything you create from scratch (vs. modifying something that exists from upstream) should go in a Kritters-specific subfolder, `_Kritters`.
 
 Examples:
-- `Content.Server/_CS/Shipyard/Systems/ShipyardSystem.cs`
-- `Resources/Prototypes/_CS/Loadouts/role_loadouts.yml`
-- `Resources/Audio/_CS/Voice/Goblin/goblin-scream-03.ogg`
-- `Resources/Textures/_CS/Tips/clippy.rsi/left.png`
-- `Resources/Locale/en-US/_CS/devices/pda.ftl`
-- `Resources/ServerInfo/_CS/Guidebook/Medical/Doc.xml`
+- `Content.Server/_Kritters/Shipyard/Systems/ShipyardSystem.cs`
+- `Resources/Prototypes/_Kritters/Loadouts/role_loadouts.yml`
+- `Resources/Audio/_Kritters/Voice/Goblin/goblin-scream-03.ogg`
+- `Resources/Textures/_Kritters/Tips/clippy.rsi/left.png`
+- `Resources/Locale/en-US/_Kritters/devices/pda.ftl`
+- `Resources/ServerInfo/_Kritters/Guidebook/Medical/Doc.xml`
 
 # Changes to upstream files
 
 If you make a change to an upstream C# or YAML file, **you must add comments on or around the changed lines**.
 The comments should clarify what changed, to make conflict resolution simpler when a file is changed upstream.
-If you make changes to values, to be consistent, leave a comment in the form `Coyote: OLD<NEW`.
+If you make changes to values, to be consistent, leave a comment in the form `Kritters: OLD<NEW`.
 
 For YAML specifically, if you add a component or add a list of contiguous fields, use block comments, but if you make limited edits to a component's fields, comment the fields individually.
 
@@ -40,13 +40,13 @@ A single line comment on a changed yml field:
 - type: entity
   id: TorsoHarpy
   name: "harpy torso"
-  parent: [PartHarpy, BaseTorso] # Coyote: add BaseTorso
+  parent: [PartHarpy, BaseTorso] # Kritters: add BaseTorso
 ```
 
 A change to a value (note: `OLD<NEW`)
 ```yml
   - type: Gun
-    fireRate: 4 # Coyote: 3<4
+    fireRate: 4 # Kritters: 3<4
     availableModes:
     - SemiAuto
 ```
@@ -54,13 +54,13 @@ A change to a value (note: `OLD<NEW`)
 A cyborg module with an added moduleId field (inline blank comment), a commented out bucket (inline blank comment), and a DroppableBorgModule that we've added (begin/end block comment).
 ```yml
   - type: ItemBorgModule
-    moduleId: Gardening # Coyote
+    moduleId: Gardening # Kritters
     items:
     - HydroponicsToolMiniHoe
     - HydroponicsToolSpade
     - HydroponicsToolClippers
-    # - Bucket # Coyote
-  # Coyote: droppable borg items
+    # - Bucket # Kritters
+  # Kritters: droppable borg items
   - type: DroppableBorgModule
     moduleId: Gardening
     items:
@@ -68,12 +68,12 @@ A cyborg module with an added moduleId field (inline blank comment), a commented
       whitelist:
         tags:
         - Bucket
-  # End Coyote
+  # End Kritters
 ```
 
 A comment on a new imported namespace:
 ```cs
-using Content.Client._CS.Emp.Overlays; // Coyote
+using Content.Client._CS.Emp.Overlays; // Kritters
 ```
 
 A pair of comments enclosing a block of added code:
@@ -82,17 +82,17 @@ component.Capacity = state.Capacity;
 
 component.UIUpdateNeeded = true;
 
-// Coyote: ensure signature colour is consistent
+// Kritters: ensure signature colour is consistent
 if (TryComp<StampComponent>(uid, out var stamp))
 {
     stamp.StampedColor = state.Color;
 }
-// Coyote End
+// Kritters End
 ```
 
 An edit to a Delta-V locale file, note the `OLD<NEW` format and the separate line for the comment.
 ```fluent
-# Coyote: "Job Whitelists"<"Role Whitelists"
+# Kritters: "Job Whitelists"<"Role Whitelists"
 player-panel-job-whitelists = Role Whitelists
 ```
 
@@ -106,7 +106,7 @@ In general:
 
 Frontier uses specific prototypes for points of interest and ship maps (e.g. to store spawn information, station spawn data, or ship price and categories).  For ships, these are stored in the VesselPrototype (Resources/Prototypes/_NF/Shipyard) or PointOfInterestPrototype (Resources/Prototypes/_NF/PointsOfInterest).  If creating a new ship or POI, refer to existing prototypes.
 
-If you create a new ship or points of interest, please put it into the `_CS` namespace.
+If you create a new ship or points of interest, please put it into the `_Kritters` namespace.
 
 If you are making changes to a map, check with the map's maintainer (or if none, its author), and avoid having multiple open features with changes to the same map.
 
@@ -116,11 +116,11 @@ Conflicts with maps make PRs mutually exclusive so either your work on the maint
 
 Double-check your diff on GitHub before submitting: look for unintended commits or changes and remove accidental whitespace or line-ending changes.
 
-Additionally, for PRs that've been open for a long time, if you see `RobustToolbox` in the changed files, you have to revert it. Use `git checkout upstream/master RobustToolbox` (replacing `upstream` with the name of your ARF-SS13/coyote-frontier remote)
+Additionally, for PRs that've been open for a long time, if you see `RobustToolbox` in the changed files, you have to revert it. Use `git checkout upstream/master RobustToolbox` (replacing `upstream` with the name of your Dizztrikt/Kritters-Refuge remote)
 
 # Changelogs
 
-Currently, all changelogs go to the Coyote changelog. The ADMIN: prefix does nothing at the moment.
+Currently, all changelogs go to the Kritters changelog. The ADMIN: prefix does nothing at the moment.
 
 # Additional resources
 
