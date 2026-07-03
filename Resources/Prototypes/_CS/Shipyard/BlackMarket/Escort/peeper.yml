@@ -12,6 +12,7 @@
   id: Peeper
   parent: BaseVesselAntag
   name: Peeper
+  # Im going to leave this in, because it makes more sense to have nash be past tense, I also don't mind leaving refrences
   description: "Once the voice of Nash, now the voice of freedom. Just don't get caught being a peeping tom!"
   price: 18000 #15583, LL1 115% (Bar and Solar equipment push it over LL0)
   category: Small
