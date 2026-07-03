@@ -1,8 +1,8 @@
 - type: gameMap
   id: Frontier
   mapName: "Haven's Rest"
-#  mapPath: /Maps/_NF/Outpost/frontier.yml
-#  mapPath: /Maps/_NF/Outpost/Nash.yml
+  # Coyote: /Maps/_NF/Outpost/frontier.yml</Maps/_NF/Outpost/Nash.yml
+  # Kritters: /Maps/_NF/Outpost/Nash.yml</Maps/_Kritters/Outpost/Havens.yml
   mapPath: /Maps/_Kritters/Outpost/Havens.yml
   minPlayers: 0
   maxPlayers: 100
@@ -19,7 +19,7 @@
 #            prefixCreator: '14'
         - type: ExtraStationInformation
           # Coyote: /Textures/_NF/Logo/icon/icon-256x256.png</Textures/_CS/Logo/icon/icon-256x256.png
-          # Kritters: changed from /Textures/_CS/Logo/icon/icon-256x256.png
+          # Kritters: /Textures/_CS/Logo/icon/icon-256x256.png</Textures/_Kritters/Logo/icon/icon-256x256.png
           iconPath: /Textures/_Kritters/Logo/icon/icon-256x256.png
           stationSubtext: 'frontier-lobby-frontier-subtext'
           stationDescription: 'frontier-lobby-frontier-description'
