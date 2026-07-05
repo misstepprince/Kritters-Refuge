@@ -470,6 +470,9 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         if (snapshot.Path.Count == 0 || snapshot.Origin.MapId != ourMap.MapId || snapshot.Target.MapId != targetMap.MapId)
             return false;
 
+        if (!TryValidateSharedPath(key, snapshot.Path))
+            return false;
+
         if ((snapshot.Origin.Position - ourMap.Position).LengthSquared() > radiusSq)
             return false;
 
@@ -483,8 +486,7 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         // If direct pursuit is clearly cheaper than entering the shared route, replan independently.
         if (snapshot.Path.Count > 0)
         {
-            var firstNode = _transform.ToMapCoordinates(GetCoordinates(snapshot.Path[0]));
-            if (firstNode.MapId == ourMap.MapId)
+            if (TryGetMapCoordinates(snapshot.Path[0], out var firstNode) && firstNode.MapId == ourMap.MapId)
             {
                 var directDist = (targetMap.Position - ourMap.Position).Length();
                 var entryDist = (firstNode.Position - ourMap.Position).Length();
@@ -547,7 +549,12 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             return;
 
         // Ensure variation does not adopt a path heading away from the target.
-        var first = _transform.ToMapCoordinates(GetCoordinates(path[0]));
+        if (!TryGetMapCoordinates(path[0], out var first))
+        {
+            path.Clear();
+            return;
+        }
+
         if (first.MapId != ourMap.MapId)
             return;
 
@@ -563,8 +570,8 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         if (path.Count < 4)
             return false;
 
-        var first = _transform.ToMapCoordinates(GetCoordinates(path[0]));
-        var last = _transform.ToMapCoordinates(GetCoordinates(path[^1]));
+        if (!TryGetMapCoordinates(path[0], out var first) || !TryGetMapCoordinates(path[^1], out var last))
+            return false;
 
         if (first.MapId != last.MapId)
             return false;
@@ -777,6 +784,46 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         return new EntityCoordinates(poly.GraphUid, poly.Box.Center);
     }
 
+    private bool TryGetMapCoordinates(PathPoly poly, out MapCoordinates coordinates)
+    {
+        coordinates = default;
+
+        if (!poly.IsValid())
+            return false;
+
+        var entityCoordinates = poly.Coordinates;
+        if (!entityCoordinates.IsValid(EntityManager))
+            return false;
+
+        coordinates = _transform.ToMapCoordinates(entityCoordinates);
+        return true;
+    }
+
+    private bool TryValidateSharedPath(PathGroupKey key, List<PathPoly> path)
+    {
+        if (!IsSharedPathUsable(path))
+        {
+            _sharedPaths.Remove(key);
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool IsSharedPathUsable(List<PathPoly> path)
+    {
+        if (path.Count == 0)
+            return false;
+
+        foreach (var poly in path)
+        {
+            if (!poly.IsValid() || !poly.Coordinates.IsValid(EntityManager))
+                return false;
+        }
+
+        return true;
+    }
+
     /// <summary>
     /// Get a new job from the pathfindingsystem
     /// </summary>
@@ -848,7 +895,7 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         PrunePath(uid, ourPos, targetPos.Position - ourPos.Position, result.Path);
         steering.CurrentPath = new Queue<PathPoly>(result.Path);
 
-        if (ShouldUsePathSharing(uid, out _) && TryGetPathGroupKey(uid, steering, out var key))
+        if (ShouldUsePathSharing(uid, out _) && TryGetPathGroupKey(uid, steering, out var key) && IsSharedPathUsable(result.Path))
         {
             _sharedPaths[key] = new SharedPathSnapshot
             {
