@@ -14,7 +14,7 @@ If you want to host or create content for Kritters Refuge, this is the repo you 
 #### Kritters Refuge
 <div class="header" align="center">
 
-[Discord]()
+[Discord](https://discord.gg/rnxJk2Rf3m)
 
 </div>
 
