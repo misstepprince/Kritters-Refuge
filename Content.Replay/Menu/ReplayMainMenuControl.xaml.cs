@@ -23,7 +23,9 @@ public sealed partial class ReplayMainMenuControl : Control
         LayoutContainer.SetGrowHorizontal(VBox, LayoutContainer.GrowDirection.Begin);
 
         Subtext.FontOverride = resCache.GetFont("/Fonts/NotoSansDisplay/NotoSansDisplay-Bold.ttf", 24);
-        var logoTexture = resCache.GetResource<TextureResource>("/Textures/_CS/Logo/logo.png"); // Coyote: Use Coyote's icon
+        // Coyote: Use Coyote's icon
+        // Kritters: Use Kritter's icon
+        var logoTexture = resCache.GetResource<TextureResource>("/Textures/_Kritters/Logo/logo.png");
         Logo.Texture = logoTexture;
 
         LayoutContainer.SetAnchorPreset(InfoContainer, LayoutContainer.LayoutPreset.BottomLeft);

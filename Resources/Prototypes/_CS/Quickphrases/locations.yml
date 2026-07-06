@@ -77,8 +77,8 @@
 
 - type: quickPhrase
   parent: BaseStationLocationPhrase
-  id: LocationNashPhrase
-  text: phrase-location-nash
+  id: LocationHavensPhrase
+  text: phrase-location-havens
 
 - type: quickPhrase
   parent: BaseStationLocationPhrase

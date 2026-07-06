@@ -1,8 +1,9 @@
 - type: gameMap
   id: Frontier
-  mapName: 'Nash Station'
-#  mapPath: /Maps/_NF/Outpost/frontier.yml
-  mapPath: /Maps/_NF/Outpost/Nash.yml
+  mapName: "Haven's Rest"
+  # Coyote: /Maps/_NF/Outpost/frontier.yml</Maps/_NF/Outpost/Nash.yml
+  # Kritters: /Maps/_NF/Outpost/Nash.yml</Maps/_Kritters/Outpost/Havens.yml
+  mapPath: /Maps/_Kritters/Outpost/Havens.yml
   minPlayers: 0
   maxPlayers: 100
   randomRotation: false
@@ -12,12 +13,14 @@
       stationProto: StandardFrontierStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Nash Station'
+          mapNameTemplate: "Haven's Rest"
 #          nameGenerator:
 #            !type:NanotrasenNameGenerator
 #            prefixCreator: '14'
         - type: ExtraStationInformation
-          iconPath: /Textures/_CS/Logo/icon/icon-256x256.png # Coyote: /Textures/_NF/Logo/icon/icon-256x256.png</Textures/_CS/Logo/icon/icon-256x256.png
+          # Coyote: /Textures/_NF/Logo/icon/icon-256x256.png</Textures/_CS/Logo/icon/icon-256x256.png
+          # Kritters: /Textures/_CS/Logo/icon/icon-256x256.png</Textures/_Kritters/Logo/icon/icon-256x256.png
+          iconPath: /Textures/_Kritters/Logo/icon/icon-256x256.png
           stationSubtext: 'frontier-lobby-frontier-subtext'
           stationDescription: 'frontier-lobby-frontier-description'
           lobbySortOrder: 1

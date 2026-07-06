@@ -22,7 +22,7 @@ public sealed partial class MainMenuControl : Control
         LayoutContainer.SetMarginTop(VBox, 30);
         LayoutContainer.SetGrowHorizontal(VBox, LayoutContainer.GrowDirection.Begin);
 
-        var logoTexture = resCache.GetResource<TextureResource>("/Textures/_CS/Logo/logo.png"); // Coyote: Use Coyote's icon
+        var logoTexture = resCache.GetResource<TextureResource>("/Textures/_Kritters/Logo/logo.png"); // Coyote: Use Coyote's icon
         Logo.Texture = logoTexture;
 
         var currentUserName = configMan.GetCVar(CVars.PlayerName);
