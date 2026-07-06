@@ -146,7 +146,8 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: FaxMachine
-    name: "Nash Station Bridge" # Coyote: Replaced Trade Mall with Nash Station. Also renamed STC to Bridge since people may want to fax the SR too.
+    name: "Haven's Rest Bridge" # Coyote: Replaced Trade Mall with Nash Station. Also renamed STC to Bridge since people may want to fax the SR too.
+    # Kritters: Renamed Nash Station
 
 - type: entity
   parent: [BaseStructureDisableToolUse, FaxMachineBase]
@@ -155,7 +156,8 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: FaxMachine
-    name: "Nash Station NFSD Post" # Coyote: Replaced Trade Mall with Nash Station
+    name: "Haven's Rest NFSD Post" # Coyote: Replaced Trade Mall with Nash Station
+    # Kritters: Renamed Nash Station
 
 - type: entity
   parent: [BaseStructureDisableToolUse, FaxMachineBase]

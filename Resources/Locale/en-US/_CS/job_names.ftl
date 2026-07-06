@@ -40,6 +40,6 @@ job-description-ripperdoc = Practice, for lack of a better word, medicine on any
 
 job-name-secretary = Station Secretary
 job-description-secretary = Manage the administrative tasks of the station, direct the flow of traffic, put on a pleasing face for the station, and be the important person you know you are. You also get a bonus to your Payward Incentive for being such an essential part of station operations! Bunny ears not required, but highly encouraged.
-job-supervisors-secretary = Nash, the Station Representative, and horny people everywhere
+job-supervisors-secretary = The Station Representative, and horny people everywhere
 
 

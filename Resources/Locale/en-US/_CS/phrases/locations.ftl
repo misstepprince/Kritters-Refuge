@@ -14,7 +14,8 @@ phrase-location-nautical-cargo-bay = cargo bay
 phrase-location-nautical-docking-to = docking to
 
 # Station names
-phrase-location-nash = Nash
+phrase-location-nash = Haven's Rest
+phrase-location-havens = Haven's Rest
 phrase-location-nfsd-outpost = NFSD Outpost
 phrase-location-frontier-outpost = Frontier outpost
 phrase-location-power-plant = Power Plant

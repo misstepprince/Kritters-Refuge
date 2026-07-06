@@ -1,12 +1,12 @@
 job-supervisors-sr = the Station Representative
-job-supervisors-guard = NFSD, and the Nash Station administration
+job-supervisors-guard = NFSD, and the Haven's Rest Station administration
 job-supervisors-bailiff = the Bailiff
 job-supervisors-cadet = all higher ranking NFSD personnel
 job-supervisors-freebooters-union = the Freebooters' Union
 job-supervisors-nf-pirate = the call of troublemaking
 job-supervisors-nf-pirate-captain = the Captain
 job-supervisors-nfsd = Deputies, the Bailiff, and the Sheriff
-job-supervisors-plant-manager = Nash Command, which includes the Plant Manager, Station Representative, and such
+job-supervisors-plant-manager = Haven's Rest's Command, which includes the Plant Manager, Station Representative, and such
 job-supervisors-prisoner = all NFSD personnel
 job-supervisors-sergeant = the Sergeant
 job-supervisors-sheriff = the Sheriff

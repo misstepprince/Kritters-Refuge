@@ -1,5 +1,5 @@
 
-- type: entity #  Only to be sold at nash
+- type: entity #  Only to be sold at havens (formerly Nash)
   parent: PortableGeneratorJrPacmanFlatpack
   id: GeneratorCoolRTGFlatpack
   name: B-RTG generator flatpack

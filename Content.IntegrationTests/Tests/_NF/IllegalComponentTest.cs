@@ -18,7 +18,7 @@ public sealed class IllegalComponentTest
     [Test]
     public async Task CheckServerIllegalComponents()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Dirty = true });
         var server = pair.Server;
 
         var protoManager = server.ResolveDependency<IPrototypeManager>();

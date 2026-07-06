@@ -314,6 +314,7 @@
     CoolCoyoteClothesYellowwshort: 9000
     CoolCoyoteClothesGearHarness: 9000
     ClothingShoesFootProtectors: 9000
+    ClothingHeadHatCampaignCover: 9000 # Kritters
   contrabandInventory:
     ClothingHeadHatRichard: 1
     ToyFigurineBoxer: 1

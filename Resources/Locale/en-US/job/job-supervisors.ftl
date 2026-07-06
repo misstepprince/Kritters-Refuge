@@ -1,4 +1,4 @@
-job-supervisors-centcom = the people of Nash
+job-supervisors-centcom = the people of Haven's Rest
 job-supervisors-captain = the Captain
 job-supervisors-hop = the Head of Personnel
 job-supervisors-hos = the Head of Security
