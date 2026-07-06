@@ -10,18 +10,17 @@
     Medicine:
       effects:
       - !type:HealthChange
-        # Coyote Start
         conditions:
-        - !type:OrganType
-          type: Avali
-          shouldHave: false
+        - !type:KrittersBloodType
+          requiredTag: KrittersBloodBaseCobalt
         damage:
           types:
             Asphyxiation: -3.5
             Bloodloss: -3
-        # End Coyote
       - !type:AdjustReagent
         conditions:
+        - !type:KrittersBloodType
+          requiredTag: KrittersBloodBaseCobalt
         - !type:ReagentThreshold
           reagent: HeartbreakerToxin
           min: 1
@@ -29,18 +28,23 @@
         amount: -3
       - !type:HealthChange
         conditions:
+        - !type:KrittersBloodType
         - !type:ReagentThreshold
           min: 25
         damage:
           types:
             Asphyxiation: 5
-            Cold: 3
+      # Kritters: Tag-driven blood mistreatment. This only applies while the
+      # Kritters blood type system has marked the patient active, so disabling
+      # the system prevents non-cobalt entities from being matched.
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: Avali
+        - !type:KrittersBloodType
+          requiredTag: KrittersBloodBaseCobalt
+          invert: true
         damage:
           types:
-            Poison: 2.5 # Avali blood is ammonia based, so chems made to treat normal bloodloss poison them instead. Dex+ is worse. (Lethal Dose: 15u)
-            Asphyxiation: 1.5
+            Poison: 1.0
+            Asphyxiation: 2.5
             Bloodloss: 1
+            Cellular: 1.0

@@ -841,6 +841,11 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("INTEGER")
                         .HasColumnName("bank_balance");
 
+                    // Kritters
+                    b.Property<string>("BloodType")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("blood_type");
+
                     b.Property<string>("CharacterConsentFreetext")
                         .IsRequired()
                         .HasColumnType("TEXT")

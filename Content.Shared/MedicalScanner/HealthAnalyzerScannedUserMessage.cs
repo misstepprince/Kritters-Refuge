@@ -30,10 +30,13 @@ public struct HealthAnalyzerUiState
     public bool? Unrevivable;
     public bool? Unclonable; // Frontier
     public bool Printable; // Frontier
+    public string? BloodTypeName; // Kritters
+    public Color BloodTypeColor; // Kritters
+    public bool HasBloodTypeColor; // Kritters
 
     public HealthAnalyzerUiState() {}
 
-    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? unclonable, bool printable = false) // Frontier: added unclonable, printable
+    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? unclonable, bool printable = false, string? bloodTypeName = null, Color bloodTypeColor = default, bool hasBloodTypeColor = false) // Frontier: added unclonable, printable // Kritters: blood type display
     {
         TargetEntity = targetEntity;
         Temperature = temperature;
@@ -43,5 +46,8 @@ public struct HealthAnalyzerUiState
         Unrevivable = unrevivable;
         Unclonable = unclonable; // Frontier
         Printable = printable; // Frontier
+        BloodTypeName = bloodTypeName; // Kritters
+        BloodTypeColor = hasBloodTypeColor ? bloodTypeColor : Color.White; // Kritters
+        HasBloodTypeColor = hasBloodTypeColor; // Kritters
     }
 }

@@ -99,6 +99,12 @@
                                     MinSize="270 0"
                                     Name="CCustomSpecieNameEdit" />
                             </BoxContainer>
+                            <!--  Kritters: Blood type selector  -->
+                            <BoxContainer HorizontalExpand="True" Name="CBloodType">
+                                <Label Text="{Loc 'kritters-blood-type-label'}" />
+                                <Control HorizontalExpand="True" />
+                                <OptionButton HorizontalAlignment="Right" Name="BloodTypeButton" />
+                            </BoxContainer>
                             <!--  Age  -->
                             <BoxContainer HorizontalExpand="True">
                                 <Label Text="{Loc 'humanoid-profile-editor-age-label'}" />

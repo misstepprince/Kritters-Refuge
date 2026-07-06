@@ -589,6 +589,9 @@
   id: BaseCiviMedVend
   abstract: true
   components:
+  - type: KrittersBloodTypeVendingStock
+    entries:
+      KrittersBloodBag: 4294967295
   - type: VendingMachine
     pack: CiviMedVendInventory
     taxAccounts:

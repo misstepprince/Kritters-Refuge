@@ -1,0 +1,37 @@
+- type: entity
+  parent: OreBase
+  id: CobaltOre
+  name: cobalt ore
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: CobaltOre
+  - type: Sprite
+    sprite: _Kritters/Objects/Materials/ore.rsi
+    state: cobalt
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      RawCobalt: 100
+  - type: Extractable
+    grindableSolutionName: cobaltore
+  - type: SolutionContainerManager
+    solutions:
+      cobaltore:
+        reagents:
+        - ReagentId: Cobalt
+          Quantity: 10
+  - type: Item
+    sprite: _Kritters/Objects/Materials/ore.rsi
+  - type: Tag
+    tags:
+    - Ore
+    - OreCobalt
+
+- type: entity
+  parent: CobaltOre
+  id: CobaltOre1
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1

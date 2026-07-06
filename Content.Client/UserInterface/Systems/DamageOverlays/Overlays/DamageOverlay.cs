@@ -1,7 +1,11 @@
 using System.Numerics;
+using Content.Shared._Kritters.CCVar;
+using Content.Shared.Body.Components;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Mobs;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -14,6 +18,7 @@ public sealed class DamageOverlay : Overlay
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private readonly IConfigurationManager _configuration = default!;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
@@ -154,7 +159,7 @@ public sealed class DamageOverlay : Overlay
             var pulse = MathF.Max(0f, MathF.Sin(adjustedTime));
 
             _bruteShader.SetParameter("time", pulse);
-            _bruteShader.SetParameter("color", new Vector3(1f, 0f, 0f));
+            _bruteShader.SetParameter("color", GetPainColor());
             _bruteShader.SetParameter("darknessAlphaOuter", 0.8f);
 
             _bruteShader.SetParameter("outerCircleRadius", outerRadius);
@@ -254,5 +259,19 @@ public sealed class DamageOverlay : Overlay
             adjustment = Math.Clamp(adjustment, -value, value);
 
         return adjustment;
+    }
+
+    private Vector3 GetPainColor()
+    {
+        if (!_configuration.GetCVar(KrittersCCVars.BloodTypesEnabled) ||
+            !_configuration.GetCVar(KrittersCCVars.BloodColoredPainAura) ||
+            !_entityManager.TryGetComponent(_playerManager.LocalEntity, out BloodstreamComponent? bloodstream) ||
+            !_prototypeManager.TryIndex<ReagentPrototype>(bloodstream.BloodReagent, out var reagent))
+        {
+            return new Vector3(1f, 0f, 0f);
+        }
+
+        var color = reagent.SubstanceColor;
+        return new Vector3(color.R, color.G, color.B);
     }
 }

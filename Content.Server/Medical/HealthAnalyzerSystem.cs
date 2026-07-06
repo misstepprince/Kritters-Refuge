@@ -1,6 +1,7 @@
 using Content.Server.Medical.Components;
 using Content.Server.PowerCell;
 using Content.Server.Temperature.Components;
+using Content.Shared._Kritters.BloodTypes;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
@@ -36,6 +37,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly BloodstreamSystem _bloodstreamSystem = default!;
+    [Dependency] private readonly KrittersBloodTypeSystem _krittersBloodTypes = default!; // Kritters
 
     public override void Initialize()
     {
@@ -239,6 +241,9 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         var bleeding = false;
         var unrevivable = false;
         var unclonable = false; // Frontier
+        string? bloodTypeName = null; // Kritters
+        var bloodTypeColor = Color.White; // Kritters
+        var hasBloodTypeColor = false; // Kritters
 
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream) &&
             _solutionContainerSystem.ResolveSolution(entity, bloodstream.BloodSolutionName,
@@ -246,6 +251,10 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         {
             bloodAmount = _bloodstreamSystem.GetBloodLevelPercentage(entity);
             bleeding = bloodstream.BleedAmount > 0;
+            hasBloodTypeColor = _krittersBloodTypes.TryGetScannerDisplay(
+                bloodstream.BloodReagent,
+                out bloodTypeName,
+                out bloodTypeColor); // Kritters
         }
 
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
@@ -266,7 +275,10 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             bleeding,
             unrevivable,
             unclonable, // Frontier
-            printable // Frontier
+            printable, // Frontier
+            bloodTypeName, // Kritters
+            bloodTypeColor, // Kritters
+            hasBloodTypeColor // Kritters
         );
 
         _uiSystem.ServerSendUiMessage(healthAnalyzer, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(state));

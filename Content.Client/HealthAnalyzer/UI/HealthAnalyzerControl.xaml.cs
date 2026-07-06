@@ -101,6 +101,12 @@ public sealed partial class HealthAnalyzerControl : BoxContainer
             ? $"{state.BloodLevel * 100:F1} %"
             : Loc.GetString("health-analyzer-window-entity-unknown-value-text");
 
+        // Kritters: Blood type label comes from the scanned entity's blood reagent/type data.
+        BloodTypeLabel.Text = !string.IsNullOrWhiteSpace(state.BloodTypeName)
+            ? state.BloodTypeName
+            : Loc.GetString("health-analyzer-window-entity-unknown-value-text");
+        BloodTypeLabel.FontColorOverride = state.HasBloodTypeColor ? state.BloodTypeColor : null;
+
         StatusLabel.Text =
             _entityManager.TryGetComponent<MobStateComponent>(target.Value, out var mobStateComponent)
                 ? GetStatus(mobStateComponent.CurrentState)

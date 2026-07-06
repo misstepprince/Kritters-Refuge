@@ -1,0 +1,27 @@
+- type: entity
+  parent: ClothingOuterStorageBase
+  id: ClothingOuterTacticalSmock
+  name: tactical smock
+  description: A practical smock with a tactical cut.
+  components:
+  - type: Sprite
+    sprite: _Kritters/Clothing/OuterClothing/Misc/parasmock.rsi
+    state: item
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _Kritters/Clothing/OuterClothing/Misc/parasmock.rsi
+  - type: CycleableClothingVisuals
+    states:
+    - equipped-OUTERCLOTHING
+    - rolled-sleeves-equipped-OUTERCLOTHING
+    - open-equipped-OUTERCLOTHING
+    - rolled-bottoms-equipped-OUTERCLOTHING
+    - rolled-sleeves-open-equipped-OUTERCLOTHING
+    - rolled-bottoms-open-equipped-OUTERCLOTHING
+    - rolled-sleeves-bottoms-equipped-OUTERCLOTHING
+    - rolled-sleeves-bottoms-open-equipped-OUTERCLOTHING

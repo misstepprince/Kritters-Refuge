@@ -5,7 +5,7 @@
   desc: reagent-desc-cobalt
   physicalDesc: reagent-physical-desc-metallic
   flavor: metallic
-  color: "#66676B"
+  color: "#A3B0BC"
   boilingPoint: 2927.0
   meltingPoint: 1495.0
   metabolisms:

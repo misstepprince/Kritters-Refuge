@@ -1,4 +1,5 @@
 using Content.Server.Body.Systems;
+using Content.Server._Kritters.BloodTypes;
 using Content.Shared._DV.Chemistry.Components; // DeltaV
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
@@ -21,6 +22,7 @@ namespace Content.Server.Chemistry.EntitySystems;
 public sealed class InjectorSystem : SharedInjectorSystem
 {
     [Dependency] private readonly BloodstreamSystem _blood = default!;
+    [Dependency] private readonly KrittersBloodCompatibilitySystem _krittersBloodCompatibility = default!; // Kritters
     [Dependency] private readonly ReactiveSystem _reactiveSystem = default!;
     [Dependency] private readonly OpenableSystem _openable = default!;
 
@@ -244,6 +246,8 @@ public sealed class InjectorSystem : SharedInjectorSystem
         // Move units from attackSolution to targetSolution
         var removedSolution = SolutionContainers.SplitSolution(target.Comp.ChemicalSolution.Value, realTransferAmount);
 
+        _krittersBloodCompatibility.ApplyTransfusionMistreatment(target, removedSolution, injector.Owner); // Kritters
+
         _blood.TryAddToChemicals(target.AsNullable(), removedSolution);
 
         _reactiveSystem.DoEntityReaction(target, removedSolution, ReactionMethod.Injection);
@@ -288,6 +292,8 @@ public sealed class InjectorSystem : SharedInjectorSystem
             removedSolution = SolutionContainers.SplitSolution(soln.Value, realTransferAmount);
 
         _reactiveSystem.DoEntityReaction(targetEntity, removedSolution, ReactionMethod.Injection);
+
+        _krittersBloodCompatibility.ApplyTransfusionMistreatment(targetEntity, removedSolution, injector.Owner); // Kritters
 
         if (!asRefill)
             SolutionContainers.Inject(targetEntity, targetSolution, removedSolution);
