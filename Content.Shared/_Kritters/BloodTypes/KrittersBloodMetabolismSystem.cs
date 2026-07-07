@@ -1,5 +1,4 @@
 using Content.Shared.Temperature.Components;
-using System.Linq;
 
 namespace Content.Shared._Kritters.BloodTypes;
 
@@ -22,8 +21,13 @@ public sealed class KrittersBloodMetabolismSystem : EntitySystem
         if (MathF.Abs(temperatureDelta) < 0.001f)
             return;
 
-        temperatureSpeed.Thresholds = temperatureSpeed.Thresholds
-            .ToDictionary(entry => entry.Key + temperatureDelta, entry => entry.Value);
+        var shiftedThresholds = new Dictionary<float, float>(temperatureSpeed.Thresholds.Count);
+        foreach (var (threshold, modifier) in temperatureSpeed.Thresholds)
+        {
+            shiftedThresholds[threshold + temperatureDelta] = modifier;
+        }
+
+        temperatureSpeed.Thresholds = shiftedThresholds;
         ResetTemperatureSpeed(uid, temperatureSpeed);
     }
 
