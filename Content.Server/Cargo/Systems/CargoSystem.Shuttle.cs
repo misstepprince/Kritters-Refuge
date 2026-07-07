@@ -7,6 +7,8 @@ using Content.Shared.Cargo.Events;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.CCVar;
 using Robust.Shared.Audio;
+using Robust.Shared.Containers;
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.Cargo.Systems;
@@ -143,6 +145,7 @@ public sealed partial class CargoSystem
 
         foreach (var ent in toSell)
         {
+            EjectPlayersFromSoldEntity(ent);
             Del(ent);
         }
 
@@ -210,6 +213,36 @@ public sealed partial class CargoSystem
         }
 
         return true;
+    }
+
+    private void EjectPlayersFromSoldEntity(EntityUid uid)
+    {
+        if (!_containerQuery.TryGetComponent(uid, out var containers))
+            return;
+
+        var destination = Transform(uid).Coordinates;
+        EjectPlayersFromContainers(containers, destination);
+    }
+
+    private void EjectPlayersFromContainers(ContainerManagerComponent containers, EntityCoordinates destination)
+    {
+        foreach (var container in containers.Containers.Values)
+        {
+            foreach (var ent in container.ContainedEntities.ToArray())
+            {
+                if (Deleted(ent))
+                    continue;
+
+                if (_actorQuery.HasComponent(ent))
+                {
+                    _container.Remove(ent, container, force: true, destination: destination);
+                    continue;
+                }
+
+                if (_containerQuery.TryGetComponent(ent, out var childContainers))
+                    EjectPlayersFromContainers(childContainers, destination);
+            }
+        }
     }
 
     private void OnPalletSale(EntityUid uid, CargoPalletConsoleComponent component, CargoPalletSellMessage args)

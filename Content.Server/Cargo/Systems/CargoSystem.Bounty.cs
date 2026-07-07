@@ -380,7 +380,8 @@ public sealed partial class CargoSystem
         {
             foreach (var ent in container.ContainedEntities)
             {
-                if (_bountyLabelQuery.HasComponent(ent))
+                if (_bountyLabelQuery.HasComponent(ent) ||
+                    _actorQuery.HasComponent(ent))
                     continue;
 
                 var children = GetBountyEntities(ent);
