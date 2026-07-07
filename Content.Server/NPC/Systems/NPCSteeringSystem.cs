@@ -609,7 +609,8 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             return false;
 
         var ourMap = _transform.GetMapCoordinates(uid);
-        var targetMap = _transform.ToMapCoordinates(steering.Coordinates);
+        if (!TryGetMapCoordinates(steering.Coordinates, out var targetMap))
+            return false;
 
         if (ourMap.MapId != targetMap.MapId)
             return false;
@@ -791,12 +792,21 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         if (!poly.IsValid())
             return false;
 
-        var entityCoordinates = poly.Coordinates;
-        if (!entityCoordinates.IsValid(EntityManager))
-            return false;
+        return TryGetMapCoordinates(poly.Coordinates, out coordinates);
+    }
 
-        coordinates = _transform.ToMapCoordinates(entityCoordinates);
-        return true;
+    private bool TryGetMapCoordinates(EntityCoordinates entityCoordinates, out MapCoordinates coordinates)
+    {
+        coordinates = default;
+
+        if (!entityCoordinates.IsValid(EntityManager) ||
+            !TryComp(entityCoordinates.EntityId, out TransformComponent? _))
+        {
+            return false;
+        }
+
+        coordinates = _transform.ToMapCoordinates(entityCoordinates, logError: false);
+        return coordinates.MapId != MapId.Nullspace;
     }
 
     private bool TryValidateSharedPath(PathGroupKey key, List<PathPoly> path)
@@ -817,7 +827,7 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
         foreach (var poly in path)
         {
-            if (!poly.IsValid() || !poly.Coordinates.IsValid(EntityManager))
+            if (!TryGetMapCoordinates(poly, out _))
                 return false;
         }
 
