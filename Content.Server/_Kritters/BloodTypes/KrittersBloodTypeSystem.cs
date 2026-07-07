@@ -140,15 +140,11 @@ public sealed class KrittersServerBloodTypeSystem : EntitySystem
         if (changeBloodReagent)
             _bloodstream.ChangeBloodReagent(uid, bloodType.BloodReagent);
 
-        var tags = new HashSet<ProtoId<TagPrototype>>(bloodType.Tags)
-        {
-            ActiveTag,
-        };
-
-        _tags.AddTags(uid, tags);
+        _tags.AddTags(uid, bloodType.Tags);
+        _tags.AddTag(uid, ActiveTag);
 
         if (applyMetabolismProfile)
-            ApplyMetabolismProfile(uid, tags);
+            ApplyMetabolismProfile(uid, bloodType.Tags);
     }
 
     private void RefreshAllBloodTypes(bool enabled)
@@ -175,16 +171,27 @@ public sealed class KrittersServerBloodTypeSystem : EntitySystem
             || HasComp<KrittersBloodTypeSourceComponent>(uid);
     }
 
-    private void ApplyMetabolismProfile(EntityUid uid, HashSet<ProtoId<TagPrototype>> tags)
+    private void ApplyMetabolismProfile(EntityUid uid, IReadOnlyCollection<ProtoId<TagPrototype>> tags)
     {
         foreach (var profile in _proto.EnumeratePrototypes<KrittersBloodMetabolismProfilePrototype>())
         {
-            if (!tags.Contains(profile.RequiredTag))
+            if (!HasTag(tags, profile.RequiredTag))
                 continue;
 
             ApplyMetabolismProfile(uid, profile);
             return;
         }
+    }
+
+    private static bool HasTag(IReadOnlyCollection<ProtoId<TagPrototype>> tags, ProtoId<TagPrototype> tag)
+    {
+        foreach (var existing in tags)
+        {
+            if (existing == tag)
+                return true;
+        }
+
+        return false;
     }
 
     private void ApplyMetabolismProfile(EntityUid uid, KrittersBloodMetabolismProfilePrototype profile)
@@ -217,8 +224,7 @@ public sealed class KrittersServerBloodTypeSystem : EntitySystem
 
     private void ClearBloodTypeTags(EntityUid uid)
     {
-        var tags = _bloodTypes.GetAllBloodTypeTags();
-        tags.Add(ActiveTag);
-        _tags.RemoveTags(uid, tags);
+        _tags.RemoveTags(uid, _bloodTypes.GetAllBloodTypeTags());
+        _tags.RemoveTag(uid, ActiveTag);
     }
 }

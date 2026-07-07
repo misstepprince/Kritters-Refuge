@@ -7,7 +7,6 @@ using Content.Shared.Preferences;
 using Content.Shared.Tag;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
-using System.Linq;
 
 namespace Content.Shared._Kritters.BloodTypes;
 
@@ -16,12 +15,57 @@ public sealed class KrittersBloodTypeSystem : EntitySystem
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
+    private readonly List<KrittersBloodTypePrototype> _bloodTypes = new();
+    private readonly Dictionary<ProtoId<ReagentPrototype>, KrittersBloodTypePrototype> _bloodTypesByReagent = new();
+    private readonly Dictionary<ProtoId<SpeciesPrototype>, List<KrittersBloodTypePrototype>> _selectableBySpecies = new();
+    private readonly HashSet<ProtoId<TagPrototype>> _allBloodTypeTags = new();
+
     public bool Enabled => _cfg.GetCVar(KrittersCCVars.BloodTypesEnabled);
+
+    public override void Initialize()
+    {
+        SubscribeLocalEvent<PrototypesReloadedEventArgs>(OnPrototypesReloaded);
+        RebuildPrototypeCache();
+    }
+
+    private void OnPrototypesReloaded(PrototypesReloadedEventArgs args)
+    {
+        RebuildPrototypeCache();
+    }
+
+    private void RebuildPrototypeCache()
+    {
+        _bloodTypes.Clear();
+        _bloodTypesByReagent.Clear();
+        _selectableBySpecies.Clear();
+        _allBloodTypeTags.Clear();
+
+        foreach (var bloodType in _proto.EnumeratePrototypes<KrittersBloodTypePrototype>())
+        {
+            _bloodTypes.Add(bloodType);
+            _bloodTypesByReagent.TryAdd(bloodType.BloodReagent, bloodType);
+
+            foreach (var tag in bloodType.Tags)
+            {
+                _allBloodTypeTags.Add(tag);
+            }
+        }
+    }
 
     public IEnumerable<KrittersBloodTypePrototype> GetSelectableBloodTypes(ProtoId<SpeciesPrototype> species)
     {
-        return _proto.EnumeratePrototypes<KrittersBloodTypePrototype>()
-            .Where(type => IsCompatibleWithSpecies(type, species));
+        if (_selectableBySpecies.TryGetValue(species, out var cached))
+            return cached;
+
+        var selectable = new List<KrittersBloodTypePrototype>();
+        foreach (var bloodType in _bloodTypes)
+        {
+            if (IsCompatibleWithSpecies(bloodType, species))
+                selectable.Add(bloodType);
+        }
+
+        _selectableBySpecies[species] = selectable;
+        return selectable;
     }
 
     public bool TryResolveBloodType(HumanoidCharacterProfile profile, out KrittersBloodTypePrototype bloodType)
@@ -47,9 +91,17 @@ public sealed class KrittersBloodTypeSystem : EntitySystem
     public bool TryGetDefaultBloodType(ProtoId<SpeciesPrototype> species, out KrittersBloodTypePrototype bloodType)
     {
         var reagent = GetSpeciesBloodReagent(species);
-        bloodType = GetSelectableBloodTypes(species)
-            .FirstOrDefault(type => type.BloodReagent == reagent)!;
-        return bloodType != null;
+        foreach (var type in GetSelectableBloodTypes(species))
+        {
+            if (type.BloodReagent != reagent)
+                continue;
+
+            bloodType = type;
+            return true;
+        }
+
+        bloodType = default!;
+        return false;
     }
 
     public ProtoId<ReagentPrototype> GetSpeciesBloodReagent(ProtoId<SpeciesPrototype> species)
@@ -64,18 +116,14 @@ public sealed class KrittersBloodTypeSystem : EntitySystem
         return bloodstream.BloodReagent;
     }
 
-    public HashSet<ProtoId<TagPrototype>> GetAllBloodTypeTags()
+    public IReadOnlyCollection<ProtoId<TagPrototype>> GetAllBloodTypeTags()
     {
-        return _proto.EnumeratePrototypes<KrittersBloodTypePrototype>()
-            .SelectMany(type => type.Tags)
-            .ToHashSet();
+        return _allBloodTypeTags;
     }
 
     public bool TryGetBloodTypeByReagent(ProtoId<ReagentPrototype> reagent, out KrittersBloodTypePrototype bloodType)
     {
-        bloodType = _proto.EnumeratePrototypes<KrittersBloodTypePrototype>()
-            .FirstOrDefault(type => type.BloodReagent == reagent)!;
-        return bloodType != null;
+        return _bloodTypesByReagent.TryGetValue(reagent, out bloodType!);
     }
 
     /// <summary>

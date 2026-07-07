@@ -25,8 +25,14 @@ public sealed class KrittersBloodBagSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
 
+    private readonly HashSet<EntityUid> _attachedBags = new();
+    private readonly List<EntityUid> _bagsToDetach = new();
+    private EntityQuery<KrittersBloodBagComponent> _bloodBagQuery;
+
     public override void Initialize()
     {
+        _bloodBagQuery = GetEntityQuery<KrittersBloodBagComponent>();
+
         SubscribeLocalEvent<KrittersBloodTypesOnlyComponent, ComponentStartup>(OnBloodTypesOnlyStartup);
         SubscribeLocalEvent<KrittersBloodTypesOnlyComponent, AfterInteractEvent>(OnBloodTypesOnlyAfterInteract);
         SubscribeLocalEvent<KrittersBloodTypesOnlyComponent, UseInHandEvent>(OnBloodTypesOnlyUseInHand);
@@ -37,19 +43,34 @@ public sealed class KrittersBloodBagSystem : EntitySystem
         SubscribeLocalEvent<KrittersBloodBagComponent, UseInHandEvent>(OnBloodBagUseInHand);
         SubscribeLocalEvent<KrittersBloodBagComponent, DroppedEvent>(OnBloodBagDropped);
         SubscribeLocalEvent<KrittersBloodBagComponent, GotUnequippedHandEvent>(OnBloodBagUnequipped);
+        SubscribeLocalEvent<KrittersBloodBagComponent, ComponentShutdown>(OnBloodBagShutdown);
     }
 
     public override void Update(float frameTime)
     {
-        var query = EntityQueryEnumerator<KrittersBloodBagComponent>();
-        while (query.MoveNext(out var uid, out var bag))
+        foreach (var uid in _attachedBags)
         {
-            if (bag.AttachedTarget == null)
-                continue;
-
-            if (!BloodTypesEnabled || !TryDrip((uid, bag), frameTime))
-                Detach((uid, bag));
+            if (!_bloodBagQuery.TryComp(uid, out var bag)
+                || bag.AttachedTarget == null
+                || !BloodTypesEnabled
+                || !TryDrip((uid, bag), frameTime))
+            {
+                _bagsToDetach.Add(uid);
+            }
         }
+
+        foreach (var uid in _bagsToDetach)
+        {
+            if (_bloodBagQuery.TryComp(uid, out var bag))
+            {
+                Detach((uid, bag));
+                continue;
+            }
+
+            _attachedBags.Remove(uid);
+        }
+
+        _bagsToDetach.Clear();
     }
 
     private bool BloodTypesEnabled => _cfg.GetCVar(KrittersCCVars.BloodTypesEnabled);
@@ -163,6 +184,7 @@ public sealed class KrittersBloodBagSystem : EntitySystem
         ent.Comp.AttachedTarget = target;
         ent.Comp.AttachedUser = args.User;
         ent.Comp.Accumulator = 0f;
+        _attachedBags.Add(ent.Owner);
 
         _popup.PopupEntity(Loc.GetString("kritters-blood-bag-connected", ("target", target)), ent, args.User);
     }
@@ -184,6 +206,11 @@ public sealed class KrittersBloodBagSystem : EntitySystem
     private void OnBloodBagUnequipped(Entity<KrittersBloodBagComponent> ent, ref GotUnequippedHandEvent args)
     {
         Detach(ent);
+    }
+
+    private void OnBloodBagShutdown(Entity<KrittersBloodBagComponent> ent, ref ComponentShutdown args)
+    {
+        _attachedBags.Remove(ent.Owner);
     }
 
     private bool TryDrip(Entity<KrittersBloodBagComponent> bag, float frameTime)
@@ -237,6 +264,7 @@ public sealed class KrittersBloodBagSystem : EntitySystem
         ent.Comp.AttachedTarget = null;
         ent.Comp.AttachedUser = null;
         ent.Comp.Accumulator = 0f;
+        _attachedBags.Remove(ent.Owner);
 
         if (user != null && popup != null)
             _popup.PopupEntity(Loc.GetString(popup), ent, user.Value);
