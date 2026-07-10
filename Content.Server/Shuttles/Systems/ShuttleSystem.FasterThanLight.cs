@@ -85,6 +85,7 @@ public sealed partial class ShuttleSystem
 
     private readonly HashSet<EntityUid> _lookupEnts = new();
     private readonly HashSet<EntityUid> _immuneEnts = new();
+    private readonly HashSet<EntityUid> _smimshProcessedEnts = new();
     private readonly HashSet<Entity<NoFTLComponent>> _noFtls = new();
 
     private EntityQuery<BodyComponent> _bodyQuery;
@@ -1049,6 +1050,13 @@ public sealed partial class ShuttleSystem
         if (!Resolve(uid, ref manager, ref grid, ref xform) || xform.MapUid == null)
             return;
 
+        if (xform.MapID == _ticker.DefaultMap)
+        {
+            var emptyEv = new ShuttleFlattenEvent(xform.MapUid.Value, new List<Box2>());
+            RaiseLocalEvent(ref emptyEv);
+            return; // Frontier - FTL is too buggy to let it just fucking gib people wtf - so we disable for frontier's z-level
+        }
+
         if (!TryComp(xform.MapUid, out BroadphaseComponent? lookup))
             return;
 
@@ -1056,12 +1064,10 @@ public sealed partial class ShuttleSystem
         var transform = _physics.GetRelativePhysicsTransform((uid, xform), xform.MapUid.Value);
         var aabbs = new List<Box2>(manager.Fixtures.Count);
         var tileSet = new List<(Vector2i, Tile)>();
+        _smimshProcessedEnts.Clear();
 
         foreach (var fixture in manager.Fixtures.Values)
         {
-            if (xform.MapID == _ticker.DefaultMap)
-                break; //Frontier - FTL is too buggy to let it just fucking gib people wtf - so we disable for frontier's z-level
-
             if (!fixture.Hard)
                 continue;
 
@@ -1082,7 +1088,7 @@ public sealed partial class ShuttleSystem
 
             foreach (var ent in _lookupEnts)
             {
-                if (ent == uid || _immuneEnts.Contains(ent))
+                if (ent == uid || _immuneEnts.Contains(ent) || !_smimshProcessedEnts.Add(ent))
                 {
                     continue;
                 }
@@ -1105,6 +1111,7 @@ public sealed partial class ShuttleSystem
                                                                 $" {ToPrettyString(uid)} arriving from FTL at {xform.Coordinates:coordinates}");
                     var gibs = _bobby.GibBody(ent, body: mob);
                     _immuneEnts.UnionWith(gibs);
+                    _smimshProcessedEnts.UnionWith(gibs);
                     continue;
                 }
 
@@ -1114,5 +1121,6 @@ public sealed partial class ShuttleSystem
 
         var ev = new ShuttleFlattenEvent(xform.MapUid.Value, aabbs);
         RaiseLocalEvent(ref ev);
+        _smimshProcessedEnts.Clear();
     }
 }

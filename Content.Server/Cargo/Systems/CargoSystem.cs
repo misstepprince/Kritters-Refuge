@@ -12,7 +12,7 @@ using Content.Shared.Cargo.Components;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.CCVar;
 using Content.Shared.Containers.ItemSlots;
-using Content.Shared.Mobs.Components;
+using Content.Shared.Mind.Components;
 using Content.Shared.Paper;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
@@ -48,7 +48,7 @@ public sealed partial class CargoSystem : SharedCargoSystem
     private EntityQuery<TransformComponent> _xformQuery;
     private EntityQuery<ActorComponent> _actorQuery;
     private EntityQuery<CargoSellBlacklistComponent> _blacklistQuery;
-    private EntityQuery<MobStateComponent> _mobQuery;
+    private EntityQuery<MindContainerComponent> _mindContainerQuery;
     private EntityQuery<TradeStationComponent> _tradeQuery;
 
     private HashSet<EntityUid> _setEnts = new();
@@ -62,7 +62,7 @@ public sealed partial class CargoSystem : SharedCargoSystem
         _xformQuery = GetEntityQuery<TransformComponent>();
         _actorQuery = GetEntityQuery<ActorComponent>();
         _blacklistQuery = GetEntityQuery<CargoSellBlacklistComponent>();
-        _mobQuery = GetEntityQuery<MobStateComponent>();
+        _mindContainerQuery = GetEntityQuery<MindContainerComponent>();
         _tradeQuery = GetEntityQuery<TradeStationComponent>();
 
         InitializeConsole();

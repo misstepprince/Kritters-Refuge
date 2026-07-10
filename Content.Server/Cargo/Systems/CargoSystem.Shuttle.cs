@@ -172,8 +172,10 @@ public sealed partial class CargoSystem
                 // Dont sell:
                 // - anything already being sold
                 // - anything anchored (e.g. light fixtures)
-                // - anything blacklisted (e.g. players).
+                // - anything blacklisted
+                // - player entities.
                 if (toSell.Contains(ent) ||
+                    IsPlayerEntity(ent) ||
                     _xformQuery.TryGetComponent(ent, out var xform) &&
                     (xform.Anchored || !CanSell(ent, xform)))
                 {
@@ -183,7 +185,7 @@ public sealed partial class CargoSystem
                 if (_blacklistQuery.HasComponent(ent))
                     continue;
 
-                var price = _pricing.GetPrice(ent);
+                var price = _pricing.GetPrice(ent, predicate: CanCountForSale);
                 if (price == 0)
                     continue;
                 toSell.Add(ent);
@@ -194,17 +196,18 @@ public sealed partial class CargoSystem
 
     private bool CanSell(EntityUid uid, TransformComponent xform)
     {
-        if (_mobQuery.HasComponent(uid))
-        {
+        if (_blacklistQuery.HasComponent(uid) && !IsPlayerEntity(uid))
             return false;
-        }
 
         var complete = IsBountyComplete(uid, out var bountyEntities);
 
-        // Recursively check for mobs at any point.
+        // Recursively check for non-player blockers. Players can be ejected from sold containers.
         var children = xform.ChildEnumerator;
         while (children.MoveNext(out var child))
         {
+            if (IsPlayerEntity(child))
+                continue;
+
             if (complete && bountyEntities.Contains(child))
                 continue;
 
@@ -213,6 +216,17 @@ public sealed partial class CargoSystem
         }
 
         return true;
+    }
+
+    private bool CanCountForSale(EntityUid uid)
+    {
+        return !IsPlayerEntity(uid);
+    }
+
+    private bool IsPlayerEntity(EntityUid uid)
+    {
+        return _actorQuery.HasComponent(uid) ||
+               _mindContainerQuery.TryGetComponent(uid, out var mind) && (mind.HasMind || mind.HasHadMind);
     }
 
     private void EjectPlayersFromSoldEntity(EntityUid uid)
@@ -233,7 +247,7 @@ public sealed partial class CargoSystem
                 if (Deleted(ent))
                     continue;
 
-                if (_actorQuery.HasComponent(ent))
+                if (IsPlayerEntity(ent))
                 {
                     _container.Remove(ent, container, force: true, destination: destination);
                     continue;
