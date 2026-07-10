@@ -1,0 +1,21 @@
+- type: reagent
+  parent: Blood
+  id: CobaltBlood
+  name: reagent-name-cobalt-blood #Burger-King-blood for Dog
+  group: Biological
+  desc: reagent-desc-cobalt-blood #Burger-King-blood for Dog
+  flavor: metallic
+  color: "#E8D22A"
+  recognizable: true
+  physicalDesc: reagent-physical-desc-metallic
+
+- type: reagent
+  parent: Blood
+  id: HydraulicBlood
+  name: reagent-name-hydraulic-blood #yamalube racing 2-R only
+  group: Biological
+  desc: reagent-desc-hydraulic-blood #yamalube racing 2-R only
+  flavor: metallic
+  color: "#3F758A"
+  recognizable: true
+  physicalDesc: reagent-physical-desc-sweet

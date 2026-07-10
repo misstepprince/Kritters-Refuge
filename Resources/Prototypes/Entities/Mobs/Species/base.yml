@@ -79,6 +79,9 @@
         color: "#FF0000"
       Burn:
         sprite: Mobs/Effects/burn_damage.rsi
+  - type: KrittersBloodColoredDamageVisuals
+    groups:
+    - Brute
   - type: GenericVisualizer
     visuals:
       enum.CreamPiedVisuals.Creamed:

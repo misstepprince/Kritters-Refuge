@@ -1,0 +1,13 @@
+- type: stack
+  id: Cobalt
+  name: stack-cobalt
+  icon: { sprite: /Textures/_Kritters/Objects/Materials/ingots.rsi, state: cobalt }
+  spawn: IngotCobalt1
+  maxCount: 30
+
+- type: stack
+  id: CobaltOre
+  name: stack-cobalt-ore
+  icon: { sprite: /Textures/_Kritters/Objects/Materials/ore.rsi, state: cobalt }
+  spawn: CobaltOre1
+  maxCount: 100

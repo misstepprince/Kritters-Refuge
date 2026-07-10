@@ -12,7 +12,7 @@ The [color=#dd0000]Valet[/color] or [color=#009933]Station Representative[/color
     <GuideEntityEmbed Entity="SpaceCash1000"/>
     <GuideEntityEmbed Entity="ComputerShipyard"/>
   </Box>
-  Any money that you make is [bold]yours[/bold], and will be available in future shifts if deposited at a [color=#44cc00]Galactic Bank ATM[/color] on Nash Station.
+  Any money that you make is [bold]yours[/bold], and will be available in future shifts if deposited at a [color=#44cc00]Galactic Bank ATM[/color] on Haven's Rest.
 
 To make money, why not:
 - Join a ship's crew? Ask on the radio if anyone needs extra crew, and work to help your captain.
@@ -25,12 +25,12 @@ To make money, why not:
     <GuideEntityEmbed Entity="VendingMachineAmmo"/>
     <GuideEntityEmbed Entity="MachineCryoSleepPod"/>
   </Box>
-  Some provisions (e.g. air tanks, salvage equipment) are available from vendors on Nash Station, but most amenities (medical services, food) should be offered by players on shuttles or at the Trade Depot.
+  Some provisions (e.g. air tanks, salvage equipment) are available from vendors on Haven's Rest, but most amenities (medical services, food) should be offered by players on shuttles or at the Trade Depot.
 
-Be sure to stock up at Nash Station if going out on an extended voyage, and take advantage of the [color=#33bbff]medical insurance tracker[/color] in your loadout, or from the NanoMed vendor in medbay.
+Be sure to stock up at Haven's Rest if going out on an extended voyage, and take advantage of the [color=#33bbff]medical insurance tracker[/color] in your loadout, or from the NanoMed vendor in medbay.
 
 Shifts on the Sector typically last for [color=#33bbff]six hours[/color].
-If you need to end your shift early or take a break, use the [color=#33bbff]cryo sleep chambers[/color] in the clinic in Nash Station.
+If you need to end your shift early or take a break, use the [color=#33bbff]cryo sleep chambers[/color] in the clinic in Haven's Rest.
 
   <Box>
     <GuideEntityEmbed Entity="PottedPlant0"/>

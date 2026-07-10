@@ -1,3 +1,4 @@
+using Content.Shared._Kritters.BloodTypes;
 using Content.Shared.Temperature.Systems;
 using Robust.Shared.GameStates;
 
@@ -6,7 +7,7 @@ namespace Content.Shared.Temperature.Components;
 /// <summary>
 /// This is used for an entity that varies in speed based on current temperature.
 /// </summary>
-[RegisterComponent, NetworkedComponent, Access(typeof(SharedTemperatureSystem)), AutoGenerateComponentState, AutoGenerateComponentPause]
+[RegisterComponent, NetworkedComponent, Access(typeof(SharedTemperatureSystem), typeof(KrittersBloodMetabolismSystem)), AutoGenerateComponentState, AutoGenerateComponentPause] // Kritters
 public sealed partial class TemperatureSpeedComponent : Component
 {
     /// <summary>

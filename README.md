@@ -1,15 +1,23 @@
 <div class="header" align="center">
-<img alt="Coyote Sector" height="308" src="Resources/Textures/_CS/Logo/logo.png?raw=true" />
+<img alt="Coyote Sector" height="308" src="Resources/Textures/_Kritters/Logo/logo.png?raw=true" />
 </div>
 
-Coyote Sector is a fork of [Frontier Station](https://github.com/new-frontiers-14/frontier-station-14), which itself is a fork of [Space Station 14](https://github.com/space-wizards/space-station-14) that runs on [Robust Toolbox](https://github.com/space-wizards/RobustToolbox) engine written in C#.
+Kritters Refuge is a fork of Coyote Sector which is itself a fork of [Frontier Station](https://github.com/new-frontiers-14/frontier-station-14), which itself is a fork of [Space Station 14](https://github.com/space-wizards/space-station-14) that runs on [Robust Toolbox](https://github.com/space-wizards/RobustToolbox) engine written in C#.
 
 
-This is the primary repo for Coyote Sector.
+This is the primary repo for Kritters Refuge.
 
-If you want to host or create content for Coyote Sector, this is the repo you need. It contains both RobustToolbox and the content pack for development of new content packs.
+If you want to host or create content for Kritters Refuge, this is the repo you need. It contains both RobustToolbox and the content pack for development of new content packs.
 
 ## Links
+
+#### Kritters Refuge
+<div class="header" align="center">
+
+[Discord](https://discord.gg/rnxJk2Rf3m)
+
+</div>
+
 
 #### Coyote Sector
 <div class="header" align="center">
@@ -45,11 +53,11 @@ If you make any contributions, note that any changes made to files belonging to 
 
 1. Clone this repo:
 ```shell
-git clone https://github.com/ARF-SS13/coyote-frontier.git
+git clone https://github.com/Dizztrikt/Kritters-Refuge
 ```
 2. Go to the project folder and run `RUN_THIS.py` to initialize the submodules and load the engine:
 ```shell
-cd coyote-frontier
+cd Kritters-Refuge
 python RUN_THIS.py
 ```
 3. Compile the solution:

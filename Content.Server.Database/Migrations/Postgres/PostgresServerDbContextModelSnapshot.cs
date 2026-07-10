@@ -894,6 +894,11 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("integer")
                         .HasColumnName("bank_balance");
 
+                    // Kritters
+                    b.Property<string>("BloodType")
+                        .HasColumnType("text")
+                        .HasColumnName("blood_type");
+
                     b.Property<string>("CharacterConsentFreetext")
                         .IsRequired()
                         .HasColumnType("text")

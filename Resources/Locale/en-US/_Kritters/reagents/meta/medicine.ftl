@@ -1,2 +1,2 @@
 reagent-name-cobaxalin = cobaxalin
-reagent-desc-cobaxalin = Used to treat oxygen deprivation and bloodloss, and to flush heartbreaker toxin from the bloodstream. Toxic to Avali.
+reagent-desc-cobaxalin = A cobalt-based advanced oxygen deprivation medicine. Only effective for patients with cobalt-based blood.

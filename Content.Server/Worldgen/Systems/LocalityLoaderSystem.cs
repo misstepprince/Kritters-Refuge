@@ -1,4 +1,5 @@
 using Content.Server.Worldgen.Components;
+using Content.Server.Worldgen.Components.Debris; // Kritters
 using Robust.Server.GameObjects;
 using Content.Server._NF.Worldgen.Components.Debris; // Frontier
 using Content.Server._NF.Salvage; // Frontier
@@ -31,8 +32,24 @@ public sealed class LocalityLoaderSystem : BaseWorldSystem
 
         while (e.MoveNext(out var uid, out var loadable, out var xform))
         {
+            // Kritters: deferred blob grids need tiles before LocalStructureLoadedEvent populates them.
+            if (TryComp<BlobFloorPlanBuilderComponent>(uid, out var builder))
+            {
+                if (!builder.Built)
+                    continue;
+
+                if (builder.Populated)
+                {
+                    RemCompDeferred<LocalityLoaderComponent>(uid);
+                    continue;
+                }
+            }
+
             if (!controllerQuery.TryGetComponent(xform.MapUid, out var controller))
             {
+                if (builder != null) // Kritters
+                    builder.Populated = true; // Kritters
+
                 RaiseLocalEvent(uid, new LocalStructureLoadedEvent());
                 RemCompDeferred<LocalityLoaderComponent>(uid);
                 continue;
@@ -55,6 +72,9 @@ public sealed class LocalityLoaderSystem : BaseWorldSystem
 
                         if ((_xformSys.GetWorldPosition(loaderXform) - _xformSys.GetWorldPosition(xform)).Length() > loadable.LoadingDistance)
                             continue;
+
+                        if (builder != null) // Kritters
+                            builder.Populated = true; // Kritters
 
                         RaiseLocalEvent(uid, new LocalStructureLoadedEvent());
                         RemCompDeferred<LocalityLoaderComponent>(uid);

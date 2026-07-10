@@ -339,7 +339,8 @@ namespace Content.Server.Database
                 antags.ToHashSet(),
                 traits.ToHashSet(),
                 hiddenEmoteCategories,
-                loadouts
+                loadouts,
+                profile.BloodType // Kritters
             );
         }
 
@@ -357,6 +358,7 @@ namespace Content.Server.Database
             profile.CharacterName = humanoid.Name;
             profile.FlavorText = humanoid.FlavorText;
             profile.Species = humanoid.Species;
+            profile.BloodType = humanoid.BloodType; // Kritters
             profile.Customspeciesname = humanoid.Customspeciesname;
             profile.Age = humanoid.Age;
             profile.Sex = humanoid.Sex.ToString();

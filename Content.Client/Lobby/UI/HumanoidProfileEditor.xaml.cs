@@ -1,6 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Content.Shared._Kritters.BloodTypes;
+using Content.Shared._Kritters.BloodTypes.Prototypes;
+using Content.Shared._Kritters.CCVar;
 using Content.Client.Consent;
 using Content.Client.Humanoid;
 using Content.Client.Lobby.UI.Loadouts;
@@ -100,6 +103,8 @@ namespace Content.Client.Lobby.UI
         public HumanoidCharacterProfile? Profile;
 
         private List<SpeciesPrototype> _species = new();
+        // Kritters: First entry is null for species default.
+        private readonly List<KrittersBloodTypePrototype?> _bloodTypes = new();
 
         private List<(string, RequirementsSelector)> _jobPriorities = new();
 
@@ -245,6 +250,13 @@ namespace Content.Client.Lobby.UI
                 SetSpecies(_species[args.Id].ID);
                 UpdateHairPickers();
                 OnSkinColorOnValueChanged();
+            };
+
+            // Kritters
+            BloodTypeButton.OnItemSelected += args =>
+            {
+                BloodTypeButton.SelectId(args.Id);
+                SetBloodType(_bloodTypes[args.Id]?.ID);
             };
 
             #region Skin
@@ -572,6 +584,7 @@ namespace Content.Client.Lobby.UI
             #endregion CustomSpecieName
 
             UpdateSpeciesGuidebookIcon();
+            UpdateBloodTypeControls(); // Kritters
             IsDirty = false;
         }
 
@@ -1026,6 +1039,7 @@ namespace Content.Client.Lobby.UI
             UpdateWeight();
             UpdateGenderControls();
             UpdateSkinColor();
+            UpdateBloodTypeControls(); // Kritters
             UpdateSpawnPriorityControls();
             UpdateAgeEdit();
             UpdateEyePickers();
@@ -1039,6 +1053,7 @@ namespace Content.Client.Lobby.UI
             RefreshJobs();
             RefreshLoadouts();
             RefreshSpecies();
+            UpdateBloodTypeControls(); // Kritters
             RefreshTraits();
             RefreshFlavorText();
             ReloadPreview();
@@ -1522,6 +1537,11 @@ namespace Content.Client.Lobby.UI
         private void SetSpecies(string newSpecies)
         {
             Profile = Profile?.WithSpecies(newSpecies);
+            // Kritters: species changes return to the species default unless the current
+            // explicit override is still valid for the new species.
+            var bloodTypeSystem = _entManager.System<KrittersBloodTypeSystem>();
+            if (Profile != null && !bloodTypeSystem.IsValidOverride(Profile.Species, Profile.BloodType))
+                Profile = Profile.WithBloodType(null);
             OnSkinColorOnValueChanged(); // Species may have special color prefs, make sure to update it.
             Markings.SetSpecies(newSpecies); // Repopulate the markings tab as well.
             // In case there's job restrictions for the species
@@ -1531,8 +1551,16 @@ namespace Content.Client.Lobby.UI
             // Frontier: In case there's species restrictions for traits
             RefreshTraits(); // Frontier
             UpdateSexControls(); // update sex for new species
+            UpdateBloodTypeControls(); // Kritters
             UpdateSpeciesGuidebookIcon();
             ReloadPreview();
+        }
+
+        // Kritters
+        private void SetBloodType(string? bloodType)
+        {
+            Profile = Profile?.WithBloodType(bloodType);
+            SetDirty();
         }
 
         private void SetName(string newName)
@@ -1758,6 +1786,44 @@ namespace Content.Client.Lobby.UI
                 // End Frontier
             }
 
+        }
+
+        // Kritters
+        private void UpdateBloodTypeControls()
+        {
+            CBloodType.Visible = _cfgManager.GetCVar(KrittersCCVars.BloodTypesEnabled);
+            BloodTypeButton.Clear();
+            _bloodTypes.Clear();
+
+            if (Profile == null || !CBloodType.Visible)
+                return;
+
+            _bloodTypes.Add(null);
+            BloodTypeButton.AddItem(Loc.GetString("kritters-blood-type-default"), 0);
+
+            var bloodTypeSystem = _entManager.System<KrittersBloodTypeSystem>();
+            foreach (var bloodType in bloodTypeSystem.GetSelectableBloodTypes(Profile.Species)
+                         .OrderBy(type => Loc.GetString(type.Name)))
+            {
+                var id = _bloodTypes.Count;
+                _bloodTypes.Add(bloodType);
+                BloodTypeButton.AddItem(Loc.GetString(bloodType.Name), id);
+            }
+
+            var selected = 0;
+            if (!string.IsNullOrWhiteSpace(Profile.BloodType))
+            {
+                for (var i = 1; i < _bloodTypes.Count; i++)
+                {
+                    if (_bloodTypes[i]?.ID != Profile.BloodType)
+                        continue;
+
+                    selected = i;
+                    break;
+                }
+            }
+
+            BloodTypeButton.SelectId(selected);
         }
 
         public void UpdateSpeciesGuidebookIcon()

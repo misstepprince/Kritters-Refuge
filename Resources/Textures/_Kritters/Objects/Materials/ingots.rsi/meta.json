@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Sprites created by Vukly_Aura(Discord) for Kritters Refuge, Implemented by Virnazush(Discord/Github).",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "cobalt"
+    },
+    {
+      "name": "cobalt_2"
+    },
+    {
+      "name": "cobalt_3"
+    },
+    {
+      "name": "cobalt-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "cobalt-inhand-right",
+      "directions": 4
+    }
+  ]
+}

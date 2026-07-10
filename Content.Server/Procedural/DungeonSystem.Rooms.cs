@@ -262,7 +262,12 @@ public sealed partial class DungeonSystem
                     decal.ZIndex,
                     decal.Cleanable);
 
-                DebugTools.Assert(result);
+                // Kritters: Generated debris rooms can occasionally request a decal at an invalid
+                // coordinate after transforms/rotation. Do not take the server down for a skipped decal.
+                if (!result)
+                {
+                    Log.Warning($"Failed to place dungeon room decal {decal.Id} for room {room.ID} at {position} on {ToPrettyString(gridUid)}.");
+                }
             }
         }
     }

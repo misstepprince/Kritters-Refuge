@@ -1,0 +1,11 @@
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: ClothingShoesBootsZipper
+  name: Zipper Boots
+  description: A pair of boots with sturdy side zippers.
+  components:
+    - type: Sprite
+      sprite: _Kritters/Clothing/Shoes/Boots/zipupboots.rsi
+      state: equipped-FEET
+    - type: Clothing
+      sprite: _Kritters/Clothing/Shoes/Boots/zipupboots.rsi

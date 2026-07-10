@@ -871,6 +871,9 @@
   name: NanoMed Plus
   description: It's a medical drug dispenser. Natural chemicals only!
   components:
+  - type: KrittersBloodTypeVendingStock
+    entries:
+      KrittersBloodBag: 3
   - type: VendingMachine
     pack: NanoMedPlusInventory
     taxAccounts: # Frontier
@@ -1497,6 +1500,9 @@
   name: NanoMed
   description: "It's a wall-mounted medical equipment dispenser. Natural chemicals only!"
   components:
+  - type: KrittersBloodTypeVendingStock
+    entries:
+      KrittersBloodBag: 2
   - type: VendingMachine
     pack: NanoMedInventory
     taxAccounts: # Frontier

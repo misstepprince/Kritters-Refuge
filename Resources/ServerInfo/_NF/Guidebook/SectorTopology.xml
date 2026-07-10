@@ -3,9 +3,9 @@
 
 <!-- Note: range values will not scale with the world size cvar! -->
 
-The Frontier sector consists of a large, disk-like asteroid belt. In the center of the belt, Nash Station serves as the arrival point for greensuits and seasoned pilgrims alike.
+The Frontier sector consists of a large, disk-like asteroid belt. In the center of the belt, Haven's Rest serves as the arrival point for greensuits and seasoned pilgrims alike.
 
-The area immediately around Nash Station is mostly empty space. Beyond this, there are [bold]three distinct zones[/bold]:
+The area immediately around Haven's Rest is mostly empty space. Beyond this, there are [bold]three distinct zones[/bold]:
 
 <Box Margin="0">
   <GuideEntityEmbed Entity="NFSectorMap" Caption="" Margin="-20"/>

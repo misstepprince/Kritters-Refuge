@@ -1,0 +1,11 @@
+- type: entity
+  id: SteelOre5CobaltOre1
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: EntityTableSpawner
+    table: !type:AllSelector
+      children:
+      - !type:EntSelector
+        id: SteelOre5
+      - !type:EntSelector
+        id: CobaltOre1

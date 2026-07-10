@@ -16,7 +16,7 @@ namespace Content.Shared.Body.Components;
 /// Gives an entity a bloodstream.
 /// </summary>
 [RegisterComponent, NetworkedComponent,]
-[AutoGenerateComponentState(fieldDeltas: true), AutoGenerateComponentPause]
+[AutoGenerateComponentState(raiseAfterAutoHandleState: true, fieldDeltas: true), AutoGenerateComponentPause]
 [Access(typeof(SharedBloodstreamSystem))]
 public sealed partial class BloodstreamComponent : Component
 {

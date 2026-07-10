@@ -1,6 +1,7 @@
 // _CS Start
 using System.Linq;
 using System.Text.RegularExpressions;
+using Content.Shared._Kritters.BloodTypes;
 using Content.Shared._NF.Bank;
 using Content.Shared.CCVar;
 using Content.Shared.Chat.Prototypes;
@@ -94,6 +95,10 @@ namespace Content.Shared.Preferences
         [DataField]
         public ProtoId<SpeciesPrototype> Species { get; set; } = SharedHumanoidAppearanceSystem.DefaultSpecies;
 
+        // Kritters: Null means the character uses the species default blood reagent.
+        [DataField]
+        public string? BloodType { get; set; }
+
         [DataField]
         public string Customspeciesname { get; set; } = string.Empty;
 
@@ -177,11 +182,13 @@ namespace Content.Shared.Preferences
             HashSet<ProtoId<AntagPrototype>> antagPreferences,
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
             HashSet<EmoteCategory> hiddenEmoteCategories,
-            Dictionary<string, RoleLoadout> loadouts)
+            Dictionary<string, RoleLoadout> loadouts,
+            string? bloodType = null) // Kritters
         {
             Name = name;
             FlavorText = flavortext;
             Species = species;
+            BloodType = bloodType; // Kritters
             Customspeciesname = customspeciesname;
             Height = height;
             Width = width;
@@ -224,7 +231,8 @@ namespace Content.Shared.Preferences
                 antagPreferences,
                 traitPreferences,
                 hiddenEmoteCategories,
-                loadouts)
+                loadouts,
+                other.BloodType) // Kritters
         {
         }
 
@@ -247,7 +255,8 @@ namespace Content.Shared.Preferences
                 new HashSet<ProtoId<AntagPrototype>>(other.AntagPreferences),
                 new HashSet<ProtoId<TraitPrototype>>(other.TraitPreferences),
                 new HashSet<EmoteCategory>(other.HiddenEmoteCategories),
-                new Dictionary<string, RoleLoadout>(other.Loadouts))
+                new Dictionary<string, RoleLoadout>(other.Loadouts),
+                other.BloodType) // Kritters
         {
         }
 
@@ -366,6 +375,12 @@ namespace Content.Shared.Preferences
         public HumanoidCharacterProfile WithSpecies(string species)
         {
             return new(this) { Species = species };
+        }
+
+        // Kritters
+        public HumanoidCharacterProfile WithBloodType(string? bloodType)
+        {
+            return new(this) { BloodType = string.IsNullOrWhiteSpace(bloodType) ? null : bloodType };
         }
 
         public HumanoidCharacterProfile WithHeight(float height)
@@ -590,6 +605,7 @@ namespace Content.Shared.Preferences
             if (Sex != other.Sex) return false;
             if (Gender != other.Gender) return false;
             if (Species != other.Species) return false;
+            if (BloodType != other.BloodType) return false; // Kritters
             if (BankBalance != other.BankBalance) return false; // Frontier
             if (PreferenceUnavailable != other.PreferenceUnavailable) return false;
             if (SpawnPriority != other.SpawnPriority) return false;
@@ -606,12 +622,20 @@ namespace Content.Shared.Preferences
         {
             var configManager = collection.Resolve<IConfigurationManager>();
             var prototypeManager = collection.Resolve<IPrototypeManager>();
+            var entitySystemManager = collection.Resolve<IEntitySystemManager>(); // Kritters
 
             if (!prototypeManager.TryIndex(Species, out var speciesPrototype) || speciesPrototype.RoundStart == false)
             {
                 Species = SharedHumanoidAppearanceSystem.DefaultSpecies;
                 speciesPrototype = prototypeManager.Index(Species);
             }
+
+            // Kritters: validate overrides only while the feature is enabled, so disabling the
+            // system ignores saved values without deleting them.
+            var bloodType = BloodType;
+            var bloodTypeSystem = entitySystemManager.GetEntitySystem<KrittersBloodTypeSystem>();
+            if (bloodTypeSystem.Enabled && !bloodTypeSystem.IsValidOverride(Species, bloodType))
+                bloodType = null;
 
             var sex = Sex switch
             {
@@ -751,6 +775,7 @@ namespace Content.Shared.Preferences
 
             Name = name;
             FlavorText = flavortext;
+            BloodType = bloodType; // Kritters
             Age = age;
             Height = height;
             Width = width;
@@ -875,6 +900,7 @@ namespace Content.Shared.Preferences
             hashCode.Add(Name);
             hashCode.Add(FlavorText);
             hashCode.Add(Species);
+            hashCode.Add(BloodType); // Kritters
             hashCode.Add(Height);
             hashCode.Add(Width);
             hashCode.Add(Age);

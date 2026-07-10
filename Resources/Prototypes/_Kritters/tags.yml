@@ -1,0 +1,33 @@
+- type: Tag
+  id: OreCobalt
+
+# Kritters: Blood type compatibility tags.
+- type: Tag
+  id: KrittersBloodTypesActive
+
+- type: Tag
+  id: KrittersBloodBaseIron
+
+- type: Tag
+  id: KrittersBloodBaseCopper
+
+- type: Tag
+  id: KrittersBloodBaseCobalt
+
+- type: Tag
+  id: KrittersBloodBaseAmmonia
+
+- type: Tag
+  id: KrittersBloodBaseInsect
+
+- type: Tag
+  id: KrittersBloodBasePlant
+
+- type: Tag
+  id: KrittersBloodBaseSlime
+
+- type: Tag
+  id: KrittersBloodMetabolismWarm
+
+- type: Tag
+  id: KrittersBloodMetabolismCold

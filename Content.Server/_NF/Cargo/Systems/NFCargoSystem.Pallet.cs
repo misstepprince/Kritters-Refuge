@@ -5,9 +5,10 @@ using Content.Shared._NF.Cargo.BUI;
 using Content.Shared.Cargo;
 using Content.Shared.Cargo.Events;
 using Content.Shared.GameTicking;
-using Content.Shared.Mobs;
 using Robust.Shared.Audio;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
+using System.Linq;
 using System.Numerics;
 using Content.Shared.Coordinates;
 using Robust.Shared.Random;
@@ -148,7 +149,10 @@ public sealed partial class NFCargoSystem
         RaiseLocalEvent(ref ev);
 
         foreach (var ent in toSell)
+        {
+            EjectPlayersFromSoldEntity(ent);
             Del(ent);
+        }
 
         return true;
     }
@@ -173,8 +177,10 @@ public sealed partial class NFCargoSystem
                 // Dont sell:
                 // - anything already being sold
                 // - anything anchored (e.g. light fixtures)
-                // - anything blacklisted (e.g. players).
+                // - anything blacklisted
+                // - player entities.
                 if (toSell.Contains(ent) ||
+                    IsPlayerEntity(ent) ||
                     _xformQuery.TryGetComponent(ent, out var xform) &&
                     (xform.Anchored || !CanSell(ent, xform)))
                 {
@@ -187,7 +193,7 @@ public sealed partial class NFCargoSystem
                 if (_blacklistQuery.HasComponent(ent))
                     continue;
 
-                var price = _pricing.GetPrice(ent);
+                var price = _pricing.GetPrice(ent, predicate: CanCountForSale);
                 if (price == 0)
                     continue;
                 toSell.Add(ent);
@@ -217,20 +223,19 @@ public sealed partial class NFCargoSystem
     private bool CanSell(EntityUid uid, TransformComponent xform)
     {
         // Look for blacklisted items and stop the selling of the container.
-        if (_blacklistQuery.HasComponent(uid))
-            return false;
-
-        // Allow selling dead mobs
-        if (_mobQuery.TryComp(uid, out var mob) && mob.CurrentState != MobState.Dead)
+        if (_blacklistQuery.HasComponent(uid) && !IsPlayerEntity(uid))
             return false;
 
         // NOTE: no bounties for now
         // var complete = IsBountyComplete(uid, out var bountyEntities);
 
-        // Recursively check for mobs at any point.
+        // Recursively check for non-player blockers. Players can be ejected from sold containers.
         var children = xform.ChildEnumerator;
         while (children.MoveNext(out var child))
         {
+            if (IsPlayerEntity(child))
+                continue;
+
             // NOTE: no bounties for now
             // if (complete && bountyEntities.Contains(child))
             //     continue;
@@ -240,6 +245,47 @@ public sealed partial class NFCargoSystem
         }
 
         return true;
+    }
+
+    private bool CanCountForSale(EntityUid uid)
+    {
+        return !IsPlayerEntity(uid);
+    }
+
+    private bool IsPlayerEntity(EntityUid uid)
+    {
+        return _actorQuery.HasComponent(uid) ||
+               _mindContainerQuery.TryGetComponent(uid, out var mind) && (mind.HasMind || mind.HasHadMind);
+    }
+
+    private void EjectPlayersFromSoldEntity(EntityUid uid)
+    {
+        if (!TryComp<ContainerManagerComponent>(uid, out var containers))
+            return;
+
+        var destination = Transform(uid).Coordinates;
+        EjectPlayersFromContainers(containers, destination);
+    }
+
+    private void EjectPlayersFromContainers(ContainerManagerComponent containers, EntityCoordinates destination)
+    {
+        foreach (var container in containers.Containers.Values)
+        {
+            foreach (var ent in container.ContainedEntities.ToArray())
+            {
+                if (Deleted(ent))
+                    continue;
+
+                if (IsPlayerEntity(ent))
+                {
+                    _container.Remove(ent, container, force: true, destination: destination);
+                    continue;
+                }
+
+                if (TryComp<ContainerManagerComponent>(ent, out var childContainers))
+                    EjectPlayersFromContainers(childContainers, destination);
+            }
+        }
     }
 
     private void OnPalletSale(Entity<NFCargoPalletConsoleComponent> ent, ref CargoPalletSellMessage args)

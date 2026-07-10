@@ -1,0 +1,11 @@
+# Kritters: Blood metabolism profiles are selected by blood type tags.
+- type: krittersBloodMetabolismProfile
+  id: KrittersColdBloodMetabolism
+  requiredTag: KrittersBloodMetabolismCold
+  normalBodyTemperature: 293.15
+  setCurrentTemperature: true
+  shiftTemperatureSpeedThresholds: true
+  temperatureSpeedThresholds:
+    284: 0.8
+    278: 0.6
+    268: 0.4
