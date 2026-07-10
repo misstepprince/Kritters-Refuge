@@ -12,12 +12,13 @@ using Content.Shared.Cargo.Components;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.CCVar;
 using Content.Shared.Containers.ItemSlots;
-using Content.Shared.Mobs.Components;
+using Content.Shared.Mind.Components;
 using Content.Shared.Paper;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
@@ -45,8 +46,9 @@ public sealed partial class CargoSystem : SharedCargoSystem
     [Dependency] private readonly RadioSystem _radio = default!;
 
     private EntityQuery<TransformComponent> _xformQuery;
+    private EntityQuery<ActorComponent> _actorQuery;
     private EntityQuery<CargoSellBlacklistComponent> _blacklistQuery;
-    private EntityQuery<MobStateComponent> _mobQuery;
+    private EntityQuery<MindContainerComponent> _mindContainerQuery;
     private EntityQuery<TradeStationComponent> _tradeQuery;
 
     private HashSet<EntityUid> _setEnts = new();
@@ -58,8 +60,9 @@ public sealed partial class CargoSystem : SharedCargoSystem
         base.Initialize();
 
         _xformQuery = GetEntityQuery<TransformComponent>();
+        _actorQuery = GetEntityQuery<ActorComponent>();
         _blacklistQuery = GetEntityQuery<CargoSellBlacklistComponent>();
-        _mobQuery = GetEntityQuery<MobStateComponent>();
+        _mindContainerQuery = GetEntityQuery<MindContainerComponent>();
         _tradeQuery = GetEntityQuery<TradeStationComponent>();
 
         InitializeConsole();

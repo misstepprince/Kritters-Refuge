@@ -12,7 +12,7 @@ using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.GameTicking;
-using Content.Shared.Mobs.Components;
+using Content.Shared.Mind.Components;
 using Content.Shared.Paper;
 using Content.Shared.Whitelist;
 using Robust.Server.Containers;
@@ -21,6 +21,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Random;
+using Robust.Shared.Player;
 
 namespace Content.Server._NF.Cargo.Systems;
 
@@ -51,8 +52,9 @@ public sealed partial class NFCargoSystem : SharedNFCargoSystem
     [Dependency] private readonly HandsSystem _hands = default!;
 
     private EntityQuery<TransformComponent> _xformQuery;
+    private EntityQuery<ActorComponent> _actorQuery;
     private EntityQuery<CargoSellBlacklistComponent> _blacklistQuery;
-    private EntityQuery<MobStateComponent> _mobQuery;
+    private EntityQuery<MindContainerComponent> _mindContainerQuery;
 
     private HashSet<EntityUid> _setEnts = new();
     private List<(EntityUid, CargoPalletComponent, TransformComponent)> _pads = new();
@@ -62,8 +64,9 @@ public sealed partial class NFCargoSystem : SharedNFCargoSystem
         base.Initialize();
 
         _xformQuery = GetEntityQuery<TransformComponent>();
+        _actorQuery = GetEntityQuery<ActorComponent>();
         _blacklistQuery = GetEntityQuery<CargoSellBlacklistComponent>();
-        _mobQuery = GetEntityQuery<MobStateComponent>();
+        _mindContainerQuery = GetEntityQuery<MindContainerComponent>();
 
         InitializeConsole();
         InitializeShuttle();

@@ -183,14 +183,21 @@ public sealed class FollowerSystem : EntitySystem
     /// <param name="entity">The entity to be followed</param>
     public void StartFollowingEntity(EntityUid follower, EntityUid entity)
     {
+        if (follower == entity ||
+            !TryComp(follower, out TransformComponent? xform) ||
+            !TryComp(entity, out TransformComponent? targetXform))
+        {
+            return;
+        }
+
         // No recursion for you
-        var targetXform = Transform(entity);
         while (targetXform.ParentUid.IsValid())
         {
             if (targetXform.ParentUid == follower)
                 return;
 
-            targetXform = Transform(targetXform.ParentUid);
+            if (!TryComp(targetXform.ParentUid, out targetXform))
+                return;
         }
 
         // Cleanup old following.
@@ -217,11 +224,11 @@ public sealed class FollowerSystem : EntitySystem
         if (TryComp<JointComponent>(follower, out var joints))
             _jointSystem.ClearJoints(follower, joints);
 
-        var xform = Transform(follower);
         _containerSystem.AttachParentToContainerOrGrid((follower, xform));
 
         // If we didn't get to parent's container.
-        if (xform.ParentUid != Transform(xform.ParentUid).ParentUid)
+        if (!TryComp(xform.ParentUid, out TransformComponent? parentXform) ||
+            xform.ParentUid != parentXform.ParentUid)
         {
             _transform.SetCoordinates(follower, xform, new EntityCoordinates(entity, Vector2.Zero), rotation: Angle.Zero);
         }
@@ -245,15 +252,19 @@ public sealed class FollowerSystem : EntitySystem
     /// <param name="deparent">Should the entity deparent itself</param>
     public void StopFollowingEntity(EntityUid uid, EntityUid target, FollowedComponent? followed = null, bool deparent = true, bool removeComp = true)
     {
-        if (!Resolve(target, ref followed, false))
-            return;
-
         if (!TryComp<FollowerComponent>(uid, out var followerComp) || followerComp.Following != target)
             return;
 
-        followed.Following.Remove(uid);
-        if (followed.Following.Count == 0)
-            RemComp<FollowedComponent>(target);
+        FollowedComponent? resolvedFollowed = null;
+        if (Resolve(target, ref followed, false))
+            resolvedFollowed = followed;
+
+        if (resolvedFollowed is { } followedComp)
+        {
+            followedComp.Following.Remove(uid);
+            if (followedComp.Following.Count == 0)
+                RemComp<FollowedComponent>(target);
+        }
 
         if (removeComp)
         {
@@ -265,10 +276,14 @@ public sealed class FollowerSystem : EntitySystem
         var targetEv = new EntityStoppedFollowingEvent(target, uid);
 
         RaiseLocalEvent(uid, uidEv, true);
-        RaiseLocalEvent(target, targetEv, false);
-        Dirty(target, followed);
+        if (resolvedFollowed is { } eventFollowedComp)
+        {
+            RaiseLocalEvent(target, targetEv, false);
+            Dirty(target, eventFollowedComp);
+        }
         RaiseLocalEvent(uid, uidEv);
-        RaiseLocalEvent(target, targetEv);
+        if (resolvedFollowed != null)
+            RaiseLocalEvent(target, targetEv);
 
         if (!deparent || !TryComp(uid, out TransformComponent? xform))
             return;
