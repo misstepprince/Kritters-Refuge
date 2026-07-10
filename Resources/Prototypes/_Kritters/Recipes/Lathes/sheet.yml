@@ -1,0 +1,6 @@
+- type: latheRecipe
+  id: IngotCobalt1
+  result: IngotCobalt1
+  completetime: 0.06
+  materials:
+    RawCobalt: 100

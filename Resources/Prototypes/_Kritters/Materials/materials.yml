@@ -5,7 +5,7 @@
   unit: materials-unit-bar
   icon: { sprite: _Kritters/Objects/Materials/ingots.rsi, state: cobalt }
   color: "#66676B"
-  price: 0.15
+  price: 0.0767
 
 - type: material
   id: RawCobalt
@@ -14,4 +14,4 @@
   unit: materials-unit-chunk
   icon: { sprite: _Kritters/Objects/Materials/ore.rsi, state: cobalt }
   color: "#66676B"
-  price: 0.05
+  price: 0.065

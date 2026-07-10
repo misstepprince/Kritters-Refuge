@@ -5,7 +5,7 @@
 # High yields
 - type: ore
   id: NFOreSteel
-  oreEntity: SteelOre5CobaltOre1 # Kritters
+  oreEntity: SteelOre5CobaltOreChance # Kritters
   minOreYield: 1
   maxOreYield: 5
 
@@ -70,7 +70,7 @@
 # High yields
 - type: ore
   id: NFOreSteelDense
-  oreEntity: SteelOre5CobaltOre1 # Kritters
+  oreEntity: SteelOre5CobaltOreChance # Kritters
   minOreYield: 5
   maxOreYield: 7
 
