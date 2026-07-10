@@ -1,5 +1,5 @@
 - type: entity
-  id: SteelOre5CobaltOre1
+  id: SteelOre5CobaltOreChance
   categories: [ HideSpawnMenu, Spawner ]
   components:
   - type: EntityTableSpawner
@@ -9,3 +9,4 @@
         id: SteelOre5
       - !type:EntSelector
         id: CobaltOre1
+        prob: 0.5
