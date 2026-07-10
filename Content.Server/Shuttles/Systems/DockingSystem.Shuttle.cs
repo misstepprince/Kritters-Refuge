@@ -35,18 +35,14 @@ public sealed partial class DockingSystem
     }
 
     /// <summary>
-    /// Checks if 2 docks can be connected by moving the shuttle directly onto docks.
+    /// Gets the docking transform for 2 docks without checking whether the target position is clear.
     /// </summary>
-    private bool CanDock(
+    private bool TryGetDockingPlacement(
         DockingComponent shuttleDock,
         TransformComponent shuttleDockXform,
         DockingComponent gridDock,
         TransformComponent gridDockXform,
         Box2 shuttleAABB,
-        Angle targetGridRotation,
-        FixturesComponent shuttleFixtures,
-        Entity<MapGridComponent> gridEntity,
-        bool isMap,
         out Matrix3x2 matty,
         out Box2 shuttleDockedAABB,
         out Angle gridRotation)
@@ -80,9 +76,6 @@ public sealed partial class DockingSystem
         var stationDockMatrix = Matrix3Helpers.CreateInverseTransform(stationDockPos, shuttleDockAngle);
         var gridXformMatrix = Matrix3Helpers.CreateTransform(gridDockXform.LocalPosition, gridDockAngle);
         matty = Matrix3x2.Multiply(stationDockMatrix, gridXformMatrix);
-
-        if (!ValidSpawn(gridEntity, matty, offsetAngle, shuttleFixtures, isMap))
-            return false;
 
         shuttleDockedAABB = matty.TransformBox(shuttleAABB);
         gridRotation = offsetAngle.Reduced();
@@ -211,20 +204,19 @@ public sealed partial class DockingSystem
                         continue;
                     // End Frontier
 
-                    if (!CanDock(
+                    if (!TryGetDockingPlacement(
                             shuttleDock, shuttleDockXform,
                             gridDock, gridXform,
                             shuttleAABB,
-                            targetGridAngle,
-                            shuttleFixturesComp,
-                            (targetGrid, targetGridGrid),
-                            isMap,
                             out var matty,
                             out var dockedAABB,
                             out var targetAngle))
                     {
                         continue;
                     }
+
+                    if (!ValidSpawn((targetGrid, targetGridGrid), matty, targetAngle, shuttleFixturesComp, isMap))
+                        continue;
 
                     // Can't just use the AABB as we want to get bounds as tight as possible.
                     var gridPosition = new EntityCoordinates(targetGrid, Vector2.Transform(Vector2.Zero, matty));
@@ -273,17 +265,13 @@ public sealed partial class DockingSystem
                                 continue;
                             // End Frontier
 
-                            if (!CanDock(
+                            if (!TryGetDockingPlacement(
                                     other,
                                     _xformQuery.GetComponent(otherUid),
                                     otherGrid,
                                     _xformQuery.GetComponent(otherGridUid),
                                     shuttleAABB,
-                                    targetGridAngle,
-                                    shuttleFixturesComp,
-                                    (targetGrid, targetGridGrid),
-                                    isMap,
-                                    out _,
+                                    out var otherMatty,
                                     out var otherdockedAABB,
                                     out var otherTargetAngle))
                             {
@@ -298,6 +286,9 @@ public sealed partial class DockingSystem
                             {
                                 continue;
                             }
+
+                            if (!ValidSpawn((targetGrid, targetGridGrid), otherMatty, otherTargetAngle, shuttleFixturesComp, isMap))
+                                continue;
 
                             dockedPorts.Add((otherUid, otherGridUid, other, otherGrid));
                         }
@@ -325,6 +316,17 @@ public sealed partial class DockingSystem
         string? priorityTag = null,
         DockType dockType = DockType.Airlock) // Frontier
     {
+        if (priorityTag != null)
+        {
+            var priorityDocks = gridDocks
+                .Where(dock => TryComp<PriorityDockComponent>(dock.Owner, out var priority) &&
+                               priority.Tag?.Equals(priorityTag) == true)
+                .ToList();
+
+            if (priorityDocks.Count > 0)
+                gridDocks = priorityDocks;
+        }
+
         var validDockConfigs = GetDockingConfigs(shuttleUid, targetGrid, shuttleDocks, gridDocks, dockType); // Frontier: add dockType
 
         if (validDockConfigs.Count <= 0)
