@@ -1,0 +1,9 @@
+- type: entity
+  save: false
+  parent: BaseSpeciesDummy
+  id: AppearanceNovakin
+  categories: [HideSpawnMenu]
+  description: A dummy novakin meant to be used in character setup.
+  components:
+  - type: HumanoidAppearance
+    species: Novakin

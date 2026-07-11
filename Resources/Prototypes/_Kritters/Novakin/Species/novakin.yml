@@ -1,0 +1,161 @@
+- type: species
+  id: Novakin
+  name: species-name-novakin
+  roundStart: true
+  prototype: MobNovakin
+  sprites: MobNovakinSprites
+  defaultSkinTone: "#ffffff"
+  markingLimits: MobNovakinMarkingLimits
+  dollPrototype: AppearanceNovakin
+  skinColoration: Hues
+  maleFirstNames: names_novakin
+  femaleFirstNames: names_novakin
+  naming: First
+  minAge: 20
+  maxAge: 300
+  youngAge: 100
+  oldAge: 200
+
+- type: speciesBaseSprites
+  id: MobNovakinSprites
+  sprites:
+    Head: MobNovakinHead
+    Snout: MobNovakinAnyMarkingFollowSkin
+    Hair: MobHumanoidAnyMarking
+    Chest: MobNovakinTorso
+    HeadTop: MobNovakinAnyMarking
+    HeadSide: MobNovakinAnyMarkingFollowSkin
+    Tail: MobNovakinAnyMarking
+    Eyes: MobNovakinEyes
+    LArm: MobNovakinLArm
+    RArm: MobNovakinRArm
+    LHand: MobNovakinLHand
+    RHand: MobNovakinRHand
+    LLeg: MobNovakinLLeg
+    RLeg: MobNovakinRLeg
+    LFoot: MobNovakinLFoot
+    RFoot: MobNovakinRFoot
+
+- type: markingPoints
+  id: MobNovakinMarkingLimits
+  points:
+    Hair:
+      points: 1
+      required: false
+    FacialHair:
+      points: 0
+      required: false
+    Tail:
+      points: 1
+      required: true
+      defaultMarkings: [TailNovakinMedium]
+    HeadTop:
+      points: 1
+      required: true
+      defaultMarkings: [EarsNovakin]
+    Chest:
+      points: 2
+      required: false
+    Legs:
+      points: 2
+      required: false
+    Arms:
+      points: 2
+      required: false
+
+- type: humanoidBaseSprite
+  id: MobNovakinAnyMarkingFollowSkin
+  markingsMatchSkin: true
+
+- type: humanoidBaseSprite
+  id: MobNovakinAnyMarking
+
+- type: humanoidBaseSprite
+  id: MobNovakinEyes
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: eyes
+
+- type: humanoidBaseSprite
+  id: MobNovakinHead
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobNovakinHeadMale
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobNovakinHeadFemale
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: head_f
+
+- type: humanoidBaseSprite
+  id: MobNovakinTorso
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobNovakinTorsoMale
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobNovakinTorsoFemale
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: torso_f
+
+- type: humanoidBaseSprite
+  id: MobNovakinLLeg
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_leg
+
+- type: humanoidBaseSprite
+  id: MobNovakinLHand
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_hand
+
+- type: humanoidBaseSprite
+  id: MobNovakinLArm
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_arm
+
+- type: humanoidBaseSprite
+  id: MobNovakinLFoot
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_foot
+
+- type: humanoidBaseSprite
+  id: MobNovakinRLeg
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_leg
+
+- type: humanoidBaseSprite
+  id: MobNovakinRHand
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_hand
+
+- type: humanoidBaseSprite
+  id: MobNovakinRArm
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_arm
+
+- type: humanoidBaseSprite
+  id: MobNovakinRFoot
+  baseSprite:
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_foot

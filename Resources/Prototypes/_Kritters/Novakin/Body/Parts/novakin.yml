@@ -1,0 +1,95 @@
+- type: entity
+  id: PartNovakin
+  parent: [BaseItem, BasePart]
+  name: novakin body part
+  abstract: true
+
+- type: entity
+  id: TorsoNovakin
+  name: novakin torso
+  parent: [PartNovakin, BaseTorso]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: torso_m
+
+- type: entity
+  id: HeadNovakin
+  name: novakin head
+  parent: [PartNovakin, BaseHead]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: head_m
+
+- type: entity
+  id: LeftArmNovakin
+  name: left novakin arm
+  parent: [PartNovakin, BaseLeftArm]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_arm
+
+- type: entity
+  id: RightArmNovakin
+  name: right novakin arm
+  parent: [PartNovakin, BaseRightArm]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_arm
+
+- type: entity
+  id: LeftHandNovakin
+  name: left novakin hand
+  parent: [PartNovakin, BaseLeftHand]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_hand
+
+- type: entity
+  id: RightHandNovakin
+  name: right novakin hand
+  parent: [PartNovakin, BaseRightHand]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_hand
+
+- type: entity
+  id: LeftLegNovakin
+  name: left novakin leg
+  parent: [PartNovakin, BaseLeftLeg]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_leg
+
+- type: entity
+  id: RightLegNovakin
+  name: right novakin leg
+  parent: [PartNovakin, BaseRightLeg]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_leg
+
+- type: entity
+  id: LeftFootNovakin
+  name: left novakin foot
+  parent: [PartNovakin, BaseLeftFoot]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: l_foot
+
+- type: entity
+  id: RightFootNovakin
+  name: right novakin foot
+  parent: [PartNovakin, BaseRightFoot]
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: r_foot

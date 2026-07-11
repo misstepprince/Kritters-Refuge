@@ -1,0 +1,74 @@
+- type: entity
+  save: false
+  name: Urist McNova
+  parent: BaseMobSpecies
+  id: BaseMobNovakin
+  abstract: true
+  components:
+  - type: Inventory
+    speciesId: novakin
+  - type: HumanoidAppearance
+    species: Novakin
+  - type: Icon
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/parts.rsi
+    state: full
+  - type: Body
+    prototype: Novakin
+    requiredLegs: 2
+  - type: NovakinPhysiology
+    gas: NovakinGasNitrogen
+    normalTemperature: 373.15
+    stabilizationRate: 30
+  - type: Speech
+    allowedEmotes: [Marr, Wurble, Hiss, Growl, Purr]
+  - type: Vocal
+    sounds:
+      Male: MaleNovakin
+      Female: FemaleNovakin
+      Unsexed: MaleNovakin
+  - type: FlashModifier
+    modifier: 2
+  - type: Damageable
+    damageContainer: Biological
+    damageModifierSet: Novakin
+  - type: TypingIndicator
+    proto: alien
+  - type: Fingerprint
+  - type: Blindable
+  - type: KrittersNightVision
+  - type: AtmosExposed
+  - type: Temperature
+    heatDamageThreshold: 10000
+    coldDamageThreshold: 368.15
+    currentTemperature: 373.15
+    specificHeat: 42
+    coldDamage:
+      types:
+        Cold: 2
+    heatDamage:
+      types: {}
+  - type: TemperatureSpeed
+    thresholds:
+      368.15: 0.9
+      350: 0.75
+      330: 0.5
+  - type: ThermalRegulator
+    metabolismHeat: 0
+    radiatedHeat: 0
+    implicitHeatRegulation: 0
+    sweatHeatRegulation: 0
+    shiveringHeatRegulation: 0
+    normalBodyTemperature: 373.15
+    thermalRegulationTemperatureThreshold: 2
+  - type: Barotrauma
+    damage:
+      types:
+        Blunt: 0.85
+  - type: BlockInjection
+    blockHypospray: true
+    blockInjectOnProjectile: true
+  - type: FireVisuals
+    alternateState: Standing
+  - type: LayingDown
+  - type: ModifyUndies
+  - type: RoleplayIncentive

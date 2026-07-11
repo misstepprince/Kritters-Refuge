@@ -1,0 +1,19 @@
+- type: entity
+  id: OrganNovakinNexus
+  parent: OrganHumanBrain
+  name: Novakin Nexus
+  description: The stable nexus that holds a Novakin's consciousness together.
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/organs.rsi
+    state: brain
+
+- type: entity
+  id: OrganNovakinCore
+  parent: OrganHumanHeart
+  name: Novakin Core
+  description: A containment core that circulates and stabilizes a Novakin's gaseous form.
+  components:
+  - type: Sprite
+    sprite: _Kritters/Novakin/Mobs/Species/Novakin/organs.rsi
+    state: core

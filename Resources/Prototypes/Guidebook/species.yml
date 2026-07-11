@@ -27,6 +27,7 @@
     - Chitinid # DeltaV # DeltaV
     - Tajaran # EE
     - Anthromorph # Coyote
+    - Novakin # Kritters
 
 - type: guideEntry
   id: Arachnid
@@ -100,3 +101,8 @@
   id: Anthromorph
   name: species-name-anthromorph
   text: "/ServerInfo/Guidebook/Mobs/_CS/Anthromorph.xml"
+
+- type: guideEntry
+  id: Novakin
+  name: species-name-novakin
+  text: "/ServerInfo/Guidebook/Mobs/_Kritters/Novakin/Novakin.xml"

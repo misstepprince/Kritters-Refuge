@@ -1,0 +1,692 @@
+# Ears
+
+- type: marking
+  id: EarsNovakin
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+
+- type: marking
+  id: EarsNovakinStriped
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      novakin_stripes:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin_stripes
+
+- type: marking
+  id: EarsNovakinMotley
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      motley_secondary:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: motley_secondary
+
+- type: marking
+  id: EarsNovakinShady
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: shady
+
+- type: marking
+  id: EarsNovakinPiercingAll
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      piercing_all:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: piercing_all
+
+- type: marking
+  id: EarsNovakinPiercingLeft
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      piercing_left:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: piercing_left
+
+- type: marking
+  id: EarsNovakinPiercingRight
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      piercing_right:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: piercing_right
+
+- type: marking
+  id: EarsNovakinRingedAll
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      ringed_all_secondary:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: ringed_all_secondary
+
+- type: marking
+  id: EarsNovakinRingedLeft
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      ringed_left_secondary:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: ringed_left_secondary
+
+- type: marking
+  id: EarsNovakinRingedRight
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  coloring:
+    default:
+      type:
+        !type:SkinColoring
+    layers:
+      ringed_right_secondary:
+        type:
+          !type:SimpleColoring
+            color: "#FFFFFF"
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: ringed_right_secondary
+
+- type: marking
+  id: EarsNovakinGauzedAll
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: gauze_ear_all_default
+
+- type: marking
+  id: EarsNovakinGauzedLeft
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: gauze_ear_l_default
+
+- type: marking
+  id: EarsNovakinGauzedRight
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: novakin
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: gauze_ear_r_default
+
+- type: marking
+  id: EarsNovakinFluffy
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+
+- type: marking
+  id: EarsNovakinFluffyButterfly
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_butterfly
+
+- type: marking
+  id: EarsNovakinFluffyCowling
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_cowling
+
+- type: marking
+  id: EarsNovakinFluffyCrow
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_crow
+
+- type: marking
+  id: EarsNovakinFluffyMotley
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_motley
+
+- type: marking
+  id: EarsNovakinFluffySpidy
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_spidy
+
+- type: marking
+  id: EarsNovakinFluffyRingedAll
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_ringed_all
+
+- type: marking
+  id: EarsNovakinFluffyRingedLeft
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_ringed_left
+
+- type: marking
+  id: EarsNovakinFluffyRingedRight
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: fluffy_ringed_right
+
+- type: marking
+  id: EarsNovakinSaggy
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_default
+
+- type: marking
+  id: EarsNovakinSaggyBrawly
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_brawly
+
+- type: marking
+  id: EarsNovakinSaggyZebra
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_zebra
+
+- type: marking
+  id: EarsNovakinSaggyGradient
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_gradient
+
+- type: marking
+  id: EarsNovakinSaggyGauzedAll
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_gauze_all
+
+- type: marking
+  id: EarsNovakinSaggyGauzedLeft
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_gauze_l
+
+- type: marking
+  id: EarsNovakinSaggyGauzedRight
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: saggy_gauze_r
+
+- type: marking
+  id: EarsNovakinShort
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_default
+
+- type: marking
+  id: EarsNovakinShortButterfly
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_butterfly
+
+- type: marking
+  id: EarsNovakinShortRingedAll
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_ringed_all
+
+- type: marking
+  id: EarsNovakinShortRingedLeft
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_ringed_left
+
+- type: marking
+  id: EarsNovakinShortRingedRight
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: short_ringed_right
+
+- type: marking
+  id: EarsNovakinBull
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: bull_default
+
+- type: marking
+  id: EarsNovakinBullSmooth
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: bull_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: bull_smooth
+
+- type: marking
+  id: EarsNovakinAqua
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: aqua_default
+
+- type: marking
+  id: EarsNovakinAquaIncolor
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: aqua_default
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/ears.rsi
+      state: aqua_incolor
+
+# Tails
+
+- type: marking
+  id: TailNovakin
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails64x32.rsi
+      state: novakin
+
+- type: marking
+  id: TailNovakinBig
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails64x32.rsi
+      state: novakin_big
+
+- type: marking
+  id: TailNovakinBigFluff
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails64x32.rsi
+      state: novakin_big_fluff
+
+- type: marking
+  id: TailNovakinShorter
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails32x32.rsi
+      state: novakin_shorter
+
+- type: marking
+  id: TailNovakinShorterBrush
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails32x32.rsi
+      state: novakin_shorter
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails32x32.rsi
+      state: shorter_brush
+
+- type: marking
+  id: TailNovakinMedium
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails32x32.rsi
+      state: novakin_medium
+
+- type: marking
+  id: TailNovakinMediumTwoColored
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails32x32.rsi
+      state: novakin_medium
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/tails32x32.rsi
+      state: medium_twocolored
+
+# Overlays
+
+- type: marking
+  id: BodyNovakinArrow
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_arrow
+
+- type: marking
+  id: BodyNovakinBlackHole
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_blackhole
+
+- type: marking
+  id: BodyNovakinBrace
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_brace
+
+- type: marking
+  id: BodyNovakinBrawly
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_brawly
+
+- type: marking
+  id: BodyNovakinHeart
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_heart
+
+- type: marking
+  id: BodyNovakinInk
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_ink
+
+- type: marking
+  id: BodyNovakinInk2
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_ink2
+
+- type: marking
+  id: BodyNovakinInk3
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_ink3
+
+- type: marking
+  id: BodyNovakinInk4
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_ink4
+
+- type: marking
+  id: BodyNovakinInk5
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_ink5
+
+- type: marking
+  id: BodyNovakinInk6
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_ink6
+
+- type: marking
+  id: BodyNovakinInkAnim
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_ink_anim
+
+- type: marking
+  id: BodyNovakinLines
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_lines
+
+- type: marking
+  id: BodyNovakinNeck
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_neck
+
+- type: marking
+  id: BodyNovakinShield
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_shield
+
+- type: marking
+  id: BodyNovakinVacuum
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Novakin]
+  sprites:
+    - sprite: _Kritters/Novakin/Mobs/Customization/novakin/overlay.rsi
+      state: body_vacuum

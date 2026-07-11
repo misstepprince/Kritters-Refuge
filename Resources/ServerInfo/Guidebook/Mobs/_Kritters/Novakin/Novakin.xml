@@ -1,0 +1,27 @@
+<Document>
+  # Novakin
+
+  <Box Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <GuideEntityEmbed Entity="MobNovakin" Caption="Novakin" Scale="3.5"/>
+  </Box>
+
+  Novakin are sapient humanoid forms composed of a single superheated gas. Each Novakin is made from oxygen, nitrogen, nitrous oxide, ammonia, carbon dioxide, or water vapor. They do not breathe, eat, drink, or possess conventional blood.
+
+  ## Anatomy
+
+  A Novakin has only two organs: a Nexus that maintains consciousness and a Core that circulates and stabilizes its gaseous form. Loss of either is fatal.
+
+  ## Temperature
+
+  Their normal operating temperature is [bold]373.15 K (100 C)[/bold]. Pressure-protected outerwear contains their heat and maintains this temperature. Without it, a Novakin cools rapidly, suffers Cold damage, and releases the lost heat into the surrounding atmosphere.
+
+  Novakin are immune to Heat damage and resist 60 percent of Radiation damage. Their other damage tolerances are otherwise unchanged.
+
+  ## Vision
+
+  Novakin have powerful night vision but are unusually sensitive to flashes and bright light.
+
+  ## Gas Reserve
+
+  Gas reserve depletion, leakage, and matching-gas inhalers are under active development. Replenishment will require the same gas selected for the character.
+</Document>
