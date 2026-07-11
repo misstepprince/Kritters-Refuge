@@ -11,6 +11,22 @@
     ClothingNeckCollarMed: 4294967295 # Infinite
     ClothingNeckBellCollar: 4294967295 # Infinite
     ClothingNeckShockCollar: 4294967295 # Infinite
+    # KRITTERS START
+    ClothingNeckAdvancedCollarBlack: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarBlue: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarPink: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarShock: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarBell: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarEpi: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarEngi: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarLogi: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarMed: 4294967295 #Infinite
+    ClothingNeckAdvancedCollarSec: 4294967295 #Infinite
+    AdvCollarModuleBondage: 4294967295 #Infinite
+    AdvCollarModuleShock: 4294967295 #Infinite
+    AdvCollarModuleClothingLock: 4294967295 #Infinite
+    AdvCollarModuleJingling: 4294967295 #Infinite
+    # KRITTERS END
     RemoteSignaller: 4294967295
     # Restraints
     FuzzycuffsBlack: 4294967295 # Infinite
@@ -100,7 +116,14 @@
     ClothingHandsCoderValidWarmers: 4294967295 # Infinite
     # Snacks
     FoodTinPeachesMaint: 10
+    # KRITTERS START
+    ClothingNeckAdvancedCollarCMD: 4294967295 #Infinite
+    ClothingNeckAdvacedCollarCC: 4294967295 #Infinite
+    # KRITTERS END
   emaggedInventory:
     ClothingNeckShockCollar: 4294967295 # Infinite
     ClothingUniformCoderValidThong: 4294967295 # Infinite
     CanineDildoRed: 4294967295 # Infinite
+    # KRITTERS START
+    ClothingNeckAdvancedCollarSyndi: 4294967295 #Infinite
+    # KRITTERS END
