@@ -2,6 +2,13 @@
 
 Novakin is organized as a self-contained module under the `_Kritters/Novakin` directories in `Content.*` and `Resources`. Copy those directories first, then apply the small integration changes listed below.
 
+## Source provenance and attribution
+
+- [Triad Sector PR #96](https://github.com/Triad-Sector/Triad_Sector/pull/96) provided the Shadow/Shadekin implementation that served as the basis for the Novakin creature.
+- [TheDen PR #1554](https://github.com/TheDenSS14/TheDen/pull/1554) provided the Shadow/Shadekin voice assets used by Novakin.
+
+Kritters renamed the imported Shadow/Shadekin assets, prototypes, and paths to `Novakin` strictly for streamlining and repository-wide consistency, so the species is identified correctly throughout this module. The rename does not change the original authorship or licensing; the per-asset attribution manifests under `Resources/Audio/_Kritters/Novakin/Voice/` retain the original creator and source credits.
+
 ## Required integration
 
 - Register `Novakin` in the destination fork's species guide and character-creation species list.

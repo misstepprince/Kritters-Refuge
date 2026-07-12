@@ -1,5 +1,6 @@
 using Content.Shared._Kritters.Novakin.Components;
 using Content.Shared._Kritters.Novakin.Prototypes;
+using Content.Shared._Kritters.Novakin;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Examine;
@@ -102,7 +103,7 @@ public sealed class NovakinInhalerSystem : EntitySystem
         Dirty(inhaler.Owner, tank);
 
         _popup.PopupEntity(Loc.GetString("novakin-inhaler-success",
-            ("amount", MathF.Round(accepted, 1)),
+            ("amount", NovakinDisplayFormat.Number(accepted)),
             ("gas", Loc.GetString(gasPrototype.Name))), target, user);
         return true;
     }
@@ -163,9 +164,10 @@ public sealed class NovakinInhalerSystem : EntitySystem
         }
 
         var reserve = tank.Air.GetMoles(gasPrototype.Gas) * inhaler.Comp.ReservePerMole;
+        var uses = (int) MathF.Ceiling(reserve / inhaler.Comp.TransferAmount);
         args.PushMarkup(Loc.GetString("novakin-inhaler-examine",
             ("gas", Loc.GetString(gasPrototype.Name)),
-            ("amount", MathF.Round(reserve, 1))));
+            ("uses", uses)));
     }
 
     private static bool ContainsOnly(GasMixture mixture, Gas expected)

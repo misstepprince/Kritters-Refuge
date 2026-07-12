@@ -15,9 +15,27 @@
   - type: Body
     prototype: Novakin
     requiredLegs: 2
+  # The Core receives digested reagents without giving Novakin a bloodstream.
+  - type: SolutionContainerManager
+    solutions:
+      chemicals:
+        maxVol: 100
   - type: NovakinPhysiology
     gas: NovakinGasNitrogen
     reserveDrainPerSecond: 0.0555556
+    fullReserveDrainMultiplier: 1
+    emptyReserveDrainMultiplier: 0.25
+    criticalReserveThreshold: 0.25
+    criticalReserveDrainMultiplier: 4
+    criticalReserveDrainExponent: 2
+    criticalHealthDrainMultiplier: 4
+    leakedMolesPerReserve: 0.01
+    pressureSuitLeakMultiplier: 0.25
+    emptyReserveThermalRegulationMultiplier: 0.25
+    criticalReserveThermalRegulationMultiplier: 0.6
+    criticalReserveThermalRegulationExponent: 2
+    damageThreshold: 0.25
+    emptyReserveDamagePerSecond: 1
   - type: PointLight
     radius: 2
     energy: 1
@@ -25,6 +43,7 @@
     castShadows: true
   - type: Speech
     speechVerb: Novakin
+    speechSounds: Novakin
     allowedEmotes: [Marr, Wurble, Hiss, Growl, Purr]
   - type: Vocal
     sounds:
@@ -43,7 +62,7 @@
   - type: KrittersNightVision
   - type: AtmosExposed
   - type: Temperature
-    heatDamageThreshold: 10000
+    heatDamageThreshold: 700
     coldDamageThreshold: 368.15
     currentTemperature: 373.15
     specificHeat: 42
@@ -51,7 +70,8 @@
       types:
         Cold: 2
     heatDamage:
-      types: {}
+      types:
+        Heat: 2
   - type: TemperatureSpeed
     thresholds:
       368.15: 0.9

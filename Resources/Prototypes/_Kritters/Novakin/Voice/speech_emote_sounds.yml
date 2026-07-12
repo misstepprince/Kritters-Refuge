@@ -6,7 +6,7 @@
     Scream:
       collection: NovakinMaleScreams
     Laugh:
-      collection: MaleLaugh
+      collection: NovakinMaleLaughs
     Sneeze:
       collection: MaleSneezes
     Cough:
@@ -48,7 +48,7 @@
     Scream:
       collection: NovakinFemaleScreams
     Laugh:
-      collection: FemaleLaugh
+      collection: NovakinFemaleLaughs
     Sneeze:
       collection: FemaleSneezes
     Cough:

@@ -62,6 +62,7 @@ public sealed class NovakinGlowVisualizerSystem : EntitySystem
         foreach (var bodyLayer in BodyLayers)
             RemoveGlowLayer(entity, sprite, GlowKey(bodyLayer));
 
+        RemoveGlowLayer(entity, sprite, EyeGlowKey);
         RemoveMarkingGlowLayers(entity, sprite);
     }
 
@@ -106,7 +107,54 @@ public sealed class NovakinGlowVisualizerSystem : EntitySystem
             _sprites.LayerSetVisible((uid, sprite), glowIndex, body.Visible && glowAlpha > 0f);
         }
 
+        UpdateEyeGlowLayer(uid, sprite, glowAlpha);
         UpdateMarkingGlowLayers(uid, sprite, humanoid, glowAlpha);
+    }
+
+    /// <summary>
+    /// Eyes are not anatomical body layers, so mirror their native humanoid layer separately.
+    /// This preserves the character's selected eye color while giving it the same unshaded,
+    /// temperature-dependent glow treatment as the body and markings.
+    /// </summary>
+    private void UpdateEyeGlowLayer(EntityUid uid, SpriteComponent sprite, float glowAlpha)
+    {
+        if (!sprite.LayerMapTryGet(HumanoidVisualLayers.Eyes, out var eyeIndex))
+        {
+            RemoveGlowLayer(uid, sprite, EyeGlowKey);
+            return;
+        }
+
+        var eye = sprite[eyeIndex];
+        if (eye.ActualRsi?.Path is not { } rsiPath || eye.RsiState.Name is not { } rsiState)
+        {
+            RemoveGlowLayer(uid, sprite, EyeGlowKey);
+            return;
+        }
+
+        if (!sprite.LayerMapTryGet(EyeGlowKey, out var glowIndex))
+        {
+            var specifier = new SpriteSpecifier.Rsi(rsiPath, rsiState);
+            glowIndex = _sprites.AddLayer((uid, sprite), specifier, eyeIndex + 1);
+            _sprites.LayerMapSet((uid, sprite), EyeGlowKey, glowIndex);
+        }
+
+        // Adding a layer can shift the source index, so resolve it again before copying its presentation.
+        if (!sprite.LayerMapTryGet(HumanoidVisualLayers.Eyes, out eyeIndex)
+            || !sprite.LayerMapTryGet(EyeGlowKey, out glowIndex))
+        {
+            return;
+        }
+
+        if (!_sprites.TryGetLayer((uid, sprite), eyeIndex, out var eyeLayer, false))
+            return;
+
+        sprite.LayerSetShader(glowIndex, "unshaded");
+        _sprites.LayerSetColor((uid, sprite), glowIndex,
+            eyeLayer.Color.WithAlpha(eyeLayer.Color.A * glowAlpha));
+        _sprites.LayerSetScale((uid, sprite), glowIndex, eyeLayer.Scale);
+        _sprites.LayerSetOffset((uid, sprite), glowIndex, eyeLayer.Offset);
+        _sprites.LayerSetRotation((uid, sprite), glowIndex, eyeLayer.Rotation);
+        _sprites.LayerSetVisible((uid, sprite), glowIndex, eyeLayer.Visible && glowAlpha > 0f);
     }
 
     /// <summary>
@@ -191,6 +239,8 @@ public sealed class NovakinGlowVisualizerSystem : EntitySystem
     }
 
     private static string GlowKey(HumanoidVisualLayers layer) => $"NovakinGlow-{layer}";
+
+    private const string EyeGlowKey = "NovakinGlow-Eyes";
 
     private static string MarkingGlowKey(string markingKey) => $"NovakinMarkingGlow-{markingKey}";
 }

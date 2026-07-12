@@ -21,10 +21,10 @@ public sealed partial class NovakinInhalerComponent : Component
     public bool AdaptToOwnerGas;
 
     /// <summary>
-    /// Native gas capacity of the inhaler. This matches a filled 0.66 L emergency tank.
+    /// Native gas capacity of the inhaler. At 400 reserve per mole, this stores 50 reserve.
     /// </summary>
     [DataField]
-    public float MaxMoles = 0.270782035f;
+    public float MaxMoles = 0.125f;
 
     /// <summary>
     /// Reserve restored by one mole of matching gas.
@@ -36,5 +36,5 @@ public sealed partial class NovakinInhalerComponent : Component
     /// Maximum reserve restored by one use.
     /// </summary>
     [DataField]
-    public float TransferAmount = 25f;
+    public float TransferAmount = 10f;
 }

@@ -16,6 +16,8 @@ public sealed class ShowHealthBarsSystem : EquipmentHudSystem<ShowHealthBarsComp
     [Dependency] private readonly IPrototypeManager _prototype = default!;
 
     private EntityHealthBarOverlay _overlay = default!;
+    // Kritters: optional Novakin overlay; standard health-bar behavior remains unchanged by default.
+    private NovakinIntegrityOverlay _novakinIntegrityOverlay = default!;
 
     public override void Initialize()
     {
@@ -24,6 +26,7 @@ public sealed class ShowHealthBarsSystem : EquipmentHudSystem<ShowHealthBarsComp
         SubscribeLocalEvent<ShowHealthBarsComponent, AfterAutoHandleStateEvent>(OnHandleState);
 
         _overlay = new(EntityManager, _prototype);
+        _novakinIntegrityOverlay = new(EntityManager);
     }
 
     private void OnHandleState(Entity<ShowHealthBarsComponent> ent, ref AfterAutoHandleStateEvent args)
@@ -35,6 +38,9 @@ public sealed class ShowHealthBarsSystem : EquipmentHudSystem<ShowHealthBarsComp
     {
         base.UpdateInternal(component);
 
+        // Kritters: only medical configurations opt in to the Novakin integrity overlay.
+        var showNovakinIntegrity = false;
+
         foreach (var comp in component.Components)
         {
             foreach (var damageContainerId in comp.DamageContainers)
@@ -43,12 +49,18 @@ public sealed class ShowHealthBarsSystem : EquipmentHudSystem<ShowHealthBarsComp
             }
 
             _overlay.StatusIcon = comp.HealthStatusIcon;
+            showNovakinIntegrity |= comp.ShowNovakinIntegrity;
         }
 
         if (!_overlayMan.HasOverlay<EntityHealthBarOverlay>())
         {
             _overlayMan.AddOverlay(_overlay);
         }
+
+        if (showNovakinIntegrity && !_overlayMan.HasOverlay<NovakinIntegrityOverlay>())
+            _overlayMan.AddOverlay(_novakinIntegrityOverlay);
+        else if (!showNovakinIntegrity)
+            _overlayMan.RemoveOverlay(_novakinIntegrityOverlay);
     }
 
     protected override void DeactivateInternal()
@@ -57,5 +69,6 @@ public sealed class ShowHealthBarsSystem : EquipmentHudSystem<ShowHealthBarsComp
 
         _overlay.DamageContainers.Clear();
         _overlayMan.RemoveOverlay(_overlay);
+        _overlayMan.RemoveOverlay(_novakinIntegrityOverlay);
     }
 }

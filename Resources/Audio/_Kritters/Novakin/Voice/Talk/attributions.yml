@@ -1,0 +1,18 @@
+# Imported from TheDenSS14/TheDen PR #1554. Kritters renamed these files from
+# Shadow/Shadekin to Novakin solely for consistent species identification; original
+# audio authorship, sources, and licensing remain unchanged below.
+
+- files: ["novakin_speak_say.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/JKata/sounds/632414/"
+
+- files: ["novakin_speak_ask.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/templeofhades/sounds/95516/"
+
+- files: ["novakin_speak_exclaim.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/taure/sounds/376392/"

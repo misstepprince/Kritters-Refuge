@@ -26,6 +26,84 @@ public sealed partial class NovakinPhysiologyComponent : Component
     public float ReserveDrainPerSecond = 1f / 18f;
 
     /// <summary>
+    /// Drain multiplier at full reserve, representing pressure-driven leakage.
+    /// </summary>
+    [DataField]
+    public float FullReserveDrainMultiplier = 1f;
+
+    /// <summary>
+    /// Pressure-driven drain multiplier at an empty reserve, before critical instability is applied.
+    /// </summary>
+    [DataField]
+    public float EmptyReserveDrainMultiplier = 0.25f;
+
+    /// <summary>
+    /// Reserve fraction below which a collapsing containment field accelerates leakage.
+    /// </summary>
+    [DataField]
+    public float CriticalReserveThreshold = 0.25f;
+
+    /// <summary>
+    /// Drain multiplier reached at an empty reserve while containment is critically unstable.
+    /// </summary>
+    [DataField]
+    public float CriticalReserveDrainMultiplier = 4f;
+
+    /// <summary>
+    /// Shape of the critical instability curve. Higher values defer rapid loss until reserve is nearly empty.
+    /// </summary>
+    [DataField]
+    public float CriticalReserveDrainExponent = 2f;
+
+    /// <summary>
+    /// Additional reserve-drain multiplier while the Novakin is in medical critical condition.
+    /// </summary>
+    [DataField]
+    public float CriticalHealthDrainMultiplier = 4f;
+
+    /// <summary>
+    /// Moles of the selected gas released into the local atmosphere per reserve lost.
+    /// </summary>
+    [DataField]
+    public float LeakedMolesPerReserve = 0.01f;
+
+    /// <summary>
+    /// Leak multiplier while a pressure-protective outer suit is worn.
+    /// </summary>
+    [DataField]
+    public float PressureSuitLeakMultiplier = 0.25f;
+
+    /// <summary>
+    /// Fraction of native thermal regulation retained at an empty reserve.
+    /// </summary>
+    [DataField]
+    public float EmptyReserveThermalRegulationMultiplier = 0.25f;
+
+    /// <summary>
+    /// Thermal-regulation multiplier at the critical reserve threshold, before containment collapses.
+    /// </summary>
+    [DataField]
+    public float CriticalReserveThermalRegulationMultiplier = 0.6f;
+
+    /// <summary>
+    /// Shape of the thermal containment collapse below the critical reserve threshold.
+    /// </summary>
+    [DataField]
+    public float CriticalReserveThermalRegulationExponent = 2f;
+
+    /// <summary>
+    /// Reserve fraction below which structural damage begins accumulating.
+    /// </summary>
+    [DataField]
+    public float DamageThreshold = 0.25f;
+
+    /// <summary>
+    /// Cellular damage dealt per second at an empty reserve.
+    /// </summary>
+    [DataField]
+    public float EmptyReserveDamagePerSecond = 1f;
+
+    /// <summary>
     /// HUD alert used to display the remaining gas reserve as a 0-10 gauge.
     /// </summary>
     [DataField]
@@ -60,4 +138,13 @@ public sealed partial class NovakinPhysiologyComponent : Component
 
     [ViewVariables]
     public float LastTemperature = 373.15f;
+
+    [ViewVariables]
+    public float BaseImplicitHeatRegulation = -1f;
+
+    [ViewVariables]
+    public float BaseSweatHeatRegulation = -1f;
+
+    [ViewVariables]
+    public float BaseShiveringHeatRegulation = -1f;
 }

@@ -22,8 +22,9 @@
     tankLowPressure: 0
   - type: NovakinInhaler
     gas: NovakinGasNitrogen
+    maxMoles: 0.125
     reservePerMole: 400
-    transferAmount: 25
+    transferAmount: 10
   - type: UseDelay
     delay: 1
 
@@ -39,7 +40,7 @@
   - type: GasTank
     air:
       volume: 0.66
-      moles: [0, 0.270782035]
+      moles: [0, 0.125]
       temperature: 293.15
 
 - type: entity
@@ -53,7 +54,7 @@
   - type: GasTank
     air:
       volume: 0.66
-      moles: [0.270782035]
+      moles: [0.125]
       temperature: 293.15
 
 - type: entity
@@ -67,7 +68,7 @@
   - type: GasTank
     air:
       volume: 0.66
-      moles: [0, 0.270782035]
+      moles: [0, 0.125]
       temperature: 293.15
 
 - type: entity
@@ -81,7 +82,7 @@
   - type: GasTank
     air:
       volume: 0.66
-      moles: [0, 0, 0.270782035]
+      moles: [0, 0, 0.125]
       temperature: 293.15
 
 - type: entity
@@ -95,7 +96,7 @@
   - type: GasTank
     air:
       volume: 0.66
-      moles: [0, 0, 0, 0, 0, 0.270782035]
+      moles: [0, 0, 0, 0, 0, 0.125]
       temperature: 293.15
 
 - type: entity
@@ -109,7 +110,7 @@
   - type: GasTank
     air:
       volume: 0.66
-      moles: [0, 0, 0, 0, 0, 0, 0.270782035]
+      moles: [0, 0, 0, 0, 0, 0, 0.125]
       temperature: 293.15
 
 - type: entity
@@ -123,5 +124,5 @@
   - type: GasTank
     air:
       volume: 0.66
-      moles: [0, 0, 0, 0, 0, 0, 0, 0.270782035]
+      moles: [0, 0, 0, 0, 0, 0, 0, 0.125]
       temperature: 293.15

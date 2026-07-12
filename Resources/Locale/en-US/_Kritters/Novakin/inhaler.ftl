@@ -7,4 +7,4 @@ novakin-inhaler-refill-mismatch = This inhaler can only be refilled with pure {$
 novakin-inhaler-refill-full = The inhaler is already full.
 novakin-inhaler-refill-success = Refilled the inhaler with {$gas} gas.
 novakin-inhaler-examine-empty = [color=gray]Its {$gas} gas chamber is empty.[/color]
-novakin-inhaler-examine = It contains [color=cyan]{$gas}[/color], enough to restore approximately [color=cyan]{$amount}[/color] reserve.
+novakin-inhaler-examine = It contains [color=cyan]{$gas}[/color], with [color=cyan]{$uses}[/color] uses remaining.
