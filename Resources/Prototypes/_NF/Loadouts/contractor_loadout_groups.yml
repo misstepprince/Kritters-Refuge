@@ -919,6 +919,8 @@
   - ContractorNFBoxSurvivalExtendedNitrogen
   - ContractorNFBoxSurvivalSheleg
   - ContractorNFBoxSurvivalExtendedSheleg
+  - ContractorNovakinBoxSurvival
+  - ContractorNovakinBoxSurvivalExtended
   - ContractorNFBoxSurvivalDonk
   - ContractorNFBoxSurvivalDonkSpicy
   - ContractorNFBoxSurvivalDonkTeriyaki
@@ -932,6 +934,7 @@
   - ContractorNFBoxSurvival
   - ContractorNFBoxSurvivalNitrogen
   - ContractorNFBoxSurvivalSheleg
+  - ContractorNovakinBoxSurvival
   - ContractorNFBoxSurvivalDonk
   - ContractorNFBoxSurvivalDonkSpicy
   - ContractorNFBoxSurvivalDonkTeriyaki

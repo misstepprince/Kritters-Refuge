@@ -17,9 +17,14 @@
     requiredLegs: 2
   - type: NovakinPhysiology
     gas: NovakinGasNitrogen
-    normalTemperature: 373.15
-    stabilizationRate: 30
+    reserveDrainPerSecond: 0.0555556
+  - type: PointLight
+    radius: 2
+    energy: 1
+    softness: 1
+    castShadows: true
   - type: Speech
+    speechVerb: Novakin
     allowedEmotes: [Marr, Wurble, Hiss, Growl, Purr]
   - type: Vocal
     sounds:
@@ -55,9 +60,10 @@
   - type: ThermalRegulator
     metabolismHeat: 0
     radiatedHeat: 0
-    implicitHeatRegulation: 0
-    sweatHeatRegulation: 0
-    shiveringHeatRegulation: 0
+    # Exposed heat loss can overpower this regulation; insulated suits reduce that loss natively.
+    implicitHeatRegulation: 500
+    sweatHeatRegulation: 500
+    shiveringHeatRegulation: 500
     normalBodyTemperature: 373.15
     thermalRegulationTemperatureThreshold: 2
   - type: Barotrauma

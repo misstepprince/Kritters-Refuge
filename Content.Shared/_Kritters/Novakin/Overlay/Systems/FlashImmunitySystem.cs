@@ -28,33 +28,33 @@ public sealed class FlashImmunitySystem : EntitySystem
 
     private void OnPlayerAttached(LocalPlayerAttachedEvent args)
     {
-        FlashImmunityCheckEvent flashImmunityChangedEvent = new(args.Entity, HasFlashImmunityVisionBlockers(args.Entity));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(HasFlashImmunityVisionBlockers(args.Entity));
         RaiseLocalEvent(args.Entity, flashImmunityChangedEvent);
     }
 
     private void OnFlashImmunityChanged(EntityUid uid, FlashImmunityComponent component, EntityEventArgs args)
     {
         uid = GetPossibleWearer(uid);
-        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(uid));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(HasFlashImmunityVisionBlockers(uid));
         RaiseLocalEvent(uid, flashImmunityChangedEvent);
     }
 
     private void OnVisionChanged(EntityUid uid, Component component, EntityEventArgs args)
     {
         uid = GetPossibleWearer(uid);
-        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(uid));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(HasFlashImmunityVisionBlockers(uid));
         RaiseLocalEvent(uid, flashImmunityChangedEvent);
     }
 
     private void OnFlashImmunityEquipped(EntityUid uid, FlashImmunityComponent component, GotEquippedEvent args)
     {
-        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(args.Equipee));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(HasFlashImmunityVisionBlockers(args.Equipee));
         RaiseLocalEvent(args.Equipee, flashImmunityChangedEvent);
     }
 
     private void OnFlashImmunityUnEquipped(EntityUid uid, FlashImmunityComponent component, GotUnequippedEvent args)
     {
-        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(args.Equipee));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(HasFlashImmunityVisionBlockers(args.Equipee));
         RaiseLocalEvent(args.Equipee, flashImmunityChangedEvent);
     }
 
