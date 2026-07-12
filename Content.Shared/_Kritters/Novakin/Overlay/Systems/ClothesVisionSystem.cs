@@ -1,37 +1,44 @@
-using Content.Shared.Inventory.Events;
 using Content.Shared.Clothing.Components;
-using Robust.Shared.Serialization.Manager;
+using Content.Shared.Inventory.Events;
 
 namespace Content.Shared._Kritters.Novakin.Overlay;
 
-public sealed partial class ClothesVisionSystem : EntitySystem
+/// <summary>
+/// Adds Novakin-style night vision to the wearer of marked clothing and removes
+/// it when unequipped, while preserving night vision that is innate to the wearer.
+/// </summary>
+public sealed class ClothesVisionSystem : EntitySystem
 {
-    [Dependency] private readonly ISerializationManager _serialization = default!;
     public override void Initialize()
     {
         base.Initialize();
+
         SubscribeLocalEvent<ClothesKrittersNightVisionComponent, GotEquippedEvent>(OnEquipped);
         SubscribeLocalEvent<ClothesKrittersNightVisionComponent, GotUnequippedEvent>(OnUnequipped);
     }
 
-    private void OnEquipped(EntityUid uid, ClothesKrittersNightVisionComponent component, GotEquippedEvent args)
+    private void OnEquipped(
+        Entity<ClothesKrittersNightVisionComponent> clothing,
+        ref GotEquippedEvent args)
     {
-        if (!TryComp<ClothingComponent>(uid, out var clothing)
-            || !clothing.Slots.HasFlag(args.SlotFlags))
-            return;
-
-        if (!HasComp<KrittersNightVisionComponent>(args.Equipee))
+        if (!TryComp<ClothingComponent>(clothing, out var wearable)
+            || !wearable.Slots.HasFlag(args.SlotFlags)
+            || HasComp<KrittersNightVisionComponent>(args.Equipee))
         {
-            var nightvision = EnsureComp<KrittersNightVisionComponent>(args.Equipee);
-            nightvision.Clothes = true;
+            return;
         }
+
+        var vision = EnsureComp<KrittersNightVisionComponent>(args.Equipee);
+        vision.Clothes = true;
     }
 
-    private void OnUnequipped(EntityUid uid, ClothesKrittersNightVisionComponent component, GotUnequippedEvent args)
+    private void OnUnequipped(
+        Entity<ClothesKrittersNightVisionComponent> clothing,
+        ref GotUnequippedEvent args)
     {
-        if (TryComp<KrittersNightVisionComponent>(args.Equipee, out var nightvision) && !nightvision.Clothes)
+        if (!TryComp<KrittersNightVisionComponent>(args.Equipee, out var vision)
+            || !vision.Clothes)
         {
-            nightvision.Clothes = false;
             return;
         }
 

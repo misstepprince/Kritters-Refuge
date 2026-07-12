@@ -1,0 +1,381 @@
+using System.Linq;
+using System.Numerics;
+using Content.Server.Atmos.Components;
+using Content.Server.Atmos.EntitySystems;
+using Content.Server.Body.Components;
+using Content.Server.Body.Systems;
+using Content.Server._Kritters.Novakin.Adapters.KrittersBloodTypes;
+using Content.Server.Temperature.Components;
+using Content.Shared._DV.Chemistry.Components;
+using Content.Shared._Kritters.Novakin.Components;
+using Content.Shared._Kritters.Novakin.Prototypes;
+using Content.Shared.Atmos;
+using Content.Shared.Atmos.Components;
+using Content.Shared.Alert;
+using Content.Shared.Bed.Cryostorage;
+using Content.Shared.Body.Components;
+using Content.Shared.Humanoid;
+using Content.Shared.Inventory;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Systems;
+using Content.Shared.Speech;
+using Content.Shared.Storage;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Map;
+using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
+using Robust.Shared.EntitySerialization.Systems;
+using Robust.Server.GameObjects;
+
+namespace Content.IntegrationTests.Tests._Kritters.Novakin;
+
+[TestFixture]
+public sealed class NovakinFoundationTest
+{
+    private static readonly string[] GasIds =
+    {
+        "NovakinGasNitrogen",
+        "NovakinGasOxygen",
+        "NovakinGasNitrousOxide",
+        "NovakinGasAmmonia",
+        "NovakinGasCarbonDioxide",
+        "NovakinGasWaterVapor",
+    };
+
+    [Test]
+    public async Task SpeciesFoundationTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var prototypes = server.ResolveDependency<IPrototypeManager>();
+        var bodySystem = entities.System<BodySystem>();
+        var map = await pair.CreateTestMap();
+        EntityUid novakin = default;
+
+        await server.WaitAssertion(() =>
+        {
+            foreach (var gasId in GasIds)
+                Assert.That(prototypes.HasIndex<NovakinGasPrototype>(gasId), Is.True, $"Missing gas {gasId}");
+
+            Assert.That(prototypes.EnumeratePrototypes<NovakinGasPrototype>().Count(), Is.EqualTo(6));
+
+            novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(entities.HasComponent<NovakinPhysiologyComponent>(novakin), Is.True);
+                Assert.That(entities.HasComponent<AtmosExposedComponent>(novakin), Is.True);
+                Assert.That(entities.HasComponent<TemperatureComponent>(novakin), Is.True);
+                Assert.That(entities.HasComponent<PointLightComponent>(novakin), Is.True);
+                Assert.That(entities.HasComponent<BlockInjectionComponent>(novakin), Is.True);
+                Assert.That(entities.HasComponent<BloodstreamComponent>(novakin), Is.False);
+                Assert.That(entities.HasComponent<RespiratorComponent>(novakin), Is.False);
+            });
+
+            var speech = entities.GetComponent<SpeechComponent>(novakin);
+            Assert.That(speech.SpeechVerb.Id, Is.EqualTo("Novakin"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(speech.SuffixSpeechVerbs["chat-speech-verb-suffix-question"].Id,
+                    Is.EqualTo("DefaultQuestion"));
+                Assert.That(speech.SuffixSpeechVerbs["chat-speech-verb-suffix-exclamation"].Id,
+                    Is.EqualTo("DefaultExclamation"));
+                Assert.That(speech.SuffixSpeechVerbs["chat-speech-verb-suffix-exclamation-strong"].Id,
+                    Is.EqualTo("DefaultExclamationStrong"));
+                Assert.That(speech.SuffixSpeechVerbs["chat-speech-verb-suffix-stutter"].Id,
+                    Is.EqualTo("DefaultStutter"));
+                Assert.That(speech.SuffixSpeechVerbs["chat-speech-verb-suffix-mumble"].Id,
+                    Is.EqualTo("DefaultMumble"));
+            });
+
+            var organs = bodySystem.GetBodyOrgans(novakin)
+                .Select(organ => entities.GetComponent<MetaDataComponent>(organ.Id).EntityPrototype?.ID)
+                .ToArray();
+
+            Assert.That(organs, Is.EquivalentTo(new[] { "OrganNovakinNexus", "OrganNovakinCore" }));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ThermalContainmentTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var mapLoader = entities.System<MapLoaderSystem>();
+        var mapSystem = entities.System<SharedMapSystem>();
+        var inventory = entities.System<InventorySystem>();
+        EntityUid grid = default;
+        EntityUid novakin = default;
+        TemperatureComponent temperature = default!;
+        GasMixture mixture = default!;
+        float initialAtmosTemperature = 0f;
+
+        await server.WaitPost(() =>
+        {
+            mapSystem.CreateMap(out var mapId);
+            var mapPath = new ResPath("Maps/Test/Breathing/3by3-20oxy-80nit.yml");
+            Assert.That(mapLoader.TryLoadGrid(mapId, mapPath, out var gridEntity), Is.True);
+            grid = gridEntity!.Value.Owner;
+
+            novakin = entities.SpawnEntity("MobNovakin", new EntityCoordinates(grid, new Vector2(0.5f, 0.5f)));
+            temperature = entities.GetComponent<TemperatureComponent>(novakin);
+            mixture = entities.System<AtmosphereSystem>().GetContainingMixture(novakin)!;
+            initialAtmosTemperature = mixture.Temperature;
+        });
+
+        await server.WaitRunTicks(120);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(temperature.CurrentTemperature, Is.LessThan(373.15f));
+            Assert.That(mixture.Temperature, Is.GreaterThan(initialAtmosTemperature));
+        });
+
+        await server.WaitPost(() =>
+        {
+            var coordinates = entities.GetComponent<TransformComponent>(novakin).Coordinates;
+            var suit = entities.SpawnEntity("ClothingOuterSuitFire", coordinates);
+            Assert.That(inventory.TryEquip(novakin, suit, "outerClothing", force: true), Is.True);
+            temperature.CurrentTemperature = 350f;
+        });
+
+        await server.WaitRunTicks(120);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(temperature.CurrentTemperature, Is.GreaterThan(350f));
+            Assert.That(temperature.CurrentTemperature, Is.LessThanOrEqualTo(373.15f));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ReserveDepletionTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var alerts = entities.System<AlertsSystem>();
+        var mobState = entities.System<MobStateSystem>();
+        var map = await pair.CreateTestMap();
+        EntityUid novakin = default;
+        NovakinPhysiologyComponent physiology = default!;
+
+        await server.WaitPost(() =>
+        {
+            novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            physiology.CurrentReserve = 100f;
+            physiology.ReserveDrainPerSecond = 10f;
+        });
+
+        await server.WaitRunTicks(60);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(physiology.CurrentReserve, Is.LessThan(100f));
+            Assert.That(alerts.IsShowingAlert(novakin, physiology.ReserveAlert), Is.True);
+        });
+
+        float pausedReserve = 0f;
+        await server.WaitPost(() =>
+        {
+            entities.AddComponent<CryostorageContainedComponent>(novakin);
+            physiology.CurrentReserve = 10f;
+            pausedReserve = 10f;
+        });
+        await server.WaitRunTicks(60);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(physiology.CurrentReserve, Is.EqualTo(pausedReserve).Within(0.001f));
+            var reserveAlert = alerts.GetActiveAlerts(novakin)!.Values
+                .Single(state => state.Type == physiology.ReserveAlert);
+            Assert.That(reserveAlert.Severity, Is.EqualTo(1));
+        });
+
+        float criticalReserve = 0f;
+        await server.WaitPost(() =>
+        {
+            entities.RemoveComponent<CryostorageContainedComponent>(novakin);
+            mobState.ChangeMobState(novakin, MobState.Critical);
+            physiology.CurrentReserve = 10f;
+            criticalReserve = physiology.CurrentReserve;
+        });
+        await server.WaitRunTicks(60);
+        await server.WaitAssertion(() =>
+            Assert.That(physiology.CurrentReserve, Is.LessThan(criticalReserve)));
+
+        await server.WaitPost(() =>
+        {
+            mobState.ChangeMobState(novakin, MobState.Dead);
+            pausedReserve = physiology.CurrentReserve;
+        });
+        await server.WaitRunTicks(60);
+        await server.WaitAssertion(() =>
+            Assert.That(physiology.CurrentReserve, Is.EqualTo(pausedReserve).Within(0.001f)));
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task InhalerRequiresMatchingGasTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var map = await pair.CreateTestMap();
+        EntityUid novakin = default;
+        EntityUid nitrogenInhaler = default;
+        EntityUid oxygenInhaler = default;
+        EntityUid nitrogenTankSource = default;
+        NovakinPhysiologyComponent physiology = default!;
+        GasTankComponent nitrogenTank = default!;
+        GasTankComponent oxygenTank = default!;
+        float initialNitrogenMoles = 0f;
+        float initialOxygenMoles = 0f;
+
+        await server.WaitPost(() =>
+        {
+            var coordinates = new MapCoordinates(Vector2.Zero, map.MapId);
+            novakin = entities.SpawnEntity("MobNovakin", coordinates);
+            nitrogenInhaler = entities.SpawnEntity("NovakinInhalerNitrogen", coordinates);
+            oxygenInhaler = entities.SpawnEntity("NovakinInhalerOxygen", coordinates);
+            physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            nitrogenTank = entities.GetComponent<GasTankComponent>(nitrogenInhaler);
+            oxygenTank = entities.GetComponent<GasTankComponent>(oxygenInhaler);
+            physiology.CurrentReserve = 0f;
+            initialNitrogenMoles = nitrogenTank.Air.GetMoles(Gas.Nitrogen);
+            initialOxygenMoles = oxygenTank.Air.GetMoles(Gas.Oxygen);
+
+            entities.EventBus.RaiseLocalEvent(nitrogenInhaler, new UseInHandEvent(novakin));
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(physiology.CurrentReserve, Is.EqualTo(25f).Within(0.001f));
+            Assert.That(nitrogenTank.Air.GetMoles(Gas.Nitrogen), Is.LessThan(initialNitrogenMoles));
+        });
+
+        await server.WaitPost(() =>
+        {
+            physiology.CurrentReserve = 0f;
+            entities.EventBus.RaiseLocalEvent(oxygenInhaler, new UseInHandEvent(novakin));
+        });
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(physiology.CurrentReserve, Is.Zero.Within(0.001f));
+            Assert.That(oxygenTank.Air.GetMoles(Gas.Oxygen), Is.EqualTo(initialOxygenMoles).Within(0.0001f));
+        });
+
+        await server.WaitRunTicks(60);
+        float sourceMoles = 0f;
+        await server.WaitPost(() =>
+        {
+            var coordinates = entities.GetComponent<TransformComponent>(novakin).Coordinates;
+            nitrogenTankSource = entities.SpawnEntity("EmergencyNitrogenTankFilled", coordinates);
+            var sourceTank = entities.GetComponent<GasTankComponent>(nitrogenTankSource);
+            nitrogenTank.Air.SetMoles(Gas.Nitrogen, 0f);
+            sourceMoles = sourceTank.Air.GetMoles(Gas.Nitrogen);
+
+            entities.EventBus.RaiseLocalEvent(nitrogenInhaler,
+                new AfterInteractEvent(novakin, nitrogenInhaler, nitrogenTankSource, coordinates, true));
+        });
+        await server.WaitAssertion(() =>
+        {
+            var sourceTank = entities.GetComponent<GasTankComponent>(nitrogenTankSource);
+            Assert.That(nitrogenTank.Air.GetMoles(Gas.Nitrogen), Is.EqualTo(0.270782035f).Within(0.0001f));
+            Assert.That(sourceTank.Air.GetMoles(Gas.Nitrogen), Is.LessThan(sourceMoles));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task SurvivalKitInhalerAdaptsToSelectedGasTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var transform = entities.System<SharedTransformSystem>();
+        var adapter = entities.System<NovakinBloodTypeAdapterSystem>();
+        var map = await pair.CreateTestMap();
+        EntityUid inhaler = default;
+
+        await server.WaitPost(() =>
+        {
+            var coordinates = new MapCoordinates(Vector2.Zero, map.MapId);
+            var novakin = entities.SpawnEntity("MobNovakin", coordinates);
+            var survivalKit = entities.SpawnEntity("NovakinBoxSurvival", coordinates);
+            transform.SetParent(survivalKit, novakin);
+
+            var storage = entities.GetComponent<StorageComponent>(survivalKit);
+            inhaler = storage.Container.ContainedEntities
+                .Single(uid => entities.HasComponent<NovakinInhalerComponent>(uid));
+
+            adapter.ConfigureStartingInhalers(novakin, "NovakinGasAmmonia");
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var inhalerComponent = entities.GetComponent<NovakinInhalerComponent>(inhaler);
+            var tank = entities.GetComponent<GasTankComponent>(inhaler);
+            Assert.That(inhalerComponent.Gas.Id, Is.EqualTo("NovakinGasAmmonia"));
+            Assert.That(tank.Air.GetMoles(Gas.Ammonia), Is.EqualTo(inhalerComponent.MaxMoles).Within(0.0001f));
+            Assert.That(tank.Air.GetMoles(Gas.Nitrogen), Is.Zero.Within(0.0001f));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task CharacterColoredGlowTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var mobState = entities.System<MobStateSystem>();
+        var map = await pair.CreateTestMap();
+        EntityUid novakin = default;
+        NovakinPhysiologyComponent physiology = default!;
+        PointLightComponent light = default!;
+        var selectedColor = Color.FromHex("#42D9C8");
+
+        await server.WaitPost(() =>
+        {
+            novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            light = entities.GetComponent<PointLightComponent>(novakin);
+            entities.GetComponent<HumanoidAppearanceComponent>(novakin).SkinColor = selectedColor;
+            entities.GetComponent<TemperatureComponent>(novakin).CurrentTemperature = 350f;
+        });
+
+        await server.WaitRunTicks(60);
+        await server.WaitAssertion(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(light.Color, Is.EqualTo(selectedColor));
+                Assert.That(light.Radius, Is.EqualTo(2f));
+                // The unprotected test mob cools rapidly, but its colored glow remains at the configured floor.
+                Assert.That(light.Energy, Is.EqualTo(physiology.MinimumGlowEnergy).Within(0.001f));
+                Assert.That(physiology.GlowIntensity, Is.EqualTo(light.Energy).Within(0.001f));
+            });
+        });
+
+        await server.WaitPost(() => mobState.ChangeMobState(novakin, MobState.Dead));
+        await server.WaitRunTicks(60);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(light.Color, Is.EqualTo(selectedColor));
+            Assert.That(light.Energy, Is.EqualTo(physiology.DeadGlowEnergy).Within(0.001f));
+            Assert.That(physiology.GlowIntensity, Is.EqualTo(physiology.DeadGlowEnergy).Within(0.001f));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+}

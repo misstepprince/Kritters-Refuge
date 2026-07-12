@@ -15,6 +15,7 @@
     - SlimePerson
     - Vox
     - Sheleg # Different meds
+    - Novakin # Kritters: gas reserve inhaler
     inverted: true
 
 - type: loadoutEffectGroup
@@ -23,6 +24,13 @@
   - !type:SpeciesLoadoutEffect
     species:
     - Sheleg
+
+- type: loadoutEffectGroup
+  id: NFNovakin
+  effects:
+  - !type:SpeciesLoadoutEffect
+    species:
+    - Novakin
 
 - type: loadoutEffectGroup
   id: ShoesCapableNF

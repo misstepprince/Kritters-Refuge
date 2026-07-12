@@ -29,6 +29,16 @@
     back:
     - NFBoxSurvivalSheleg
 
+- type: loadout
+  id: ContractorNovakinBoxSurvival
+  name: Novakin survival box
+  hideEffects:
+  - !type:GroupLoadoutEffect
+    proto: NFNovakin
+  storage:
+    back:
+    - NovakinBoxSurvival
+
 #T1
 - type: loadout
   id: ContractorNFBoxSurvivalExtended
@@ -71,6 +81,20 @@
   storage:
     back:
     - NFBoxSurvivalExtendedSheleg
+
+- type: loadout
+  id: ContractorNovakinBoxSurvivalExtended
+  name: extended Novakin survival box
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT1
+  hideEffects:
+  - !type:GroupLoadoutEffect
+    proto: NFNovakin
+  price: 1000
+  storage:
+    back:
+    - NovakinBoxSurvivalExtended
 
 - type: loadout
   id: ContractorNFBoxSurvivalDonk

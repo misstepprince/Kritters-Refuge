@@ -89,10 +89,12 @@
   - NfsdBoxSurvivalNfsdOxygen
   - NfsdBoxSurvivalNfsdNitrogen
   - NfsdBoxSurvivalNfsdSheleg
+  - NfsdNovakinBoxSurvival
   fallbacks:
   - NfsdBoxSurvivalNfsdOxygen
   - NfsdBoxSurvivalNfsdNitrogen
   - NfsdBoxSurvivalNfsdSheleg
+  - NfsdNovakinBoxSurvival
 
 - type: loadoutGroup
   id: NfsdFace

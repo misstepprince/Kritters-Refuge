@@ -28,3 +28,13 @@
   storage:
     back:
     - NFBoxSurvivalExtendedSheleg
+
+- type: loadout
+  id: NfsdNovakinBoxSurvival
+  name: extended Novakin survival box
+  hideEffects:
+  - !type:GroupLoadoutEffect
+    proto: NFNovakin
+  storage:
+    back:
+    - NovakinBoxSurvivalExtended
