@@ -97,10 +97,6 @@
   contrabandInventory:
     # Snacks
     FoodTinPeachesMaint: 10
-    # KRITTERS START
-    ClothingNeckAdvancedCollarCMD: 3
-    ClothingNeckAdvacedCollarCC: 3
-    # KRITTERS END
   emaggedInventory:
     ClothingNeckShockCollar: 3
     ClothingUniformCoderValidThong: 2

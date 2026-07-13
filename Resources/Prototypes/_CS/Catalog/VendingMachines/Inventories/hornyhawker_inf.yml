@@ -116,10 +116,6 @@
     ClothingHandsCoderValidWarmers: 4294967295 # Infinite
     # Snacks
     FoodTinPeachesMaint: 10
-    # KRITTERS START
-    ClothingNeckAdvancedCollarCMD: 4294967295 #Infinite
-    ClothingNeckAdvacedCollarCC: 4294967295 #Infinite
-    # KRITTERS END
   emaggedInventory:
     ClothingNeckShockCollar: 4294967295 # Infinite
     ClothingUniformCoderValidThong: 4294967295 # Infinite
