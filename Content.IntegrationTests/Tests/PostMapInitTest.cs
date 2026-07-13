@@ -509,7 +509,8 @@ namespace Content.IntegrationTests.Tests
                 // Frontier: FIXME - hacky test fix
                 .Where(x =>
                     x.ID == PoolManager.TestMap || // Frontier: check test map
-                    (x.MapPath.ToString().StartsWith("/Maps/_NF") && // Frontier: check frontier maps only
+                    ((x.MapPath.ToString().StartsWith("/Maps/_NF") || // Frontier: check frontier maps only
+                    x.MapPath.ToString().StartsWith("/Maps/_Kritters")) && // Kritters: outpost map
                     !x.MapPath.ToString().StartsWith("/Maps/_NF/Shuttles") && // Frontier: skip shuttles (not loaded as maps)
                     !x.MapPath.ToString().StartsWith("/Maps/_NF/POI")) // Frontier: skip POIs (not loaded as maps)
                     )
