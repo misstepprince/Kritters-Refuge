@@ -161,6 +161,10 @@
   tileReactions:
   - !type:FlammableTileReaction {}
   metabolisms:
+    Fuel:
+      effects:
+      - !type:NovakinHeat
+        temperatureDelta: 2
     Food:
       effects:
       - !type:SatiateThirst

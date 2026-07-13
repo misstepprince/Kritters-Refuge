@@ -19,6 +19,38 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField, AutoNetworkedField]
     public float CurrentReserve = 100f;
 
+    [DataField]
+    public float FuelDepletedCoolingPerSecond = 8f;
+
+    /// <summary>
+    /// Core temperature at or below which Fuel uses its normal needs-system decay rate.
+    /// </summary>
+    [DataField]
+    public float FuelConsumptionBaselineTemperature = 373.15f;
+
+    /// <summary>
+    /// Core temperature at which increased Fuel consumption reaches its maximum.
+    /// </summary>
+    [DataField]
+    public float FuelConsumptionMaximumTemperature = 700f;
+
+    /// <summary>
+    /// Fuel-decay multiplier at <see cref="FuelConsumptionMaximumTemperature"/>.
+    /// </summary>
+    [DataField]
+    public float MaximumFuelConsumptionMultiplier = 2f;
+
+    [DataField]
+    public float MaximumHeatSpeedMultiplier = 1.25f;
+
+    [DataField, AutoNetworkedField]
+    public float HeatSpeedMultiplier = 1f;
+
+    /// <summary>
+    /// The unmodified decay rate supplied by the Fuel need prototype.
+    /// </summary>
+    public float BaseFuelDecayRate = -1f;
+
     /// <summary>
     /// Reserve consumed per second while the Novakin is alive or critical and outside cryostorage.
     /// </summary>
@@ -110,13 +142,10 @@ public sealed partial class NovakinPhysiologyComponent : Component
     public ProtoId<AlertPrototype> ReserveAlert = "NovakinGasReserve";
 
     [DataField]
-    public float FullGlowTemperature = 373.15f;
-
-    [DataField]
     public float MinimumGlowTemperature = 330f;
 
     [DataField]
-    public float FullGlowEnergy = 1f;
+    public float FullGlowEnergy = 3f;
 
     [DataField]
     public float MinimumGlowEnergy = 0.15f;
@@ -128,7 +157,7 @@ public sealed partial class NovakinPhysiologyComponent : Component
     /// Maximum opacity of the client-side unshaded body layers.
     /// </summary>
     [DataField, AutoNetworkedField]
-    public float MaximumBodyGlowOpacity = 0.6f;
+    public float MaximumBodyGlowOpacity = 0.85f;
 
     /// <summary>
     /// Normalized body luminosity calculated from temperature and life state.

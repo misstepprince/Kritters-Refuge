@@ -8,6 +8,10 @@
   flavor: nutriment
   color: "#24591F"
   metabolisms:
+    Fuel:
+      effects:
+      - !type:NovakinFuel
+        fuel: 8
     Food:
       effects:
       - !type:SatiateHunger

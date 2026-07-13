@@ -51,6 +51,8 @@
   metabolisms:
     Drink:
       effects:
+      - !type:NovakinHeat
+        temperatureDelta: 1
       - !type:SatiateThirst
         factor: 2
       - !type:AdjustReagent

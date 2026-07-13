@@ -269,6 +269,8 @@
         reagents:
         - ReagentId: Cellulose
           Quantity: 10
+  - type: NovakinFuelMaterial
+    fuel: 4
 
 - type: entity
   parent: MaterialWoodPlank
@@ -299,6 +301,8 @@
   - type: Stack
     stackType: Biomass
     count: 100
+  - type: NovakinFuelMaterial
+    fuel: 9
   - type: Sprite
     sprite: /Textures/Objects/Misc/monkeycube.rsi
     state: cube
@@ -579,6 +583,8 @@
   - type: Item
     heldPrefix: bananium
   - type: NFFuel # Frontier
+  - type: NovakinFuelMaterial
+    fuel: 7
 
 - type: entity
   parent: MaterialBananium

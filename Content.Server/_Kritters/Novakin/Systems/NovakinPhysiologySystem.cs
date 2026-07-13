@@ -1,18 +1,26 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Components;
 using Content.Server.Body.Components;
+using Content.Server.Stack;
 using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
 using Content.Shared._Kritters.Novakin.Components;
+using Content.Shared._Kritters.Novakin.EntityEffects;
+using Content.Shared._Kritters.Novakin;
 using Content.Shared._Kritters.Novakin.Systems;
+using Content.Shared._CS.Needs;
 using Content.Shared.Alert;
 using Content.Shared.Bed.Cryostorage;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
+using Content.Shared.EntityEffects;
 using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
+using Content.Shared.Interaction.Events;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Systems;
+using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 
 namespace Content.Server._Kritters.Novakin.Systems;
@@ -23,8 +31,12 @@ public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
     [Dependency] private readonly AlertsSystem _alerts = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private readonly SharedNeedsSystem _needs = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly PointLightSystem _pointLight = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly StackSystem _stacks = default!;
     [Dependency] private readonly TemperatureSystem _temperature = default!;
 
     private float _accumulator;
@@ -33,6 +45,11 @@ public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
     {
         base.Initialize();
         SubscribeLocalEvent<NovakinPhysiologyComponent, ComponentShutdown>(OnPhysiologyShutdown);
+        SubscribeLocalEvent<NovakinFuelMaterialComponent, UseInHandEvent>(OnFuelMaterialUsed);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, DamageModifyEvent>(OnDamageModify);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinDischargeEvent>(OnDischarge);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovement);
+        SubscribeLocalEvent<ExecuteEntityEffectEvent<NovakinHeat>>(OnNovakinHeat);
     }
 
     public override void Update(float frameTime)
@@ -44,9 +61,16 @@ public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
         var elapsed = _accumulator;
         _accumulator = 0f;
 
-        var query = EntityQueryEnumerator<NovakinPhysiologyComponent, TemperatureComponent, TransformComponent, MobStateComponent>();
-        while (query.MoveNext(out var uid, out var physiology, out var temperature, out var transform, out var mobState))
+        var query = EntityQueryEnumerator<NovakinPhysiologyComponent, NeedsComponent, TemperatureComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var physiology, out var needs, out var temperature, out var transform))
         {
+            if (!TryComp<MobStateComponent>(uid, out var mobState))
+                continue;
+
+            UpdateFuelConsumptionRate(physiology, needs, temperature);
+            UpdateHeatSpeed(uid, physiology, temperature);
+            CoolWhenFuelDepleted(uid, physiology, needs, temperature, elapsed);
+
             var reserveLost = 0f;
             if (!_mobState.IsDead(uid, mobState) && !HasComp<CryostorageContainedComponent>(uid))
                 reserveLost = RemoveReserve((uid, physiology), GetReserveDrainRate(uid, physiology, mobState) * elapsed);
@@ -70,6 +94,139 @@ public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
 
             physiology.LastTemperature = temperature.CurrentTemperature;
         }
+    }
+
+    private void OnFuelMaterialUsed(Entity<NovakinFuelMaterialComponent> fuel, ref UseInHandEvent args)
+    {
+        if (args.Handled
+            || !HasComp<NovakinPhysiologyComponent>(args.User)
+            || !TryComp<NeedsComponent>(args.User, out var needs)
+            || !needs.Needs.TryGetValue(NeedType.Fuel, out var coreFuel))
+            return;
+
+        if (coreFuel.CurrentValue >= coreFuel.MaxValue)
+        {
+            _popup.PopupEntity(Loc.GetString("novakin-fuel-full"), fuel, args.User);
+            args.Handled = true;
+            return;
+        }
+
+        if (!_stacks.Use(fuel.Owner, 1))
+            return;
+
+        _needs.TryModifyNeedLevel(args.User, NeedType.Fuel, fuel.Comp.Fuel, needs);
+        _popup.PopupEntity(Loc.GetString("novakin-fuel-consumed"), args.User, args.User);
+
+        args.Handled = true;
+    }
+
+    private void OnNovakinHeat(ref ExecuteEntityEffectEvent<NovakinHeat> args)
+    {
+        if (!TryComp<NovakinPhysiologyComponent>(args.Args.TargetEntity, out var physiology)
+            || !TryComp<TemperatureComponent>(args.Args.TargetEntity, out var temperature))
+            return;
+
+        var delta = args.Effect.TemperatureDelta;
+        if (args.Args is EntityEffectReagentArgs reagentArgs)
+            delta *= reagentArgs.Scale.Float();
+
+        if (delta <= 0f)
+            return;
+
+        _temperature.ForceChangeTemperature(
+            args.Args.TargetEntity,
+            Math.Min(temperature.CurrentTemperature + delta, physiology.FuelConsumptionMaximumTemperature),
+            temperature);
+    }
+
+    private void CoolWhenFuelDepleted(
+        EntityUid uid,
+        NovakinPhysiologyComponent physiology,
+        NeedsComponent needs,
+        TemperatureComponent temperature,
+        float elapsed)
+    {
+        if (needs.Needs.TryGetValue(NeedType.Fuel, out var fuel)
+            && fuel.CurrentValue <= fuel.MinValue
+            && physiology.FuelDepletedCoolingPerSecond > 0f)
+        {
+            _temperature.ForceChangeTemperature(uid,
+                temperature.CurrentTemperature - physiology.FuelDepletedCoolingPerSecond * elapsed,
+                temperature);
+        }
+    }
+
+    private static void UpdateFuelConsumptionRate(
+        NovakinPhysiologyComponent physiology,
+        NeedsComponent needs,
+        TemperatureComponent temperature)
+    {
+        if (!needs.Needs.TryGetValue(NeedType.Fuel, out var fuel))
+            return;
+
+        if (physiology.BaseFuelDecayRate < 0f)
+            physiology.BaseFuelDecayRate = fuel.DecayRate;
+
+        var temperatureRange = physiology.FuelConsumptionMaximumTemperature - physiology.FuelConsumptionBaselineTemperature;
+        var temperatureFactor = temperatureRange > 0f
+            ? Math.Clamp(
+                (temperature.CurrentTemperature - physiology.FuelConsumptionBaselineTemperature) / temperatureRange,
+                0f,
+                1f)
+            : 1f;
+        var multiplier = MathHelper.Lerp(1f, physiology.MaximumFuelConsumptionMultiplier, temperatureFactor);
+        fuel.DecayRate = physiology.BaseFuelDecayRate * multiplier;
+    }
+
+    private void OnDamageModify(Entity<NovakinPhysiologyComponent> entity, ref DamageModifyEvent args)
+    {
+        if (!TryComp<TemperatureComponent>(entity, out var temperature))
+            return;
+
+        var range = entity.Comp.FuelConsumptionMaximumTemperature - entity.Comp.FuelConsumptionBaselineTemperature;
+        var factor = range > 0f
+            ? Math.Clamp((temperature.CurrentTemperature - entity.Comp.FuelConsumptionBaselineTemperature) / range, 0f, 1f)
+            : 1f;
+
+        if (args.Damage.DamageDict.TryGetValue("Blunt", out var blunt))
+            args.Damage.DamageDict["Blunt"] = blunt * (1f - 0.25f * factor);
+
+        if (args.Damage.DamageDict.TryGetValue("Cold", out var cold))
+            args.Damage.DamageDict["Cold"] = cold * (1f + 0.5f * factor);
+    }
+
+    private void OnRefreshMovement(Entity<NovakinPhysiologyComponent> entity, ref RefreshMovementSpeedModifiersEvent args)
+    {
+        args.ModifySpeed(entity.Comp.HeatSpeedMultiplier, entity.Comp.HeatSpeedMultiplier);
+    }
+
+    private void OnDischarge(Entity<NovakinPhysiologyComponent> entity, ref NovakinDischargeEvent args)
+    {
+        if (args.Handled || !TryComp<TemperatureComponent>(entity, out var temperature) || temperature.CurrentTemperature < 650f)
+            return;
+
+        var removed = RemoveReserve(entity, entity.Comp.CurrentReserve * 0.5f);
+        if (removed > 0f && TryComp<TransformComponent>(entity, out var transform)
+            && Prototypes.TryIndex(entity.Comp.Gas, out var gas))
+            _atmosphere.GetTileMixture((entity, transform), excite: true)?.AdjustMoles(gas.Gas, removed * entity.Comp.LeakedMolesPerReserve);
+
+        _temperature.ForceChangeTemperature(entity, temperature.CurrentTemperature - 300f, temperature);
+        args.Handled = true;
+    }
+
+    private void UpdateHeatSpeed(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
+    {
+        var range = physiology.FuelConsumptionMaximumTemperature - physiology.FuelConsumptionBaselineTemperature;
+        var factor = range > 0f
+            ? Math.Clamp((temperature.CurrentTemperature - physiology.FuelConsumptionBaselineTemperature) / range, 0f, 1f)
+            : 1f;
+        var multiplier = MathHelper.Lerp(1f, physiology.MaximumHeatSpeedMultiplier, factor);
+        if (MathF.Abs(physiology.HeatSpeedMultiplier - multiplier) < 0.001f)
+            return;
+
+        physiology.HeatSpeedMultiplier = multiplier;
+        Dirty(uid, physiology);
+        _movement.RefreshMovementSpeedModifiers(uid);
     }
 
     private void UpdateReserveConsequences(
@@ -101,7 +258,7 @@ public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
                 physiology.BaseShiveringHeatRegulation = regulator.ShiveringHeatRegulation;
             }
 
-            var multiplier = GetThermalRegulationMultiplier(physiology, fraction);
+            var multiplier = GetThermalRegulationMultiplier(physiology, fraction) * GetHeatFactor(uid, physiology, 0.5f);
             regulator.ImplicitHeatRegulation = physiology.BaseImplicitHeatRegulation * multiplier;
             regulator.SweatHeatRegulation = physiology.BaseSweatHeatRegulation * multiplier;
             regulator.ShiveringHeatRegulation = physiology.BaseShiveringHeatRegulation * multiplier;
@@ -158,7 +315,7 @@ public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
             return;
         }
 
-        var temperatureRange = physiology.FullGlowTemperature - physiology.MinimumGlowTemperature;
+        var temperatureRange = physiology.FuelConsumptionMaximumTemperature - physiology.MinimumGlowTemperature;
         var temperatureFactor = temperatureRange > 0f
             ? Math.Clamp(
                 (temperature.CurrentTemperature - physiology.MinimumGlowTemperature) / temperatureRange,
@@ -238,7 +395,18 @@ public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
         if (_mobState.IsCritical(uid, mobState))
             multiplier *= Math.Max(0f, physiology.CriticalHealthDrainMultiplier);
 
-        return physiology.ReserveDrainPerSecond * Math.Max(0f, multiplier);
+        return physiology.ReserveDrainPerSecond * Math.Max(0f, multiplier) * GetHeatFactor(uid, physiology, 0.5f);
+    }
+
+    private float GetHeatFactor(EntityUid uid, NovakinPhysiologyComponent physiology, float minimum)
+    {
+        if (!TryComp<TemperatureComponent>(uid, out var temperature))
+            return 1f;
+        var range = physiology.FuelConsumptionMaximumTemperature - physiology.FuelConsumptionBaselineTemperature;
+        var progress = range > 0f
+            ? Math.Clamp((temperature.CurrentTemperature - physiology.FuelConsumptionBaselineTemperature) / range, 0f, 1f)
+            : 1f;
+        return MathHelper.Lerp(1f, minimum, progress);
     }
 
     private bool HasSealedPressureSuit(EntityUid uid)

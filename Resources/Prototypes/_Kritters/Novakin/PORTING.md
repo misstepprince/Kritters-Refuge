@@ -36,3 +36,11 @@ If adaptive starting inhalers are used, the replacement adapter should also call
 - Verify each inhaler accepts only its configured pure gas, restores matching reserve, and can be refilled as a native gas tank.
 - Verify the survival box's adaptive inhaler matches the character's selected gas after spawning.
 - Verify Heat immunity, Radiation resistance, night vision, and flash sensitivity.
+
+## recent ideas/additions
+
+- Novakin will need to consume radioactive, carbon, or hydrogen based materials to be able to maintain their cores ability to generate heat and retain gas. They must stoke themselves at a similar rate to other species who need to eat.
+- Gas replenishment should be done at a similar rate to how other species need to hydrate themselves.
+- They will also be able to use alcohol to increase their body temperature, and the higher their temperature is, the closer to 700k they get, the more efficient they are with their gas in terms of not losing it as much. However their body still regulates back down to the normal 373k temperature, but it becomes slower the hotter they get. However, as a result of the higher temperature they get significantly hungrier for more fuel. If they run out of fuel they start to rapidly cool down.
+- The hotter they get the more an orange aura or glow begins to form around the edges of the players screen. They also begin to move faster and are more resistant to damage, up to 25% for brute damage, but will make them take 50% more cold damage.
+- At 650k there will be a 'discharge' or 'release' ability which will lower the Novakins temperature by 300k by venting gas into the area surrounding them.

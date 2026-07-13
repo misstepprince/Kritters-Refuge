@@ -139,6 +139,10 @@
   - !type:FlammableTileReaction
     temperatureMultiplier: 1.5
   metabolisms:
+    Fuel:
+      effects:
+      - !type:NovakinFuel
+        fuel: 5
     Poison:
       effects:
       - !type:HealthChange

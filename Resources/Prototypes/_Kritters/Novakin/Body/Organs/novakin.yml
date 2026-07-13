@@ -26,6 +26,7 @@
     maxReagents: 3
     metabolizerTypes: [Human]
     groups:
+    - id: Fuel
     - id: Food
     - id: Drink
     - id: Medicine

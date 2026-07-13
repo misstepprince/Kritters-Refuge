@@ -20,8 +20,17 @@
     solutions:
       chemicals:
         maxVol: 100
+  - type: Needs
+    needs:
+    - NeedNovakinFuel
+  - type: ActionGrant
+    actions:
+    - ActionNovakinDischarge
   - type: NovakinPhysiology
     gas: NovakinGasNitrogen
+    fuelConsumptionBaselineTemperature: 373.15
+    fuelConsumptionMaximumTemperature: 700
+    maximumFuelConsumptionMultiplier: 2
     reserveDrainPerSecond: 0.0555556
     fullReserveDrainMultiplier: 1
     emptyReserveDrainMultiplier: 0.25
@@ -62,7 +71,8 @@
   - type: KrittersNightVision
   - type: AtmosExposed
   - type: Temperature
-    heatDamageThreshold: 700
+    # Fuel heating caps at 700 K; leave a small margin so the cap itself is safe.
+    heatDamageThreshold: 700.1
     coldDamageThreshold: 368.15
     currentTemperature: 373.15
     specificHeat: 42
@@ -72,6 +82,7 @@
     heatDamage:
       types:
         Heat: 2
+        Cellular: 2
   - type: TemperatureSpeed
     thresholds:
       368.15: 0.9

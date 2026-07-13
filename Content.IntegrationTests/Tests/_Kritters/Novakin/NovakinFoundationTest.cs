@@ -9,21 +9,29 @@ using Content.Server._Kritters.Novakin.Systems;
 using Content.Server.Temperature.Components;
 using Content.Shared._DV.Chemistry.Components;
 using Content.Shared._Kritters.Novakin.Components;
+using Content.Shared._Kritters.Novakin.EntityEffects;
 using Content.Shared._Kritters.Novakin.Prototypes;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Alert;
 using Content.Shared.Bed.Cryostorage;
 using Content.Shared.Body.Components;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
+using Content.Shared.EntityEffects;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Prototypes;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Speech;
 using Content.Shared.Storage;
+using Content.Shared.Tag;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -65,6 +73,11 @@ public sealed class NovakinFoundationTest
 
             Assert.That(prototypes.EnumeratePrototypes<NovakinGasPrototype>().Count(), Is.EqualTo(6));
 
+            Assert.That(GetNovakinHeatDelta(prototypes.Index<ReagentPrototype>("Ethanol"), "Drink"), Is.EqualTo(1f));
+            Assert.That(GetNovakinHeatDelta(prototypes.Index<ReagentPrototype>("WeldingFuel"), "Fuel"), Is.EqualTo(2f));
+            Assert.That(GetNovakinHeatDelta(prototypes.Index<ReagentPrototype>("Oil"), "Fuel"), Is.EqualTo(1.5f));
+            Assert.That(GetNovakinHeatDelta(prototypes.Index<ReagentPrototype>("OilOlive"), "Fuel"), Is.EqualTo(1.5f));
+
             novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
 
             Assert.Multiple(() =>
@@ -77,6 +90,12 @@ public sealed class NovakinFoundationTest
                 Assert.That(entities.HasComponent<BloodstreamComponent>(novakin), Is.False);
                 Assert.That(entities.HasComponent<RespiratorComponent>(novakin), Is.False);
             });
+
+            var tags = entities.GetComponent<TagComponent>(novakin).Tags;
+            Assert.That(tags, Does.Contain("DoorBumpOpener"));
+            Assert.That(tags, Does.Contain("CanPilot"));
+            Assert.That(tags, Does.Contain("FootstepSound"));
+            Assert.That(tags, Does.Contain("AnomalyHost"));
 
             var speech = entities.GetComponent<SpeechComponent>(novakin);
             Assert.That(speech.SpeechVerb.Id, Is.EqualTo("Novakin"));
@@ -108,6 +127,144 @@ public sealed class NovakinFoundationTest
             Assert.That(metabolizer.MetabolizerTypes, Does.Contain("Human"));
             Assert.That(metabolizer.MetabolismGroups!.Select(group => group.Id.Id),
                 Does.Contain("Food").And.Contain("Drink").And.Contain("Medicine").And.Contain("Poison"));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    private static float GetNovakinHeatDelta(ReagentPrototype reagent, string metabolismGroup)
+    {
+        return reagent.Metabolisms![metabolismGroup].Effects
+            .OfType<NovakinHeat>()
+            .Single()
+            .TemperatureDelta;
+    }
+
+    [Test]
+    public async Task NovakinHeatEffectTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var map = await pair.CreateTestMap();
+        EntityUid novakin = default;
+        EntityUid human = default;
+
+        await server.WaitAssertion(() =>
+        {
+            novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            human = entities.SpawnEntity("MobHuman", new MapCoordinates(Vector2.One, map.MapId));
+
+            var novakinTemperature = entities.GetComponent<TemperatureComponent>(novakin);
+            var humanTemperature = entities.GetComponent<TemperatureComponent>(human);
+            var humanInitialTemperature = humanTemperature.CurrentTemperature;
+
+            var heat = new NovakinHeat { TemperatureDelta = 1000f };
+            heat.Effect(new EntityEffectBaseArgs(novakin, entities));
+            heat.Effect(new EntityEffectBaseArgs(human, entities));
+
+            Assert.That(novakinTemperature.CurrentTemperature, Is.EqualTo(700f));
+            Assert.That(humanTemperature.CurrentTemperature, Is.EqualTo(humanInitialTemperature));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task NovakinFuelTemperatureCapIsBelowHeatDamageThreshold()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            var temperature = entities.GetComponent<TemperatureComponent>(novakin);
+
+            Assert.That(temperature.HeatDamageThreshold, Is.GreaterThan(physiology.FuelConsumptionMaximumTemperature));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task NovakinIsImmuneToPoisonDamage()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var prototypes = server.ResolveDependency<IPrototypeManager>();
+        var damageable = entities.System<DamageableSystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var damage = entities.GetComponent<DamageableComponent>(novakin);
+
+            damageable.TryChangeDamage(novakin, new DamageSpecifier(prototypes.Index<DamageTypePrototype>("Poison"), 10));
+            Assert.That(damage.TotalDamage, Is.EqualTo(FixedPoint2.Zero));
+
+            damageable.TryChangeDamage(novakin, new DamageSpecifier(prototypes.Index<DamageTypePrototype>("Blunt"), 10));
+            Assert.That(damage.TotalDamage, Is.EqualTo(FixedPoint2.New(10)));
+
+            damageable.TryChangeDamage(novakin, new DamageSpecifier(prototypes.Index<DamageTypePrototype>("Heat"), 10));
+            Assert.That(damage.TotalDamage, Is.EqualTo(FixedPoint2.New(12.5f)));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task NovakinGlowReachesFullBrightnessAtMaximumFuelTemperature()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var map = await pair.CreateTestMap();
+        EntityUid novakin = default;
+        NovakinPhysiologyComponent physiology = default!;
+        PointLightComponent light = default!;
+        TemperatureComponent temperature = default!;
+
+        await server.WaitPost(() =>
+        {
+            novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            light = entities.GetComponent<PointLightComponent>(novakin);
+            temperature = entities.GetComponent<TemperatureComponent>(novakin);
+            temperature.CurrentTemperature = physiology.MinimumGlowTemperature;
+        });
+
+        await server.WaitRunTicks(1);
+        float baseEnergy = 0f;
+        await server.WaitAssertion(() =>
+        {
+            baseEnergy = light.Energy;
+            Assert.That(baseEnergy, Is.EqualTo(physiology.MinimumGlowEnergy).Within(0.001f));
+            Assert.That(physiology.GlowIntensity,
+                Is.EqualTo(physiology.MinimumGlowEnergy / physiology.FullGlowEnergy).Within(0.001f));
+        });
+
+        await server.WaitPost(() =>
+            temperature.CurrentTemperature = (physiology.MinimumGlowTemperature + physiology.FuelConsumptionMaximumTemperature) / 2f);
+        await server.WaitRunTicks(1);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(light.Energy, Is.GreaterThan(baseEnergy));
+            Assert.That(light.Energy, Is.LessThan(physiology.FullGlowEnergy));
+        });
+
+        await server.WaitPost(() => temperature.CurrentTemperature = physiology.FuelConsumptionMaximumTemperature);
+        await server.WaitRunTicks(1);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(light.Energy, Is.EqualTo(physiology.FullGlowEnergy).Within(0.01f));
+            Assert.That(physiology.GlowIntensity, Is.EqualTo(1f).Within(0.01f));
+            Assert.That(physiology.MaximumBodyGlowOpacity, Is.EqualTo(0.85f));
         });
 
         await pair.CleanReturnAsync();
@@ -496,7 +653,8 @@ public sealed class NovakinFoundationTest
                 Assert.That(light.Radius, Is.EqualTo(2f));
                 // The unprotected test mob cools rapidly, but its colored glow remains at the configured floor.
                 Assert.That(light.Energy, Is.EqualTo(physiology.MinimumGlowEnergy).Within(0.001f));
-                Assert.That(physiology.GlowIntensity, Is.EqualTo(light.Energy).Within(0.001f));
+                Assert.That(physiology.GlowIntensity,
+                    Is.EqualTo(light.Energy / physiology.FullGlowEnergy).Within(0.001f));
             });
         });
 

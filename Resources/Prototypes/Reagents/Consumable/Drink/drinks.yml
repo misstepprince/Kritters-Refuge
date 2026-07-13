@@ -514,6 +514,10 @@
   meltingPoint: 0.0
   friction: 0.4
   metabolisms:
+    Fuel:
+      effects:
+      - !type:NovakinFuel
+        fuel: 2
     Drink:
       effects:
       - !type:SatiateThirst

@@ -7,4 +7,5 @@ public enum NeedType : byte
 {
     Hunger,
     Thirst,
+    Fuel,
 }
