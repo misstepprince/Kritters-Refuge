@@ -141,6 +141,7 @@
   metabolisms:
     Fuel:
       effects:
+      # Kritters: fuels the Novakin core.
       - !type:NovakinFuel
         fuel: 5
     Poison:

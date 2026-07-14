@@ -217,6 +217,7 @@
     # preserve BaseAlcohol's Drink effects explicitly for Novakin metabolism.
     Drink:
       effects:
+      # Kritters: raises the Novakin core temperature.
       - !type:NovakinHeat
         temperatureDelta: 1
       - !type:SatiateThirst

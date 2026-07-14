@@ -1,0 +1,21 @@
+- type: soundCollection
+  id: NovakinMaleLaughs
+  files:
+  - /Audio/_Kritters/Voice/Novakin/Emotes/novakin_male_laugh_01.ogg
+  - /Audio/_Kritters/Voice/Novakin/Emotes/novakin_male_laugh_02.ogg
+
+- type: soundCollection
+  id: NovakinFemaleLaughs
+  files:
+  - /Audio/_Kritters/Voice/Novakin/Emotes/novakin_female_laugh_01.ogg
+  - /Audio/_Kritters/Voice/Novakin/Emotes/novakin_female_laugh_02.ogg
+
+- type: soundCollection
+  id: NovakinMaleScreams
+  files:
+  - /Audio/_Kritters/Voice/Novakin/Emotes/novakin_male_scream.ogg
+
+- type: soundCollection
+  id: NovakinFemaleScreams
+  files:
+  - /Audio/_Kritters/Voice/Novakin/Emotes/novakin_female_scream.ogg

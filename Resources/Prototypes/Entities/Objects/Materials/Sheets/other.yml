@@ -111,6 +111,7 @@
     tags:
     - Sheet
   - type: NFFuel # Frontier
+  # Kritters: material can fuel a Novakin core.
   - type: NovakinFuelMaterial
     fuel: 5
 
@@ -249,6 +250,7 @@
         canReact: false
   - type: UraniumMaterials # Frontier
   - type: NFFuel # Frontier
+  # Kritters: material can fuel a Novakin core.
   - type: NovakinFuelMaterial
     fuel: 6
 

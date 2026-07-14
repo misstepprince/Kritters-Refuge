@@ -29,6 +29,7 @@
     back:
     - NFBoxSurvivalSheleg
 
+# Kritters: Novakin-only survival kit with an adaptive reserve inhaler.
 - type: loadout
   id: ContractorNovakinBoxSurvival
   name: Novakin survival box
@@ -82,6 +83,7 @@
     back:
     - NFBoxSurvivalExtendedSheleg
 
+# Kritters: extended Novakin-only survival kit.
 - type: loadout
   id: ContractorNovakinBoxSurvivalExtended
   name: extended Novakin survival box

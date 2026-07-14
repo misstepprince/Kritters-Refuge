@@ -919,8 +919,8 @@
   - ContractorNFBoxSurvivalExtendedNitrogen
   - ContractorNFBoxSurvivalSheleg
   - ContractorNFBoxSurvivalExtendedSheleg
-  - ContractorNovakinBoxSurvival
-  - ContractorNovakinBoxSurvivalExtended
+  - ContractorNovakinBoxSurvival # Kritters: Novakin survival kit.
+  - ContractorNovakinBoxSurvivalExtended # Kritters: extended Novakin survival kit.
   - ContractorNFBoxSurvivalDonk
   - ContractorNFBoxSurvivalDonkSpicy
   - ContractorNFBoxSurvivalDonkTeriyaki
@@ -934,7 +934,7 @@
   - ContractorNFBoxSurvival
   - ContractorNFBoxSurvivalNitrogen
   - ContractorNFBoxSurvivalSheleg
-  - ContractorNovakinBoxSurvival
+  - ContractorNovakinBoxSurvival # Kritters: Novakin survival-kit fallback.
   - ContractorNFBoxSurvivalDonk
   - ContractorNFBoxSurvivalDonkSpicy
   - ContractorNFBoxSurvivalDonkTeriyaki

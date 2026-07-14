@@ -1,5 +1,6 @@
 using Content.Shared.Inventory.Events;
 using Content.Shared.Overlays;
+using Content.Client._Kritters.Overlays;
 using Robust.Client.Graphics;
 using System.Linq;
 using Robust.Client.Player;

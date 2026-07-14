@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Shared.Atmos;
-using Content.Shared._Kritters.Novakin;
+using Content.Shared._Kritters;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;

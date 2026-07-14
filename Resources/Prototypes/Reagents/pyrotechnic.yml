@@ -163,6 +163,7 @@
   metabolisms:
     Fuel:
       effects:
+      # Kritters: raises the Novakin core temperature.
       - !type:NovakinHeat
         temperatureDelta: 2
     Food:

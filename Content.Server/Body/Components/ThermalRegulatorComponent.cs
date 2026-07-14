@@ -1,5 +1,5 @@
 using Content.Server._Kritters.BloodTypes;
-using Content.Server._Kritters.Novakin.Systems;
+using Content.Server._Kritters.Systems;
 using Content.Server.Body.Systems;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 

@@ -269,6 +269,7 @@
         reagents:
         - ReagentId: Cellulose
           Quantity: 10
+  # Kritters: material can fuel a Novakin core.
   - type: NovakinFuelMaterial
     fuel: 4
 
@@ -301,6 +302,7 @@
   - type: Stack
     stackType: Biomass
     count: 100
+  # Kritters: material can fuel a Novakin core.
   - type: NovakinFuelMaterial
     fuel: 9
   - type: Sprite
@@ -583,6 +585,7 @@
   - type: Item
     heldPrefix: bananium
   - type: NFFuel # Frontier
+  # Kritters: material can fuel a Novakin core.
   - type: NovakinFuelMaterial
     fuel: 7
 

@@ -2,7 +2,7 @@ using Content.Server.Medical.Components;
 using Content.Server.PowerCell;
 using Content.Server.Temperature.Components;
 using Content.Shared._Kritters.BloodTypes;
-using Content.Shared._Kritters.Novakin.Components;
+using Content.Shared._Kritters.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
