@@ -677,7 +677,6 @@
   - type: Bloodstream
     bloodReagent: WeldingFuel
     bloodMaxVolume: 100
-  - type: Timer
   - type: TimedSpawner
     prototypes:
     - NFZombiePileLoophole

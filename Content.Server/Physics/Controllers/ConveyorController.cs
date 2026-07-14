@@ -10,6 +10,7 @@ using Content.Shared.Power;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Map;
 
 namespace Content.Server.Physics.Controllers;
 
@@ -19,6 +20,7 @@ public sealed class ConveyorController : SharedConveyorController
     [Dependency] private readonly DeviceLinkSystem _signalSystem = default!;
     [Dependency] private readonly MaterialReclaimerSystem _materialReclaimer = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private readonly SharedMapSystem _map = default!;
 
     public override void Initialize()
     {
@@ -123,7 +125,7 @@ public sealed class ConveyorController : SharedConveyorController
 
         var xform = ent.Comp;
 
-        var beltTileRef = xform.Coordinates.GetTileRef(EntityManager, MapManager);
+        var beltTileRef = xform.Coordinates.GetTileRef(EntityManager, _map);
 
         if (beltTileRef != null)
         {

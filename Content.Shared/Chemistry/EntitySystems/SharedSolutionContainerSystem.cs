@@ -94,6 +94,7 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
         if (NetManager.IsServer)
         {
             SubscribeLocalEvent<SolutionContainerManagerComponent, ComponentShutdown>(OnContainerManagerShutdown);
+            SubscribeLocalEvent<ContainedSolutionComponent, ComponentInit>(OnContainedSolutionInit);
             SubscribeLocalEvent<ContainedSolutionComponent, ComponentShutdown>(OnContainedSolutionShutdown);
         }
     }
@@ -1036,6 +1037,14 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
             ContainerSystem.ShutdownContainer(solutionContainer);
     }
 
+    private void OnContainedSolutionInit(Entity<ContainedSolutionComponent> entity, ref ComponentInit args)
+    {
+        // EntityUid is retained for map serialization. Populate the weak network
+        // reference when loading an existing solution entity.
+        if (entity.Comp.NetContainer == NetEntity.Invalid)
+            entity.Comp.NetContainer = GetNetEntity(entity.Comp.Container);
+    }
+
     #endregion Event Handlers
 
     public bool EnsureSolution(
@@ -1152,7 +1161,7 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
         else
         {
             solutionComp = Comp<SolutionComponent>(solutionId);
-            DebugTools.Assert(TryComp(solutionId, out ContainedSolutionComponent? relation) && relation.Container == uid && relation.ContainerName == name);
+            DebugTools.Assert(TryComp(solutionId, out ContainedSolutionComponent? relation) && relation.NetContainer == GetNetEntity(uid) && relation.ContainerName == name);
             DebugTools.Assert(solutionComp.Solution.Name == name);
 
             var solution = solutionComp.Solution;
@@ -1207,7 +1216,12 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
         var solution = new SolutionComponent() { Solution = prototype };
         AddComp(uid, solution);
 
-        var relation = new ContainedSolutionComponent() { Container = container.Owner, ContainerName = name };
+        var relation = new ContainedSolutionComponent()
+        {
+            Container = container.Owner,
+            NetContainer = GetNetEntity(container.Owner),
+            ContainerName = name,
+        };
         AddComp(uid, relation);
 
         MetaDataSys.SetEntityName(uid, $"solution - {name}");

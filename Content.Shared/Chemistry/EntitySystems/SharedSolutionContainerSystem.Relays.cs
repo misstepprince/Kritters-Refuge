@@ -89,10 +89,10 @@ public abstract partial class SharedSolutionContainerSystem
         var (solutionId, solutionComp) = args.Solution;
         var solution = solutionComp.Solution;
 
-        UpdateAppearance(entity.Comp.Container, (solutionId, solutionComp, entity.Comp));
+        UpdateAppearance(GetEntity(entity.Comp.NetContainer), (solutionId, solutionComp, entity.Comp));
 
         var relayEvent = new SolutionContainerChangedEvent(solution, entity.Comp.ContainerName);
-        RaiseLocalEvent(entity.Comp.Container, ref relayEvent);
+        RaiseLocalEvent(GetEntity(entity.Comp.NetContainer), ref relayEvent);
     }
 
     protected virtual void OnSolutionOverflow(Entity<ContainedSolutionComponent> entity, ref SolutionOverflowEvent args)
@@ -104,7 +104,7 @@ public abstract partial class SharedSolutionContainerSystem
             Handled = args.Handled,
         };
 
-        RaiseLocalEvent(entity.Comp.Container, ref relayEv);
+        RaiseLocalEvent(GetEntity(entity.Comp.NetContainer), ref relayEv);
         args.Handled = relayEv.Handled;
     }
 
@@ -113,13 +113,13 @@ public abstract partial class SharedSolutionContainerSystem
     private void RelaySolutionValEvent<TEvent>(EntityUid uid, ContainedSolutionComponent comp, TEvent @event)
     {
         var relayEvent = new SolutionRelayEvent<TEvent>(@event, uid, comp.ContainerName);
-        RaiseLocalEvent(comp.Container, ref relayEvent);
+        RaiseLocalEvent(GetEntity(comp.NetContainer), ref relayEvent);
     }
 
     private void RelaySolutionRefEvent<TEvent>(Entity<ContainedSolutionComponent> entity, ref TEvent @event)
     {
         var relayEvent = new SolutionRelayEvent<TEvent>(@event, entity.Owner, entity.Comp.ContainerName);
-        RaiseLocalEvent(entity.Comp.Container, ref relayEvent);
+        RaiseLocalEvent(GetEntity(entity.Comp.NetContainer), ref relayEvent);
         @event = relayEvent.Event;
     }
 

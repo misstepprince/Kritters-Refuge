@@ -6,7 +6,8 @@ namespace Content.Shared._CS.SniffAndSmell;
 /// <summary>
 /// This is a ticket for a pending smell.
 /// </summary>
-public sealed class SmellTicket(
+[DataDefinition]
+public sealed partial class SmellTicket(
     EntityUid sourceEntity,
     ProtoId<ScentPrototype> scentProto,
     string scentGuid,
