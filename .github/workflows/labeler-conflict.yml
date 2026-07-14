@@ -8,9 +8,17 @@ on:
       - reopened
       - ready_for_review
 
+permissions:
+  pull-requests: write
+  issues: write
+
 jobs:
   Label:
     if: ( github.event.pull_request.draft == false ) && ( github.actor != 'PJBot' ) && ( github.actor != 'FrontierATC' ) # Frontier
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Check for Merge Conflicts
