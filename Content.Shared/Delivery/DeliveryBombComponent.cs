@@ -21,7 +21,7 @@ public sealed partial class DeliveryBombComponent : Component
     /// <summary>
     /// The time at which the next retry will happen
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan NextExplosionRetry;
 
     /// <summary>

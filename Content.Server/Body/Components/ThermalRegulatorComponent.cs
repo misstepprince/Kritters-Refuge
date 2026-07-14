@@ -11,7 +11,7 @@ public sealed partial class ThermalRegulatorComponent : Component
     /// <summary>
     /// The next time that the body will regulate its heat.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan NextUpdate;
 
     /// <summary>

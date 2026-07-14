@@ -9,7 +9,7 @@ namespace Content.Server.Shuttles.Components;
 [RegisterComponent, Access(typeof(EmergencyShuttleSystem)), AutoGenerateComponentPause]
 public sealed partial class EscapePodComponent : Component
 {
-    [DataField(customTypeSerializer:typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan? LaunchTime;
 }

@@ -14,7 +14,7 @@ public sealed partial class GameRuleComponent : Component
     /// <summary>
     /// Game time when game rule was activated
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan ActivatedAt;
 
     /// <summary>

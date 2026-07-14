@@ -30,7 +30,7 @@ public sealed partial class GasSpawnPowerConsumerComponent : Component
     /// The next time this power plant is selling accumulated power.
     /// Should not be changedduring runtime, will cause errors in deposit amounts.
     ///</summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextSpawnCheck;
 
     ///<summary>

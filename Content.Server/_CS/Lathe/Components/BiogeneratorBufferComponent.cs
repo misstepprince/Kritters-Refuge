@@ -32,7 +32,7 @@ public sealed partial class BiogeneratorBufferComponent : Component
     /// <summary>
     /// Next time the buffer will be regenerated.
     /// </summary>
-    [DataField("nextRegen", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField("nextRegen", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan NextRegen = TimeSpan.Zero;
 
     public bool Active = true;

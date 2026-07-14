@@ -40,7 +40,7 @@ public sealed partial class NodeScannerConnectedComponent : Component
     /// <summary>
     /// Next update tick gametime.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextUpdate = TimeSpan.Zero;
 

@@ -51,7 +51,7 @@ public sealed partial class StaminaComponent : Component
     /// <summary>
     /// To avoid continuously updating our data we track the last time we updated so we can extrapolate our current stamina.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField]
     [AutoPausedField]
     public TimeSpan NextUpdate = TimeSpan.Zero;
 

@@ -16,13 +16,13 @@ public sealed partial class RingerComponent : Component
     /// <summary>
     /// The last time this ringer's ringtone was set.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
     public TimeSpan NextRingtoneSetTime;
 
     /// <summary>
     /// The time when the next note should play.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
     public TimeSpan? NextNoteTime;
 
     /// <summary>

@@ -16,6 +16,6 @@ public sealed partial class LatheHeatProducingComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public float EnergyPerSecond = 30000;
 
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan NextSecond;
 }

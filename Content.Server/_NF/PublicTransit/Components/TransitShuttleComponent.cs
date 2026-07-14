@@ -21,7 +21,7 @@ public sealed partial class TransitShuttleComponent : Component
     /// <summary>
     /// The time that the shuttle should leave for the next grid.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextTransfer;
 

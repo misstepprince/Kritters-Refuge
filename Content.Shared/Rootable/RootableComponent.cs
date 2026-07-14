@@ -46,7 +46,7 @@ public sealed partial class RootableComponent : Component
     /// <summary>
     /// The time at which the next absorption metabolism will occur.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField]
     [AutoPausedField]
     public TimeSpan NextUpdate;
 

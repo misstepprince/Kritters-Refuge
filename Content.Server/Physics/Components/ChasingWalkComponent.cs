@@ -57,7 +57,7 @@ public sealed partial class ChasingWalkComponent : Component
     /// <summary>
     /// The next change of direction time.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     [AutoPausedField]
     public TimeSpan NextChangeVectorTime;
 

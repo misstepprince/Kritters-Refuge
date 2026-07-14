@@ -10,6 +10,6 @@ public sealed partial class AACTabletComponent : Component
     public TimeSpan Cooldown = TimeSpan.FromSeconds(1);
 
     // Time that the next phrase can be sent.
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextPhrase;
 }

@@ -19,7 +19,7 @@ public sealed partial class LightningSparkingComponent : Component
     /// <summary>
     /// When the spark visual should turn off.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan LightningEndTime;
 

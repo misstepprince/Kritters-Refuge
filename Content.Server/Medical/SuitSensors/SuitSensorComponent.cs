@@ -62,7 +62,7 @@ public sealed partial class SuitSensorComponent : Component
     /// <summary>
     ///     Next time when sensor updated owners status
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextUpdate = TimeSpan.Zero;
 

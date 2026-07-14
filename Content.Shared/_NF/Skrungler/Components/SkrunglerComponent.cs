@@ -22,7 +22,7 @@ public sealed partial class SkrunglerComponent : Component
     /// This gets set for each mob it processes.
     /// When it hits 0, there is a chance for the skrungler to either spill blood.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan NextMessTime;
 
     /// <summary>
@@ -35,7 +35,7 @@ public sealed partial class SkrunglerComponent : Component
     /// This gets set for each mob it processes.
     /// When it hits 0, spit out fuel.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan FinishProcessingTime;
 
     /// <summary>

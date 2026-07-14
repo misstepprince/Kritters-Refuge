@@ -63,7 +63,7 @@ public sealed partial class ChameleonClothingComponent : Component
     /// <summary>
     ///     When should next EMP-caused appearance change happen?
     /// </summary>
-    [AutoPausedField, DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [AutoPausedField, DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan NextEmpChange = TimeSpan.Zero;
 }
 

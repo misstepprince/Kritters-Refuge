@@ -12,7 +12,7 @@ public sealed partial class GravityShakeComponent : Component
     [ViewVariables(VVAccess.ReadWrite), DataField, AutoNetworkedField]
     public int ShakeTimes;
 
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField]
     [AutoPausedField]
     public TimeSpan NextShake;
 }

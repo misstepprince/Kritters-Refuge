@@ -20,7 +20,7 @@ namespace Content.Server.PowerSink
         /// <summary>
         /// If explosion has been triggered, time at which to explode.
         /// </summary>
-        [DataField("explosionTime", customTypeSerializer:typeof(TimeOffsetSerializer))]
+        [DataField("explosionTime", customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
         [AutoPausedField]
         public System.TimeSpan? ExplosionTime = null;
 

@@ -12,7 +12,7 @@ namespace Content.Server.Body.Components
         /// <summary>
         ///     The next time that this body will inhale or exhale.
         /// </summary>
-        [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+        [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
         public TimeSpan NextUpdate;
 
         /// <summary>

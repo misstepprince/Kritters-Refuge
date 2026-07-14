@@ -8,7 +8,7 @@ public sealed partial class GrowingKudzuComponent : Component
     /// <summary>
     /// The next time kudzu will try to tick its growth level.
     /// </summary>
-    [DataField("nextTick", customTypeSerializer:typeof(TimeOffsetSerializer))]
+    [DataField("nextTick", customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextTick = TimeSpan.Zero;
 }

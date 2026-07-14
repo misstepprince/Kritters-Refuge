@@ -30,7 +30,7 @@ public sealed partial class SectorPirateBountyDatabaseComponent : Component
     /// <summary>
     /// The time at which players will be able to skip the next bounty.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan NextSkipTime = TimeSpan.Zero;
 
     /// <summary>

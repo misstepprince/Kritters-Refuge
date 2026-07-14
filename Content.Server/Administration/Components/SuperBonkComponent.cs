@@ -24,7 +24,7 @@ public sealed partial class SuperBonkComponent : Component
     /// <summary>
     /// Next time when we will bonk.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextBonk = TimeSpan.Zero;
 
     /// <summary>

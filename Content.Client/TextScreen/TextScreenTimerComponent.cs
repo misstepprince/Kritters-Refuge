@@ -8,7 +8,7 @@ namespace Content.Client.TextScreen;
 [RegisterComponent]
 public sealed partial class TextScreenTimerComponent : Component
 {
-    [DataField("targetTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField("targetTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan Target = TimeSpan.Zero;
     public Dictionary<string, string?> LayerStatesToDraw = new();
 }

@@ -52,13 +52,13 @@ public sealed partial class WarDeclaratorComponent : Component
     [DataField]
     public float WarDeclarationDelay = 6.0f;
 
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
     public TimeSpan DisableAt;
 
     /// <summary>
     /// How long the shuttle will be disabled for
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
     public TimeSpan ShuttleDisabledTime;
 
     [DataField]

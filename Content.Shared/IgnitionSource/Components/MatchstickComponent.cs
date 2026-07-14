@@ -23,7 +23,7 @@ public sealed partial class MatchstickComponent : Component
     /// <summary>
     ///     The time that the match will burn out. If null, that means the match is unlit.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan? TimeMatchWillBurnOut;
 
     /// <summary>

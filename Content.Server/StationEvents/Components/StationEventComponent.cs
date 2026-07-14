@@ -117,7 +117,7 @@ public sealed partial class StationEventComponent : Component
     /// <summary>
     /// When the station event ends.
     /// </summary>
-    [DataField("endTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField("endTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan? EndTime;
 

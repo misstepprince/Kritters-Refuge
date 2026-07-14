@@ -55,7 +55,7 @@ public sealed partial class DisposalUnitComponent : Component
     /// <summary>
     /// Next time the disposal unit will be pressurized.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField]
     public TimeSpan NextPressurized = TimeSpan.Zero;
 
     /// <summary>
@@ -114,7 +114,7 @@ public sealed partial class DisposalUnitComponent : Component
     /// <summary>
     /// Next time this unit will flush. Is the lesser of <see cref="FlushDelay"/> and <see cref="AutomaticEngageTime"/>
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField]
     public TimeSpan? NextFlush;
 
     [Serializable, NetSerializable]

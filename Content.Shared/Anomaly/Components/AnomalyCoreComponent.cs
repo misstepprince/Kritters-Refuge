@@ -19,7 +19,7 @@ public sealed partial class AnomalyCoreComponent : Component
     /// <summary>
     /// The moment of core decay. It is set during entity initialization.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     [AutoNetworkedField]
     public TimeSpan DecayMoment;
 

@@ -70,7 +70,7 @@ public sealed partial class FatExtractorComponent : Component
     /// <summary>
     /// When the next update will occur
     /// </summary>
-    [DataField("nextUpdate", customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField("nextUpdate", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     [AutoPausedField]
     public TimeSpan NextUpdate;
 

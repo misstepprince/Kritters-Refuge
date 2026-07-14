@@ -16,7 +16,7 @@ public sealed partial class FoamVisualsComponent : Component
     /// </summary>
     public const string AnimationKey = "foamdissolve_animation";
 
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan StartTime;
 
     /// <summary>
