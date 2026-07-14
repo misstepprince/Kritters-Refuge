@@ -9,7 +9,7 @@ Automatically figures out the last run and changelog contents with the GitHub AP
 import itertools
 import os
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
 import requests
 import yaml
@@ -55,15 +55,18 @@ def main():
 
 def get_most_recent_workflow(
     sess: requests.Session, github_repository: str, github_run: str
-) -> Any:
+) -> Optional[Any]:
     workflow_run = get_current_run(sess, github_repository, github_run)
     past_runs = get_past_runs(sess, workflow_run)
-    for run in past_runs["workflow_runs"]:
+    for run in past_runs.get("workflow_runs", []):
         # First past successful run that isn't our current run.
         if run["id"] == workflow_run["id"]:
             continue
 
         return run
+
+    # No prior successful run found
+    return None
 
 
 def get_current_run(
@@ -93,15 +96,38 @@ def get_last_changelog() -> str:
 
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {github_token}"
-    session.headers["Accept"] = "Accept: application/vnd.github+json"
+    # Fix Accept header value (don't repeat "Accept:")
+    session.headers["Accept"] = "application/vnd.github+json"
     session.headers["X-GitHub-Api-Version"] = "2022-11-28"
 
     most_recent = get_most_recent_workflow(session, github_repository, github_run)
-    last_sha = most_recent["head_commit"]["id"]
-    print(f"Last successful publish job was {most_recent['id']}: {last_sha}")
-    last_changelog_stream = get_last_changelog_by_sha(
-        session, last_sha, github_repository
-    )
+
+    # If there was no previous successful run, fall back to the current run's sha
+    last_sha: Optional[str]
+    if not most_recent:
+        print("No previous successful publish job found; falling back to current run")
+        current_run = get_current_run(session, github_repository, github_run)
+        last_sha = current_run.get("head_sha") or (current_run.get("head_commit") or {}).get("id")
+    else:
+        # Prefer head_sha (always present), fallback to head_commit.id if available
+        last_sha = most_recent.get("head_sha") or (most_recent.get("head_commit") or {}).get("id")
+
+    if not last_sha:
+        # If we still couldn't determine a SHA, use an empty baseline changelog so
+        # subsequent yaml.safe_load returns a predictable dict with no entries.
+        print("Unable to determine last SHA; using empty changelog baseline")
+        return "Entries: []\n"
+
+    print(f"Last successful publish job was {most_recent['id'] if most_recent else 'current_run'}: {last_sha}")
+
+    try:
+        last_changelog_stream = get_last_changelog_by_sha(
+            session, last_sha, github_repository
+        )
+    except requests.exceptions.RequestException as e:
+        # If the previous file can't be fetched (404, etc.), fall back to the empty baseline
+        print(f"Failed to fetch changelog at {last_sha}: {e}; using empty baseline")
+        return "Entries: []\n"
 
     return last_changelog_stream
 

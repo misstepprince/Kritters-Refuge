@@ -18,8 +18,8 @@ namespace Content.Shared._CS.Needs;
 /// Starts life blank, and needs to be filled out by the NeedsComponent
 /// And it fills itself out using the NeedPrototype~
 /// </summary>
-[Serializable]
-public sealed class NeedDatum
+[DataDefinition, Serializable]
+public sealed partial class NeedDatum
 {
     /// <summary>
     /// The type of need this datum represents
@@ -44,63 +44,63 @@ public sealed class NeedDatum
     /// <summary>
     /// The current value of the need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("currentValue")]
     [ViewVariables(VVAccess.ReadWrite)]
     public float CurrentValue = 100.0f;
 
     /// <summary>
     /// The maximum value of the need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("maxValue")]
     [ViewVariables(VVAccess.ReadWrite)]
     public float MaxValue = 100.0f;
 
     /// <summary>
     /// The minimum value of the need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("minValue")]
     [ViewVariables(VVAccess.ReadWrite)]
     public float MinValue = 0.0f;
 
     /// <summary>
     /// The rate at which the need decays over time (per second)
     /// </summary>
-    [DataField("temperature")]
+    [DataField("decayRate")]
     [ViewVariables(VVAccess.ReadWrite)]
     public float DecayRate = 0.0f;
 
     /// <summary>
     /// The thresholds for this need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("thresholds")]
     [ViewVariables(VVAccess.ReadWrite)]
     public Dictionary<NeedThreshold, float> Thresholds = new();
 
     /// <summary>
     /// The alerts for this need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("alerts")]
     [ViewVariables(VVAccess.ReadWrite)]
     public Dictionary<NeedThreshold, ProtoId<AlertPrototype>?> Alerts = new();
 
     /// <summary>
     /// The hud icon... things for this need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("statusIcons")]
     [ViewVariables(VVAccess.ReadWrite)]
     public Dictionary<NeedThreshold, string> StatusIcons = new();
 
     /// <summary>
     /// The slowdown modifiers for this need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("slowdownModifiers")]
     [ViewVariables(VVAccess.ReadWrite)]
     public Dictionary<NeedThreshold, float> SlowdownModifiers = new();
 
     /// <summary>
     /// The RPI modifiers for this need
     /// </summary>
-    [DataField("temperature")]
+    [DataField("rpiModifiers")]
     [ViewVariables(VVAccess.ReadWrite)]
     public Dictionary<NeedThreshold, float> RpiModifiers = new();
 
@@ -117,14 +117,14 @@ public sealed class NeedDatum
     /// <summary>
     /// Rate it updates in seconds.
     /// </summary>
-    [DataField("temperature")]
+    [DataField("updateRateSeconds")]
     [ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan UpdateRateSeconds = TimeSpan.FromSeconds(1f);
 
     /// <summary>
     /// Next update time.
     /// </summary>
-    [DataField("temperature")]
+    [DataField("nextUpdateTime")]
     [ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan NextUpdateTime = TimeSpan.Zero;
 

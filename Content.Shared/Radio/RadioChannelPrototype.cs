@@ -199,6 +199,5 @@ public sealed class RadioMessageDataHolder(
     /// Intercomms still can
     /// Supermatter throws errors without this
     /// </summary>
-    [DataField("intercomOnly")]
     public bool IntercomOnly = false;
 }

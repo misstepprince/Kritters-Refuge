@@ -20,7 +20,6 @@ namespace Content.Client.Atmos.Overlays
     public sealed class GasTileOverlay : Overlay
     {
         private readonly IEntityManager _entManager;
-        private readonly IMapManager _mapManager;
         private readonly SharedMapSystem _mapSystem;
         private readonly SharedTransformSystem _xformSys;
 
@@ -55,7 +54,6 @@ namespace Content.Client.Atmos.Overlays
         public GasTileOverlay(GasTileOverlaySystem system, IEntityManager entManager, IResourceCache resourceCache, IPrototypeManager protoMan, SpriteSystem spriteSys, SharedTransformSystem xformSys)
         {
             _entManager = entManager;
-            _mapManager = IoCManager.Resolve<IMapManager>();
             _mapSystem = entManager.System<SharedMapSystem>();
             _xformSys = xformSys;
             _shader = protoMan.Index<ShaderPrototype>("unshaded").Instance();
@@ -178,7 +176,7 @@ namespace Content.Client.Atmos.Overlays
                 return;
 
             // TODO: WorldBounds callback.
-            _mapManager.FindGridsIntersecting(args.MapId, args.WorldAABB, ref gridState,
+            _mapSystem.FindGridsIntersecting(args.MapId, args.WorldAABB, ref gridState,
                 static (EntityUid uid, MapGridComponent grid,
                     ref (Box2Rotated WorldBounds,
                         DrawingHandleWorld drawHandle,
@@ -286,13 +284,13 @@ namespace Content.Client.Atmos.Overlays
             excludedTiles.Clear();
             if (mapGrid)
             {
-                var state = (map, excludedTiles, _xformSys, bottomLeft, topRight, args.WorldAABB);
-                _mapManager.FindGridsIntersecting(
+                var state = (map, excludedTiles, _mapSystem, _xformSys, bottomLeft, topRight, args.WorldAABB);
+                _mapSystem.FindGridsIntersecting(
                     args.MapId,
                     args.WorldAABB,
                     ref state,
                     static (EntityUid uid, MapGridComponent grid,
-                        ref (EntityUid mapUid, HashSet<Vector2i> excludedTiles, SharedTransformSystem xformSys, Vector2i bottomLeft, Vector2i topRight, Box2 worldBounds) data) =>
+                        ref (EntityUid mapUid, HashSet<Vector2i> excludedTiles, SharedMapSystem mapSystem, SharedTransformSystem xformSys, Vector2i bottomLeft, Vector2i topRight, Box2 worldBounds) data) =>
                     {
                         // Keep drawing for the expedition/dungeon grid itself; clip any other landed grids (shuttles).
                         if (uid == data.mapUid)
@@ -300,7 +298,7 @@ namespace Content.Client.Atmos.Overlays
 
                         // Only exclude tiles that are actually occupied by this landed grid.
                         var worldMatrix = data.xformSys.GetWorldMatrix(uid);
-                        foreach (var tile in grid.GetTilesIntersecting(data.worldBounds, ignoreEmpty: true))
+                        foreach (var tile in data.mapSystem.GetTilesIntersecting(uid, grid, data.worldBounds, ignoreEmpty: true))
                         {
                             var localCenter = new Vector2(tile.GridIndices.X + 0.5f, tile.GridIndices.Y + 0.5f);
                             var worldCenter = Vector2.Transform(localCenter, worldMatrix);

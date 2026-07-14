@@ -6,7 +6,8 @@ namespace Content.Shared._CS.SniffAndSmell;
 /// <summary>
 /// This defines a discrete scent that can be detected.
 /// </summary>
-public sealed class Scent(
+[DataDefinition]
+public sealed partial class Scent(
     ProtoId<ScentPrototype> scentProto,
     string scentGuid)
 {

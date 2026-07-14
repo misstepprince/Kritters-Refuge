@@ -20,8 +20,14 @@ public sealed partial class ContainedSolutionComponent : Component
     /// <summary>
     /// The entity that the solution is contained in.
     /// </summary>
-    [DataField(required: true), AutoNetworkedField]
+    [DataField(required: true)]
     public EntityUid Container;
+
+    // The container can disappear before this internal solution entity is removed.
+    // Keep its network representation as a weak reference so replication never
+    // tries to read metadata from an already-deleted container.
+    [AutoNetworkedField]
+    public NetEntity NetContainer;
 
     /// <summary>
     /// The name/key of the container the solution is located in.
