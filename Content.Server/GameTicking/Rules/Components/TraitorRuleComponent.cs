@@ -68,7 +68,7 @@ public sealed partial class TraitorRuleComponent : Component
     /// <summary>
     /// When should traitors be selected and the announcement made
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan? AnnounceAt;
 
     /// <summary>

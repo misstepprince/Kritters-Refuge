@@ -51,7 +51,7 @@ public sealed partial class BuckleComponent : Component
     /// <summary>
     /// The time that this entity buckled at.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
     public TimeSpan? BuckleTime;
 
     /// <summary>

@@ -13,7 +13,7 @@ public sealed partial class SpamEmitSoundComponent : BaseEmitSoundComponent
     /// <summary>
     /// The time at which the next sound will play.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
     public TimeSpan NextSound;
 
     /// <summary>

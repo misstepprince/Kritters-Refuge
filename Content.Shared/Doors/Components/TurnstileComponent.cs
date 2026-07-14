@@ -24,7 +24,7 @@ public sealed partial class TurnstileComponent : Component
     /// <summary>
     /// The next time at which the resist message can show.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan NextResistTime;
 
     /// <summary>

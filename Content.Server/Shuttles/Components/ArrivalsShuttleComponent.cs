@@ -9,11 +9,11 @@ public sealed partial class ArrivalsShuttleComponent : Component
     [DataField("station")]
     public EntityUid Station;
 
-    [DataField("nextTransfer", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField("nextTransfer", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextTransfer;
 
-    [DataField("nextArrivalsTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField("nextArrivalsTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan NextArrivalsTime;
 
     /// <summary>

@@ -22,7 +22,7 @@ public sealed partial class TwoStageTriggerComponent : Component
     [DataField("components", required: true)]
     public ComponentRegistry SecondStageComponents = new();
 
-    [DataField("nextTriggerTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField("nextTriggerTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan? NextTriggerTime;
 

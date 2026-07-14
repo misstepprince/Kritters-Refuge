@@ -199,9 +199,9 @@ public sealed partial class ActionComponent : Component
 [DataRecord, Serializable, NetSerializable]
 public partial record struct ActionCooldown
 {
-    [DataField(required: true, customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(required: true, customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan Start;
 
-    [DataField(required: true, customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(required: true, customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan End;
 }

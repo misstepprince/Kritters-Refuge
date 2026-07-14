@@ -20,7 +20,7 @@ public sealed partial class ActiveMaterialReclaimerComponent : Component
     /// <summary>
     /// When the reclaiming process ends.
     /// </summary>
-    [DataField("endTime", customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField("endTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     [AutoPausedField]
     public TimeSpan EndTime;
 

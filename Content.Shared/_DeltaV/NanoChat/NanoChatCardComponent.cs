@@ -41,7 +41,7 @@ public sealed partial class NanoChatCardComponent : Component
     /// <summary>
     ///     Last time a message was sent, for rate limiting.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
     public TimeSpan LastMessageTime; // TODO: actually use this, compare against actor and not the card
 
     /// <summary>

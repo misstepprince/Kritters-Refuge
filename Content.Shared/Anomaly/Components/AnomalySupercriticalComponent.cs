@@ -14,7 +14,7 @@ public sealed partial class AnomalySupercriticalComponent : Component
     /// <summary>
     /// The time when the supercritical animation ends and it does whatever effect.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField]
     [ViewVariables(VVAccess.ReadWrite)]
     [AutoPausedField]
     public TimeSpan EndTime;

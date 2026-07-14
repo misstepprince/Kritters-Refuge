@@ -9,7 +9,7 @@ namespace Content.Server.DeviceLinking.Components
         /// <summary>
         ///     The time the timer triggers.
         /// </summary>
-        [DataField("triggerTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
+        [DataField("triggerTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
         public TimeSpan TriggerTime;
     }
 }

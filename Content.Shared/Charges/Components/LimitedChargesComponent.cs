@@ -22,6 +22,6 @@ public sealed partial class LimitedChargesComponent : Component
     /// <summary>
     /// Last time charges was changed. Used to derive current charges.
     /// </summary>
-    [DataField(customTypeSerializer:typeof(TimeOffsetSerializer)), AutoNetworkedField]
+    [DataField(customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField]
     public TimeSpan LastUpdate;
 }

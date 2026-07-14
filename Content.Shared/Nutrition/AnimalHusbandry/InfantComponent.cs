@@ -32,7 +32,7 @@ public sealed partial class InfantComponent : Component
     /// <summary>
     /// When the entity will stop being an infant.
     /// </summary>
-    [DataField("infantEndTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField("infantEndTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan InfantEndTime;
 }

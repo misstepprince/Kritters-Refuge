@@ -46,6 +46,6 @@ public sealed partial class ProximityDetectorComponent : Component
     /// <summary>
     /// Next time detector updates.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan NextUpdate = TimeSpan.Zero;
 }

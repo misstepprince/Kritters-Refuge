@@ -65,7 +65,7 @@ public sealed partial class TeslaEnergyBallComponent : Component
     /// <summary>
     /// The <see cref="IGameTiming.CurTime"/> timespan of next update.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextUpdateTime = TimeSpan.Zero;
     // End DeltaV

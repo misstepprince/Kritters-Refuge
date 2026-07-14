@@ -42,7 +42,7 @@ public sealed partial class GasPressureRegulatorComponent : Component
     /// <summary>
     /// The server time at which the next UI update will be sent.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextUiUpdate = TimeSpan.Zero;
 

@@ -13,7 +13,7 @@ public sealed partial class IgniteOnTriggerComponent : Component
     /// <summary>
     /// Once ignited, the time it will unignite at.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan IgnitedUntil = TimeSpan.Zero;
 
     /// <summary>

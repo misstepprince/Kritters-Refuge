@@ -66,7 +66,7 @@ public sealed partial class StationBankAccountComponent : Component
     /// <summary>
     /// The time at which the station will receive its next deposit of passive income
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextIncomeTime;
 
     /// <summary>

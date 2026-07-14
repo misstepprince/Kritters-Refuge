@@ -98,7 +98,7 @@ public sealed partial class ZombieComponent : Component
 
     public EmoteSoundsPrototype? EmoteSounds;
 
-    [DataField("nextTick", customTypeSerializer:typeof(TimeOffsetSerializer))]
+    [DataField("nextTick", customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     public TimeSpan NextTick;
 
     [DataField("zombieStatusIcon")]

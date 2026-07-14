@@ -13,7 +13,7 @@ public sealed partial class SmokeAffectedComponent : Component
     /// <summary>
     /// The time at which the next smoke metabolism will occur.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextSecond;
 

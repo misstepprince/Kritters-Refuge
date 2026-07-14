@@ -14,7 +14,7 @@ namespace Content.Server.Body.Components
         /// <summary>
         ///     The next time that the stomach will try to digest its contents.
         /// </summary>
-        [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+        [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
         public TimeSpan NextUpdate;
 
         /// <summary>
