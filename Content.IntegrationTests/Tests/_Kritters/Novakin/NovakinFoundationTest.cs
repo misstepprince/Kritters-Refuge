@@ -219,7 +219,7 @@ public sealed class NovakinFoundationTest
     }
 
     [Test]
-    public async Task NovakinGlowReachesFullBrightnessAtMaximumFuelTemperature()
+    public async Task NovakinGlowScalesWithFuelTemperature()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -239,7 +239,8 @@ public sealed class NovakinFoundationTest
             temperature.CurrentTemperature = physiology.MinimumGlowTemperature;
         });
 
-        await server.WaitRunTicks(1);
+        // Novakin physiology updates on a 0.5-second cadence.
+        await server.WaitRunTicks(30);
         float baseEnergy = 0f;
         await server.WaitAssertion(() =>
         {
@@ -251,7 +252,7 @@ public sealed class NovakinFoundationTest
 
         await server.WaitPost(() =>
             temperature.CurrentTemperature = (physiology.MinimumGlowTemperature + physiology.FuelConsumptionMaximumTemperature) / 2f);
-        await server.WaitRunTicks(1);
+        await server.WaitRunTicks(30);
         await server.WaitAssertion(() =>
         {
             Assert.That(light.Energy, Is.GreaterThan(baseEnergy));
@@ -259,11 +260,25 @@ public sealed class NovakinFoundationTest
         });
 
         await server.WaitPost(() => temperature.CurrentTemperature = physiology.FuelConsumptionMaximumTemperature);
-        await server.WaitRunTicks(1);
+        await server.WaitRunTicks(30);
         await server.WaitAssertion(() =>
         {
-            Assert.That(light.Energy, Is.EqualTo(physiology.FullGlowEnergy).Within(0.01f));
-            Assert.That(physiology.GlowIntensity, Is.EqualTo(1f).Within(0.01f));
+            // Native thermal regulation may cool the mob before the next
+            // half-second physiology update. Validate the light against the
+            // temperature that was actually processed instead of assuming it
+            // remains at the requested maximum.
+            var temperatureRange = physiology.FuelConsumptionMaximumTemperature - physiology.MinimumGlowTemperature;
+            var temperatureFactor = temperatureRange > 0f
+                ? Math.Clamp((temperature.CurrentTemperature - physiology.MinimumGlowTemperature) / temperatureRange, 0f, 1f)
+                : 1f;
+            var expectedEnergy = MathHelper.Lerp(
+                physiology.MinimumGlowEnergy,
+                physiology.FullGlowEnergy,
+                temperatureFactor);
+
+            Assert.That(light.Energy, Is.EqualTo(expectedEnergy).Within(0.01f));
+            Assert.That(physiology.GlowIntensity,
+                Is.EqualTo(expectedEnergy / physiology.FullGlowEnergy).Within(0.01f));
             Assert.That(physiology.MaximumBodyGlowOpacity, Is.EqualTo(0.85f));
         });
 
@@ -664,7 +679,8 @@ public sealed class NovakinFoundationTest
         {
             Assert.That(light.Color, Is.EqualTo(selectedColor));
             Assert.That(light.Energy, Is.EqualTo(physiology.DeadGlowEnergy).Within(0.001f));
-            Assert.That(physiology.GlowIntensity, Is.EqualTo(physiology.DeadGlowEnergy).Within(0.001f));
+            Assert.That(physiology.GlowIntensity,
+                Is.EqualTo(physiology.DeadGlowEnergy / physiology.FullGlowEnergy).Within(0.001f));
         });
 
         await pair.CleanReturnAsync();

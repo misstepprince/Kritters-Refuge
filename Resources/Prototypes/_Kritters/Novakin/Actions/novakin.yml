@@ -6,6 +6,6 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    icon: { sprite: Interface/Actions/actions.rsi, state: discharge }
+    icon: { sprite: Effects/fire.rsi, state: fire }
   - type: InstantAction
     event: !type:NovakinDischargeEvent
