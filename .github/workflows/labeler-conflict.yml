@@ -1,9 +1,5 @@
 name: Check Merge Conflicts
 
-permissions:
-  pull-requests: write
-  issues: write
-
 on:
   pull_request_target:
     types:
@@ -11,6 +7,10 @@ on:
       - synchronize
       - reopened
       - ready_for_review
+
+permissions:
+  pull-requests: write
+  issues: write
 
 jobs:
   Label:
