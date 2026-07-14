@@ -256,7 +256,12 @@ namespace Content.IntegrationTests.Tests.Preferences
                 throw new NotImplementedException();
             }
 
-            public bool TryGetMapping(Type kind, string id, [NotNullWhen(true)] out MappingDataNode mappings)
+            public bool TryGetMapping(Type kind, string id, [NotNullWhen(true)] out MappingDataNode? mappings)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool TryGetMapping<T>(string id, [NotNullWhen(true)] out MappingDataNode? mappings)
             {
                 throw new NotImplementedException();
             }
@@ -382,16 +387,6 @@ namespace Content.IntegrationTests.Tests.Preferences
             }
 
             bool IPrototypeManager.TryIndex<T>(string id, out T prototype) where T : class
-            {
-                throw new NotImplementedException();
-            }
-
-            bool IPrototypeManager.TryIndex<T>(ProtoId<T> id, out T prototype, bool logError) where T : class
-            {
-                throw new NotImplementedException();
-            }
-
-            bool IPrototypeManager.TryIndex<T>(ProtoId<T>? id, out T prototype, bool logError) where T : class
             {
                 throw new NotImplementedException();
             }
