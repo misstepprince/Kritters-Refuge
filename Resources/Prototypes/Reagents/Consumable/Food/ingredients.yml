@@ -188,6 +188,11 @@
   boilingPoint: 299.0 #Nyano - Summary: Add boiling point for fryer.
   recognizable: true
   metabolisms:
+    Fuel:
+      effects:
+      # Kritters: raises the Novakin core temperature.
+      - !type:NovakinHeat
+        temperatureDelta: 1.5
     Food:
       effects:
       # Frontier: no extra nutriment, but satiation instead
@@ -216,6 +221,12 @@
   meltingPoint: -16.0
   tileReactions:
   - !type:FlammableTileReaction {}
+  metabolisms:
+    Fuel:
+      effects:
+      # Kritters: raises the Novakin core temperature.
+      - !type:NovakinHeat
+        temperatureDelta: 1.5
 
 - type: reagent
   id: CapsaicinOil

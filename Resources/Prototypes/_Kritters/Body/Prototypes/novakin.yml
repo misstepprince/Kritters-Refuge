@@ -1,0 +1,44 @@
+- type: body
+  id: Novakin
+  name: novakin
+  root: torso
+  slots:
+    head:
+      part: HeadNovakin
+      connections:
+      - torso
+      organs:
+        brain: OrganNovakinNexus
+    torso:
+      part: TorsoNovakin
+      connections:
+      - right arm
+      - left arm
+      - right leg
+      - left leg
+      organs:
+        heart: OrganNovakinCore
+    right arm:
+      part: RightArmNovakin
+      connections:
+      - right hand
+    left arm:
+      part: LeftArmNovakin
+      connections:
+      - left hand
+    right hand:
+      part: RightHandNovakin
+    left hand:
+      part: LeftHandNovakin
+    right leg:
+      part: RightLegNovakin
+      connections:
+      - right foot
+    left leg:
+      part: LeftLegNovakin
+      connections:
+      - left foot
+    right foot:
+      part: RightFootNovakin
+    left foot:
+      part: LeftFootNovakin

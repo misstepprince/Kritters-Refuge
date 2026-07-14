@@ -125,6 +125,9 @@ namespace Content.Server.Flash
             if (attempt.Cancelled)
                 return;
 
+            if (TryComp<FlashModifierComponent>(target, out var modifier))
+                flashDuration *= modifier.Modifier;
+
             // don't paralyze, slowdown or convert to rev if the target is immune to flashes
             if (!_statusEffectsSystem.TryAddStatusEffect<FlashedComponent>(target, FlashedKey, TimeSpan.FromSeconds(flashDuration / 1000f), true))
                 return;

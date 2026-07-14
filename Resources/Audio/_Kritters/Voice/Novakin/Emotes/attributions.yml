@@ -1,0 +1,33 @@
+# Imported from TheDenSS14/TheDen PR #1554. Kritters renamed these files from
+# Shadow/Shadekin to Novakin solely for consistent species identification; original
+# audio authorship, sources, and licensing remain unchanged below.
+
+- files: ["novakin_female_scream.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/AlesiaDavina/sounds/722718/"
+
+- files: ["novakin_male_scream.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/AlesiaDavina/sounds/722718/"
+
+- files: ["novakin_female_laugh_01.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/IENBA/sounds/652991/"
+
+- files: ["novakin_female_laugh_02.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/IENBA/sounds/652991/"
+
+- files: ["novakin_male_laugh_01.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/cchenail/sounds/611480/"
+
+- files: ["novakin_male_laugh_02.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Edited and composited by MajorMoth. Re-encoded to Ogg Vorbis."
+  source: "https://freesound.org/people/cchenail/sounds/611480/"

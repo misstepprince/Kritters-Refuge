@@ -8,6 +8,11 @@
   flavor: nutriment
   color: "#24591F"
   metabolisms:
+    Fuel:
+      effects:
+      # Kritters: fuels the Novakin core.
+      - !type:NovakinFuel
+        fuel: 8
     Food:
       effects:
       - !type:SatiateHunger

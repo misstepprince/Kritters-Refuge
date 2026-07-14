@@ -46,6 +46,10 @@
   <GuideEntityEmbed Entity="MobAvali" Caption="Avali"/>
   <GuideEntityEmbed Entity="MobResomi" Caption="Resomi"/>
   </Box>
+  # Kritters specific species
+  <Box>
+  <GuideEntityEmbed Entity="MobNovakin" Caption="Novakin"/>
+  </Box>
   # Coyote Sector specific species
   <Box>
   <GuideEntityEmbed Entity="MobAnthromorph" Caption="Anthromorph"/>

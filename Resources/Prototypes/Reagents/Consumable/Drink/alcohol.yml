@@ -213,6 +213,18 @@
           shouldHave: false
       - !type:Drunk
         boozePower: 2
+    # Ethanol's Alcohol metabolism replaces the inherited metabolism map, so
+    # preserve BaseAlcohol's Drink effects explicitly for Novakin metabolism.
+    Drink:
+      effects:
+      # Kritters: raises the Novakin core temperature.
+      - !type:NovakinHeat
+        temperatureDelta: 1
+      - !type:SatiateThirst
+        factor: 2
+      - !type:AdjustReagent
+        reagent: Ethanol
+        amount: 0.06
 
 - type: reagent
   id: Gin

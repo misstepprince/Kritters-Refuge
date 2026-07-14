@@ -1,0 +1,66 @@
+# Ears
+marking-EarsNovakin = Default
+marking-EarsNovakinStriped = Striped
+marking-EarsNovakinMotley = Motley
+marking-EarsNovakinShady = Dark
+marking-EarsNovakinPiercingAll = Piercings
+marking-EarsNovakinPiercingLeft = Piercing (L)
+marking-EarsNovakinPiercingRight = Piercing (R)
+marking-EarsNovakinRingedAll = Rings
+marking-EarsNovakinRingedLeft = Ring (L)
+marking-EarsNovakinRingedRight = Ring (R)
+marking-EarsNovakinGauzedAll = Gauzed
+marking-EarsNovakinGauzedLeft = Bandage (L)
+marking-EarsNovakinGauzedRight = Bandage (R)
+marking-EarsNovakinFluffy = Fluffy
+marking-EarsNovakinFluffyButterfly = Fluffy, Butterfly
+marking-EarsNovakinFluffyCowling = Fluffy, Spotted
+marking-EarsNovakinFluffyCrow = Fluffy, Crow
+marking-EarsNovakinFluffyMotley = Fluffy, Bright
+marking-EarsNovakinFluffySpidy = Fluffy, Spidy
+marking-EarsNovakinFluffyRingedAll = Fluffy, with Rings
+marking-EarsNovakinFluffyRingedLeft = Fluffy, with Ring (L)
+marking-EarsNovakinFluffyRingedRight = Fluffy, with Ring (R)
+marking-EarsNovakinSaggy = Drooping
+marking-EarsNovakinSaggyBrawly = Drooping, Patterned
+marking-EarsNovakinSaggyZebra = Drooping, Striped
+marking-EarsNovakinSaggyGradient = Drooping, Gradient
+marking-EarsNovakinSaggyGauzedAll = Drooping, Gauzed
+marking-EarsNovakinSaggyGauzedLeft = Drooping, Ear Bandage (L)
+marking-EarsNovakinSaggyGauzedRight = Drooping, Ear Bandage (R)
+marking-EarsNovakinShort = Short
+marking-EarsNovakinShortButterfly = Short, Decorated
+marking-EarsNovakinShortRingedAll = Short, with Rings
+marking-EarsNovakinShortRingedLeft = Short, with Ring (L)
+marking-EarsNovakinShortRingedRight = Short, with Ring (R)
+marking-EarsNovakinBull = Straight
+marking-EarsNovakinBullSmooth = Straight, Outlined
+marking-EarsNovakinAqua = Aqua
+marking-EarsNovakinAquaIncolor = Aqua, Colored
+
+# Tails
+marking-TailNovakin = Default
+marking-TailNovakinBig = Big
+marking-TailNovakinBigFluff = Big and Fluffy
+marking-TailNovakinShorter = Short
+marking-TailNovakinShorterBrush = Short, Furry
+marking-TailNovakinMedium = Medium
+marking-TailNovakinMediumTwoColored = Medium, Two-Toned
+
+# Overlays
+marking-BodyNovakinArrow = Arrow Marking
+marking-BodyNovakinBlackHole = Black Hole Marking
+marking-BodyNovakinBrace = Bracelet Marking
+marking-BodyNovakinBrawly = Combat Marking
+marking-BodyNovakinHeart = Heart Marking
+marking-BodyNovakinInk = Ink Marking
+marking-BodyNovakinInk2 = Ink Marking 2
+marking-BodyNovakinInk3 = Ink Marking 3
+marking-BodyNovakinInk4 = Ink Marking 4
+marking-BodyNovakinInk5 = Ink Marking 5
+marking-BodyNovakinInk6 = Spiritual Ink Marking
+marking-BodyNovakinInkAnim = Spiral Ink Marking
+marking-BodyNovakinLines = Lines Marking
+marking-BodyNovakinNeck = Neck Marking
+marking-BodyNovakinShield = Protective Marking
+marking-BodyNovakinVacuum = Open Marking

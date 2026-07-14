@@ -1,0 +1,8 @@
+- type: speechSounds
+  id: Novakin
+  saySound:
+    path: /Audio/_Kritters/Voice/Novakin/Talk/novakin_speak_say.ogg
+  askSound:
+    path: /Audio/_Kritters/Voice/Novakin/Talk/novakin_speak_ask.ogg
+  exclaimSound:
+    path: /Audio/_Kritters/Voice/Novakin/Talk/novakin_speak_exclaim.ogg

@@ -89,10 +89,12 @@
   - NfsdBoxSurvivalNfsdOxygen
   - NfsdBoxSurvivalNfsdNitrogen
   - NfsdBoxSurvivalNfsdSheleg
+  - NfsdNovakinBoxSurvival # Kritters: Novakin survival kit.
   fallbacks:
   - NfsdBoxSurvivalNfsdOxygen
   - NfsdBoxSurvivalNfsdNitrogen
   - NfsdBoxSurvivalNfsdSheleg
+  - NfsdNovakinBoxSurvival # Kritters: Novakin survival-kit fallback.
 
 - type: loadoutGroup
   id: NfsdFace

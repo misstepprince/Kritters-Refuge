@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Shared.Atmos;
+using Content.Shared._Kritters;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
@@ -106,6 +107,20 @@ public sealed partial class HealthAnalyzerControl : BoxContainer
             ? state.BloodTypeName
             : Loc.GetString("health-analyzer-window-entity-unknown-value-text");
         BloodTypeLabel.FontColorOverride = state.HasBloodTypeColor ? state.BloodTypeColor : null;
+
+        // Kritters: Novakin diagnostics replace the blood fields, which are not meaningful for them.
+        var isNovakin = state.NovakinIntegrity.HasValue;
+        BloodLevelTitleLabel.Visible = !isNovakin;
+        BloodLabel.Visible = !isNovakin;
+        BloodTypeTitleLabel.Visible = !isNovakin;
+        BloodTypeLabel.Visible = !isNovakin;
+        IntegrityTitleLabel.Visible = isNovakin;
+        IntegrityLabel.Visible = isNovakin;
+        GasTypeTitleLabel.Visible = isNovakin;
+        GasTypeLabel.Visible = isNovakin;
+        if (state.NovakinIntegrity is { } integrity)
+            IntegrityLabel.Text = $"{NovakinDisplayFormat.Number(integrity)} %";
+        GasTypeLabel.Text = state.NovakinGasName ?? Loc.GetString("health-analyzer-window-entity-unknown-value-text");
 
         StatusLabel.Text =
             _entityManager.TryGetComponent<MobStateComponent>(target.Value, out var mobStateComponent)

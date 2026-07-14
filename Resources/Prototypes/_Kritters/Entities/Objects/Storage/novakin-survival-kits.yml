@@ -1,0 +1,30 @@
+- type: entity
+  parent: BoxSurvival
+  id: NovakinBoxSurvival
+  name: Novakin survival box
+  suffix: Novakin
+  components:
+  - type: StorageFill
+    contents:
+    - id: NovakinInhalerAdaptive
+    - id: Flare
+  - type: Sprite
+    layers:
+    - state: internals
+    - state: emergencytank
+
+- type: entity
+  parent: BoxSurvivalEngineering
+  id: NovakinBoxSurvivalExtended
+  name: extended Novakin survival box
+  suffix: Novakin
+  components:
+  - type: StorageFill
+    contents:
+    - id: NovakinInhalerAdaptive
+    - id: Flare
+    - id: CrowbarPocket
+  - type: Sprite
+    layers:
+    - state: internals
+    - state: extendedtank

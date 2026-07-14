@@ -2,6 +2,7 @@ using Content.Server.Medical.Components;
 using Content.Server.PowerCell;
 using Content.Server.Temperature.Components;
 using Content.Shared._Kritters.BloodTypes;
+using Content.Shared._Kritters.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
@@ -18,6 +19,7 @@ using Content.Shared.Traits.Assorted;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Server._NF.Medical; // Frontier
 using Content.Server._NF.Traits.Assorted;
@@ -38,6 +40,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly BloodstreamSystem _bloodstreamSystem = default!;
     [Dependency] private readonly KrittersBloodTypeSystem _krittersBloodTypes = default!; // Kritters
+    [Dependency] private readonly IPrototypeManager _prototypes = default!; // Kritters: resolve Novakin analyzer gas names.
 
     public override void Initialize()
     {
@@ -244,6 +247,9 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         string? bloodTypeName = null; // Kritters
         var bloodTypeColor = Color.White; // Kritters
         var hasBloodTypeColor = false; // Kritters
+        // Kritters: the optional value keeps all non-Novakin analyzer state unchanged.
+        float? novakinIntegrity = null;
+        string? novakinGasName = null;
 
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream) &&
             _solutionContainerSystem.ResolveSolution(entity, bloodstream.BloodSolutionName,
@@ -265,6 +271,16 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             unclonable = true;
         // End Frontier: add unclonable
 
+        // Kritters: expose the Novakin-only structural integrity to analyzers.
+        if (TryComp<NovakinPhysiologyComponent>(entity, out var physiology))
+        {
+            novakinIntegrity = physiology.MaxReserve > 0f
+                ? Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve * 100f, 0f, 100f)
+                : 0f;
+            if (_prototypes.TryIndex(physiology.Gas, out var gasPrototype))
+                novakinGasName = Loc.GetString(gasPrototype.Name);
+        }
+
         var printable = HasComp<HealthAnalyzerPrinterComponent>(healthAnalyzer); // Frontier
 
         var state = new HealthAnalyzerUiState(
@@ -278,7 +294,9 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             printable, // Frontier
             bloodTypeName, // Kritters
             bloodTypeColor, // Kritters
-            hasBloodTypeColor // Kritters
+            hasBloodTypeColor, // Kritters
+            novakinIntegrity, // Kritters
+            novakinGasName // Kritters
         );
 
         _uiSystem.ServerSendUiMessage(healthAnalyzer, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(state));

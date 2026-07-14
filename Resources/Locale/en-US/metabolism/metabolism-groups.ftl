@@ -4,5 +4,6 @@ metabolism-group-narcotic = Narcotic
 metabolism-group-alcohol = Alcohol
 metabolism-group-food = Food
 metabolism-group-drink = Drink
+metabolism-group-fuel = Fuel
 metabolism-group-gas = Gas
 metabolism-group-plant-metabolisms = Plant Metabolism

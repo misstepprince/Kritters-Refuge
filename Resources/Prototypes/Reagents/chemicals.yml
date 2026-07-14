@@ -35,6 +35,11 @@
   boilingPoint: 4200.0
   meltingPoint: 3550.0
   metabolisms:
+    Fuel:
+      effects:
+      # Kritters: fuels the Novakin core.
+      - !type:NovakinFuel
+        fuel: 3
     Medicine:
       effects:
       - !type:HealthChange
@@ -165,6 +170,12 @@
   flavor: bitter
   color: "#E6E6DA"
   physicalDesc: reagent-physical-desc-crystalline
+  metabolisms:
+    Fuel:
+      effects:
+      # Kritters: fuels the Novakin core.
+      - !type:NovakinFuel
+        fuel: 1
 
 - type: reagent
   id: Rororium

@@ -514,6 +514,11 @@
   meltingPoint: 0.0
   friction: 0.4
   metabolisms:
+    Fuel:
+      effects:
+      # Kritters: fuels the Novakin core.
+      - !type:NovakinFuel
+        fuel: 2
     Drink:
       effects:
       - !type:SatiateThirst

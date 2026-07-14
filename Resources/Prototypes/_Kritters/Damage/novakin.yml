@@ -1,0 +1,10 @@
+- type: damageModifierSet
+  id: Novakin
+  coefficients:
+    Asphyxiation: 1
+    Bloodloss: 1.35
+    Poison: 0
+    Heat: 0.25
+    Shock: 0
+    Caustic: 0
+    Radiation: 0.4

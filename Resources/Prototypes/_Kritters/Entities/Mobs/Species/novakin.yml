@@ -1,0 +1,111 @@
+- type: entity
+  save: false
+  name: Urist McNova
+  parent: BaseMobSpecies
+  id: BaseMobNovakin
+  abstract: true
+  components:
+  - type: Inventory
+    speciesId: novakin
+  - type: HumanoidAppearance
+    species: Novakin
+  - type: Icon
+    sprite: _Kritters/Mobs/Species/Novakin/parts.rsi
+    state: full
+  - type: Body
+    prototype: Novakin
+    requiredLegs: 2
+  # The Core receives digested reagents without giving Novakin a bloodstream.
+  - type: SolutionContainerManager
+    solutions:
+      chemicals:
+        maxVol: 100
+  - type: Needs
+    needs:
+    - NeedNovakinFuel
+  - type: ActionGrant
+    actions:
+    - ActionNovakinDischarge
+  - type: NovakinPhysiology
+    gas: NovakinGasNitrogen
+    fuelConsumptionBaselineTemperature: 373.15
+    fuelConsumptionMaximumTemperature: 700
+    maximumFuelConsumptionMultiplier: 2
+    reserveDrainPerSecond: 0.0555556
+    fullReserveDrainMultiplier: 1
+    emptyReserveDrainMultiplier: 0.25
+    criticalReserveThreshold: 0.25
+    criticalReserveDrainMultiplier: 4
+    criticalReserveDrainExponent: 2
+    criticalHealthDrainMultiplier: 4
+    leakedMolesPerReserve: 0.01
+    pressureSuitLeakMultiplier: 0.25
+    emptyReserveThermalRegulationMultiplier: 0.25
+    criticalReserveThermalRegulationMultiplier: 0.6
+    criticalReserveThermalRegulationExponent: 2
+    damageThreshold: 0.25
+    emptyReserveDamagePerSecond: 1
+  - type: PointLight
+    radius: 2
+    energy: 1
+    softness: 1
+    castShadows: true
+  - type: Speech
+    speechVerb: Novakin
+    speechSounds: Novakin
+    allowedEmotes: [Marr, Wurble, Hiss, Growl, Purr]
+  - type: Vocal
+    sounds:
+      Male: MaleNovakin
+      Female: FemaleNovakin
+      Unsexed: MaleNovakin
+  - type: FlashModifier
+    modifier: 2
+  - type: Damageable
+    damageContainer: Biological
+    damageModifierSet: Novakin
+  - type: TypingIndicator
+    proto: alien
+  - type: Fingerprint
+  - type: Blindable
+  - type: KrittersNightVision
+  - type: AtmosExposed
+  - type: Temperature
+    # Fuel heating caps at 700 K; leave a small margin so the cap itself is safe.
+    heatDamageThreshold: 700.1
+    coldDamageThreshold: 368.15
+    currentTemperature: 373.15
+    specificHeat: 42
+    coldDamage:
+      types:
+        Cold: 2
+    heatDamage:
+      types:
+        Heat: 2
+        Cellular: 2
+  - type: TemperatureSpeed
+    thresholds:
+      368.15: 0.9
+      350: 0.75
+      330: 0.5
+  - type: ThermalRegulator
+    metabolismHeat: 0
+    radiatedHeat: 0
+    # Exposed heat loss can overpower this regulation; insulated suits reduce that loss natively.
+    implicitHeatRegulation: 500
+    sweatHeatRegulation: 500
+    shiveringHeatRegulation: 500
+    normalBodyTemperature: 373.15
+    thermalRegulationTemperatureThreshold: 2
+  - type: Barotrauma
+    damage:
+      types:
+        Blunt: 0.85
+  - type: BlockInjection
+    blockHypospray: true
+    blockInjectOnProjectile: true
+  - type: FireVisuals
+    alternateState: Standing
+  - type: LayingDown
+  - type: ModifyUndies
+  - type: RoleplayIncentive

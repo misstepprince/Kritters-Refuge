@@ -306,3 +306,6 @@ Resources/MapImages
 
 # Direnv stuff
 .direnv/
+
+# Local active-development notes for the portable Novakin module.
+/.novakin-design.md

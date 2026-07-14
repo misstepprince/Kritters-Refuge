@@ -28,3 +28,14 @@
   storage:
     back:
     - NFBoxSurvivalExtendedSheleg
+
+# Kritters: Novakin-only survival kit with an adaptive reserve inhaler.
+- type: loadout
+  id: NfsdNovakinBoxSurvival
+  name: extended Novakin survival box
+  hideEffects:
+  - !type:GroupLoadoutEffect
+    proto: NFNovakin
+  storage:
+    back:
+    - NovakinBoxSurvivalExtended
