@@ -1,5 +1,9 @@
 name: Check Merge Conflicts
 
+permissions:
+  pull-requests: write
+  issues: write
+
 on:
   pull_request_target:
     types:
