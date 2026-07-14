@@ -30,7 +30,8 @@ public sealed partial class MobDiceComponent : Component
 /// <summary>
 /// The result of a rolled dice!
 /// </summary>
-public struct MobDiceResult(
+[DataRecord]
+public partial struct MobDiceResult(
     TimeSpan whenDid,
     int sides,
     int result,

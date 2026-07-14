@@ -9,8 +9,8 @@ namespace Content.Server._CS;
 /// A RPI Continuous Action Proxy Datum.
 /// This is used to track continuous actions that should give paywards over time.
 /// </summary>
-[Serializable]
-public sealed class RpiContinuousActionProxyDatum(ProtoId<RpiContinuousProxyActionPrototype> proto)
+[DataDefinition, Serializable]
+public sealed partial class RpiContinuousActionProxyDatum(ProtoId<RpiContinuousProxyActionPrototype> proto)
 {
     [DataField]
     [ViewVariables(VVAccess.ReadWrite)]
@@ -28,8 +28,8 @@ public sealed class RpiContinuousActionProxyDatum(ProtoId<RpiContinuousProxyActi
     [ViewVariables(VVAccess.ReadWrite)]
     public FixedPoint2 CurrentMultiplier = 1.0f;
 
-    private IGameTiming _gameTiming = IoCManager.Resolve<IGameTiming>();
-    private IPrototypeManager _prototypeManager = IoCManager.Resolve<IPrototypeManager>();
+    private IGameTiming? _gameTiming;
+    private IPrototypeManager? _prototypeManager;
 
     /// <summary>
     /// Call this every tick to accumulate time.
@@ -41,6 +41,7 @@ public sealed class RpiContinuousActionProxyDatum(ProtoId<RpiContinuousProxyActi
             return;
         }
 
+        _gameTiming ??= IoCManager.Resolve<IGameTiming>();
         var delta = _gameTiming.CurTime - LastAccumulated;
         if (delta < TimeSpan.Zero)
             delta = TimeSpan.Zero;
@@ -86,6 +87,7 @@ public sealed class RpiContinuousActionProxyDatum(ProtoId<RpiContinuousProxyActi
         if (IsActive)
             return;
         IsActive = true;
+        _gameTiming ??= IoCManager.Resolve<IGameTiming>();
         LastAccumulated = _gameTiming.CurTime;
     }
 
@@ -99,6 +101,7 @@ public sealed class RpiContinuousActionProxyDatum(ProtoId<RpiContinuousProxyActi
 
     public FixedPoint2 GetCurrentMultiplier()
     {
+        _prototypeManager ??= IoCManager.Resolve<IPrototypeManager>();
         if (!_prototypeManager.TryIndex(Proto, out var proto))
         {
             CurrentMultiplier = FixedPoint2.New(1.0f);

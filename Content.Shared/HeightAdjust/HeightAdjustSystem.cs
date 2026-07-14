@@ -3,6 +3,9 @@ using System.Linq;
 using System.Numerics;
 using Content.Shared.Body.Components;
 using Content.Shared.Humanoid;
+using Content.Shared.Humanoid.Components;
+using Content.Shared.Nyanotrasen.Item.PseudoItem;
+using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Dynamics;
@@ -15,6 +18,9 @@ public sealed class HeightAdjustSystem : EntitySystem
     [Dependency] private readonly SharedHumanoidAppearanceSystem _appearance = default!;
     [Dependency] private readonly FixtureSystem _fixtures = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+    [Dependency] private readonly INetManager _net = default!;
+
+    private const float BagSizeThreshold = 0.75f;
 
     public override void Initialize()
     {
@@ -68,6 +74,7 @@ public sealed class HeightAdjustSystem : EntitySystem
 
             _appearance.SetHeight(uid, newHeight, bypassLimits: bypassLimits, humanoid: humanoid);
             _appearance.SetWidth(uid, newWidth, bypassLimits: bypassLimits, humanoid: humanoid);
+            UpdateBagEligibility(uid, humanoid);
             succeeded = true;
         }
 
@@ -133,9 +140,33 @@ public sealed class HeightAdjustSystem : EntitySystem
             humanoid.BaseHeight = scale.Y;
 
             _appearance.SetScale(uid, scale, humanoid: humanoid);
+            UpdateBagEligibility(uid, humanoid);
             return true;
         }
 
         return false;
+    }
+
+    private void UpdateBagEligibility(EntityUid uid, HumanoidAppearanceComponent humanoid)
+    {
+        // Pseudo items are not networked, so this state is managed authoritatively by the server.
+        if (!_net.IsServer)
+            return;
+
+        var smallEnough = humanoid.Height < BagSizeThreshold && humanoid.Width < BagSizeThreshold;
+        if (smallEnough)
+        {
+            // Do not overwrite a species' bespoke bag shape.
+            if (HasComp<PseudoItemComponent>(uid))
+                return;
+
+            EnsureComp<PseudoItemComponent>(uid);
+            EnsureComp<SmallHumanoidBagComponent>(uid);
+            return;
+        }
+
+        // Only remove the pseudo-item if this system added it; species-defined pseudo-items retain their behavior.
+        if (RemCompDeferred<SmallHumanoidBagComponent>(uid))
+            RemCompDeferred<PseudoItemComponent>(uid);
     }
 }

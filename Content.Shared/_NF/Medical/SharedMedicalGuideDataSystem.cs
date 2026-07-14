@@ -13,8 +13,8 @@ public abstract class SharedMedicalGuideDataSystem : EntitySystem
     public List<MedicalGuideEntry> Registry = new();
 }
 
-[Serializable, NetSerializable]
-public sealed class MedicalGuideRegistryChangedEvent : EntityEventArgs
+[DataRecord, Serializable, NetSerializable]
+public sealed partial class MedicalGuideRegistryChangedEvent : EntityEventArgs
 {
     [DataField]
     public List<MedicalGuideEntry> Changeset;
@@ -53,7 +53,7 @@ public partial struct MedicalGuideEntry
     }
 }
 
-[Serializable, NetSerializable]
+[DataRecord, Serializable, NetSerializable]
 public sealed partial class MedicalRecipeData
 {
     [DataField]

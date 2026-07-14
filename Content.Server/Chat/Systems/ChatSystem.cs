@@ -269,8 +269,8 @@ public sealed partial class ChatSystem : SharedChatSystem
             // If no name override is provided, we use the entity's name.
             entityName = "bingles";
         }
-        var nameHashColor = ColorExtensions.ConsistentRandomSeededColorFromString(entityName);
-        var nameHashColorAdjusted = ColorExtensions.PreventColorFromBeingTooCloseToTheBackgroundColor(nameHashColor); // pastilla loses
+        var nameHashColor = Content.Shared._CS.ColorExtensions.ConsistentRandomSeededColorFromString(entityName);
+        var nameHashColorAdjusted = Content.Shared._CS.ColorExtensions.PreventColorFromBeingTooCloseToTheBackgroundColor(nameHashColor); // pastilla loses
         var nameColorString = nameHashColorAdjusted.ToHex();
 
         // Was there an emote in the message? If so, send it.
@@ -866,8 +866,8 @@ public sealed partial class ChatSystem : SharedChatSystem
             // If no name override is provided, we use the entity's name.
             entityName = "bingles";
         }
-        var nameHashColor = ColorExtensions.ConsistentRandomSeededColorFromString(entityName);
-        var nameHashColorAdjusted = ColorExtensions.PreventColorFromBeingTooCloseToTheBackgroundColor(nameHashColor); // pastilla loses
+        var nameHashColor = Content.Shared._CS.ColorExtensions.ConsistentRandomSeededColorFromString(entityName);
+        var nameHashColorAdjusted = Content.Shared._CS.ColorExtensions.PreventColorFromBeingTooCloseToTheBackgroundColor(nameHashColor); // pastilla loses
         var nameColorString = nameHashColorAdjusted.ToHex();
 
         var wrappedMessage = Loc.GetString("chat-manager-entity-looc-wrap-message",
@@ -954,8 +954,8 @@ public sealed partial class ChatSystem : SharedChatSystem
             // If no name override is provided, we use the entity's name.
             entityName = "bingles";
         }
-        var nameHashColor = ColorExtensions.ConsistentRandomSeededColorFromString(entityName);
-        var nameHashColorAdjusted = ColorExtensions.PreventColorFromBeingTooCloseToTheBackgroundColor(nameHashColor); // pastilla loses
+        var nameHashColor = Content.Shared._CS.ColorExtensions.ConsistentRandomSeededColorFromString(entityName);
+        var nameHashColorAdjusted = Content.Shared._CS.ColorExtensions.PreventColorFromBeingTooCloseToTheBackgroundColor(nameHashColor); // pastilla loses
         var nameColorString = nameHashColorAdjusted.ToHex();
 
         var wrappedMessage = Loc.GetString(
