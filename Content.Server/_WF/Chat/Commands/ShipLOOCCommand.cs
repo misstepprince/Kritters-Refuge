@@ -6,9 +6,9 @@ using Robust.Shared.Enums;
 namespace Content.Server.Chat.Commands
 {
     [AnyCommand]
-    internal sealed class ShipOOCCommand : IConsoleCommand
+    internal sealed partial class ShipOOCCommand : IConsoleCommand
     {
-        [Dependency] private readonly IEntityManager _entityManager = default!;
+        [Dependency] private IEntityManager _entityManager = default!;
 
         public string Command => "shipooc";
         public string Description => "Send Ship Out Of Character chat messages.";

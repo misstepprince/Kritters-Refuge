@@ -21,19 +21,19 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._CS.ForceFields.EntitySystems;
 
-public sealed class WallmountForceFieldGeneratorSystem : EntitySystem
+public sealed partial class WallmountForceFieldGeneratorSystem : EntitySystem
 {
     private static readonly TimeSpan FieldConstructFlashDelay = TimeSpan.FromMilliseconds(120);
 
-    [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedAmbientSoundSystem _ambientSound = default!;
-    [Dependency] private readonly BatterySystem _battery = default!;
-    [Dependency] private readonly SharedPointLightSystem _pointLight = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly PhysicsSystem _physics = default!;
-    [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
-    [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
+    [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private SharedAmbientSoundSystem _ambientSound = default!;
+    [Dependency] private BatterySystem _battery = default!;
+    [Dependency] private SharedPointLightSystem _pointLight = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private PhysicsSystem _physics = default!;
+    [Dependency] private PowerReceiverSystem _powerReceiver = default!;
+    [Dependency] private SharedTransformSystem _transformSystem = default!;
 
     public override void Initialize()
     {

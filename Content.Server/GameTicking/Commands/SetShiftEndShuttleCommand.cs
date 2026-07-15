@@ -5,9 +5,9 @@ using Robust.Shared.Console;
 namespace Content.Server.GameTicking.Commands
 {
     [AdminCommand(AdminFlags.Round)]
-    sealed class SetShiftEndShuttleCommand : IConsoleCommand
+    sealed partial class SetShiftEndShuttleCommand : IConsoleCommand
     {
-        [Dependency] private readonly IEntityManager _e = default!;
+        [Dependency] private IEntityManager _e = default!;
 
         public string Command => "setshiftendshuttle";
         public string Description => "Sets whether the emergency shuttle should automatically be called when 30 minutes remain in the shift.";

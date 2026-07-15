@@ -12,9 +12,9 @@ namespace Content.Client.Examine;
 /// <summary>
 /// Adds a "Character" examine button to humanoid entities that opens a character info window
 /// </summary>
-public sealed class CharacterExamineSystem : EntitySystem
+public sealed partial class CharacterExamineSystem : EntitySystem
 {
-    [Dependency] private readonly ClientClothingSystem _clothing = default!;
+    [Dependency] private ClientClothingSystem _clothing = default!;
 
     private readonly Dictionary<NetEntity, CharacterDetailWindow> _openWindows = new();
 

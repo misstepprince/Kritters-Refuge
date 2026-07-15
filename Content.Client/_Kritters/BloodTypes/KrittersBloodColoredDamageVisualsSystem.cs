@@ -9,11 +9,11 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._Kritters.BloodTypes;
 
-public sealed class KrittersBloodColoredDamageVisualsSystem : EntitySystem
+public sealed partial class KrittersBloodColoredDamageVisualsSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public override void Initialize()
     {

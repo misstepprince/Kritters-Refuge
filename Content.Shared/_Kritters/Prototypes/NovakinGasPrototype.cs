@@ -3,7 +3,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Kritters.Prototypes;
 
-[Prototype("novakinGas")]
+[Prototype]
 public sealed partial class NovakinGasPrototype : IPrototype
 {
     [IdDataField]

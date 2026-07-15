@@ -6,10 +6,10 @@ using Robust.Shared.Timing;
 namespace Content.Server.GameTicking.Commands
 {
     [AdminCommand(AdminFlags.Round)]
-    sealed class SetShiftEndTimeCommand : IConsoleCommand
+    sealed partial class SetShiftEndTimeCommand : IConsoleCommand
     {
-        [Dependency] private readonly IEntityManager _e = default!;
-        [Dependency] private readonly IGameTiming _timing = default!;
+        [Dependency] private IEntityManager _e = default!;
+        [Dependency] private IGameTiming _timing = default!;
 
         public string Command => "setshiftendtime";
         public string Description => "Sets the shift end time in hours from now or from round start.";

@@ -17,11 +17,11 @@ namespace Content.Client.Movement.Systems;
 /// Adds a temporary eye offset when the locally controlled entity receives a sudden positional correction.
 /// This smooths visual reconciliation without changing authoritative physics.
 /// </summary>
-public sealed class PredictionReconcileSmoothingSystem : EntitySystem
+public sealed partial class PredictionReconcileSmoothingSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private const float BaseMovementTolerance = 0.05f;
     private const float VelocityToleranceScale = 1.35f;

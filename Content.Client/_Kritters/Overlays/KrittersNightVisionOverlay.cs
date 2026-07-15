@@ -10,10 +10,10 @@ namespace Content.Client._Kritters.Overlays;
 /// This remains separate from the fork's other vision overlays so the imported
 /// Shadekin visual effect can be preserved without changing DogVision or UltraVision.
 /// </summary>
-public sealed class KrittersNightVisionOverlay : Robust.Client.Graphics.Overlay
+public sealed partial class KrittersNightVisionOverlay : Robust.Client.Graphics.Overlay
 {
-    [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     private readonly ShaderInstance _shader;
 

@@ -6,11 +6,11 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._CS.Lathe.Systems;
 
-public sealed class BiogeneratorBufferSystem : EntitySystem
+public sealed partial class BiogeneratorBufferSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly LatheSystem _lathe = default!;
-    [Dependency] private readonly PowerReceiverSystem _power = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private LatheSystem _lathe = default!;
+    [Dependency] private PowerReceiverSystem _power = default!;
 
     public override void Initialize()
     {

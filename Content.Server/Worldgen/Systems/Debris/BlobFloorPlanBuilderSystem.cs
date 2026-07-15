@@ -13,13 +13,13 @@ namespace Content.Server.Worldgen.Systems.Debris;
 /// <summary>
 ///     This handles building the floor plans for "blobby" debris.
 /// </summary>
-public sealed class BlobFloorPlanBuilderSystem : BaseWorldSystem
+public sealed partial class BlobFloorPlanBuilderSystem : BaseWorldSystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly ITileDefinitionManager _tileDefinition = default!;
-    [Dependency] private readonly TileSystem _tiles = default!;
-    [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private ITileDefinitionManager _tileDefinition = default!;
+    [Dependency] private TileSystem _tiles = default!;
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private readonly Queue<(EntityUid, BlobFloorPlanBuilderComponent, MapGridComponent)> _pendingGridBuilds = new();
     private int _maxGridBuildsPerTick = 2;

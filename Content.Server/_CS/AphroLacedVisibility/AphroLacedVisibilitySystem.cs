@@ -11,10 +11,10 @@ namespace Content.Server._CS.AphroLacedVisibility;
 /// <summary>
 /// System that shows visual feedback to any container that is injected with a aphrodisiac.
 /// </summary>
-public sealed class AphroLacedVisibilitySystem : EntitySystem
+public sealed partial class AphroLacedVisibilitySystem : EntitySystem
 {
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     private ServerAphrodisiacChecker _helper = new();
 

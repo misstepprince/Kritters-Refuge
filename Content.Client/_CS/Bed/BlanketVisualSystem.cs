@@ -9,12 +9,12 @@ namespace Content.Client._CS.Bed;
 /// <summary>
 /// Raises bedsheet world-sprite depth when on top of a mob so the sheet renders above the target.
 /// </summary>
-public sealed class BlanketVisualSystem : EntitySystem
+public sealed partial class BlanketVisualSystem : EntitySystem
 {
     private const int CoveredMobDepth = (int) DrawDepth.OverMobs;
 
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     private readonly Dictionary<EntityUid, int> _originalDepth = new();
     private readonly HashSet<EntityUid> _entitiesInRange = new();

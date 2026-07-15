@@ -10,11 +10,11 @@ namespace Content.Shared._CS.RadioNoises;
 /// <summary>
 /// This handles...
 /// </summary>
-public sealed class RadioStaticSystem : EntitySystem
+public sealed partial class RadioStaticSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = null!;
-    [Dependency] private readonly SharedAudioSystem _audioSystem = null!;
-    [Dependency] private readonly SharedPopupSystem _popupSystem = null!;
+    [Dependency] private IPrototypeManager _prototype = null!;
+    [Dependency] private SharedAudioSystem _audioSystem = null!;
+    [Dependency] private SharedPopupSystem _popupSystem = null!;
 
     public static readonly VerbCategory RadioSquelchCat =
         new("verb-categories-radiosquelch", null);
@@ -390,7 +390,7 @@ public sealed class RadioStaticSystem : EntitySystem
 /// Radio received event!
 /// </summary>
 [ByRefEvent]
-public sealed class DoRadioStaticEvent(
+public sealed partial class DoRadioStaticEvent(
     EntityUid radioUid,
     EntityUid sender,
     EntityUid? receiver,
@@ -408,7 +408,7 @@ public sealed class DoRadioStaticEvent(
 }
 
 
-public sealed class RadioDegradationParams(
+public sealed partial class RadioDegradationParams(
     int wordDropPercentage,
     int letterDropPercentage,
     int fontSizeDecrease,

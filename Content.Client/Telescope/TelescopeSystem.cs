@@ -16,15 +16,15 @@ using Robust.Shared.Timing;
 
 namespace Content.Client.Telescope;
 
-public sealed class TelescopeSystem : SharedTelescopeSystem
+public sealed partial class TelescopeSystem : SharedTelescopeSystem
 {
-    [Dependency] private readonly InputSystem _inputSystem = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IInputManager _input = default!;
-    [Dependency] private readonly IEyeManager _eyeManager = default!;
-    [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private InputSystem _inputSystem = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IInputManager _input = default!;
+    [Dependency] private IEyeManager _eyeManager = default!;
+    [Dependency] private IUserInterfaceManager _uiManager = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private ScalingViewport? _viewport;
     private bool _holdLookUp;

@@ -2,9 +2,9 @@ using Robust.Client.Graphics;
 
 namespace Content.Client._Kritters.Overlays;
 
-public sealed class NovakinHeatOverlaySystem : EntitySystem
+public sealed partial class NovakinHeatOverlaySystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlays = default!;
+    [Dependency] private IOverlayManager _overlays = default!;
     private NovakinHeatOverlay? _overlay;
 
     public override void Initialize()

@@ -14,12 +14,12 @@ namespace Content.Server.Wagging;
 /// <summary>
 /// Adds an action to toggle wagging animation for tails markings that supporting this
 /// </summary>
-public sealed class WaggingSystem : EntitySystem
+public sealed partial class WaggingSystem : EntitySystem
 {
-    [Dependency] private readonly ActionsSystem _actions = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoidAppearance = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly CoyoteMarkingSystem _coyoteMarking = default!; // Coyote, obviously
+    [Dependency] private ActionsSystem _actions = default!;
+    [Dependency] private HumanoidAppearanceSystem _humanoidAppearance = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private CoyoteMarkingSystem _coyoteMarking = default!; // Coyote, obviously
 
     public override void Initialize()
     {

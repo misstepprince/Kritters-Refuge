@@ -11,7 +11,7 @@ namespace Content.Server.Salvage;
 public sealed partial class SalvageSystem
 {
     // _CS Start: expedition weather system
-    [Dependency] private readonly WeatherSystem _weatherSystem = default!;
+    [Dependency] private WeatherSystem _weatherSystem = default!;
 
     /// <summary>
     /// Interval between weather rolls (15 minutes). Two rolls total per expedition.

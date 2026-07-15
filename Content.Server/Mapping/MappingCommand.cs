@@ -14,10 +14,10 @@ using Content.Shared.Administration.Managers; // Frontier
 namespace Content.Server.Mapping
 {
     [AdminCommand(AdminFlags.Server | AdminFlags.Mapping)]
-    sealed class MappingCommand : IConsoleCommand
+    sealed partial class MappingCommand : IConsoleCommand
     {
-        [Dependency] private readonly IEntityManager _entities = default!;
-        [Dependency] private readonly ISharedAdminManager _admin = default!; // Frontier
+        [Dependency] private IEntityManager _entities = default!;
+        [Dependency] private ISharedAdminManager _admin = default!; // Frontier
 
         public string Command => "mapping";
         public string Description => Loc.GetString("cmd-mapping-desc");

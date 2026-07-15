@@ -13,7 +13,7 @@ using Robust.Shared.Utility;
 namespace Content.Shared._Floof.Examine;
 
 
-public abstract class SharedCustomExamineSystem : EntitySystem
+public abstract partial class SharedCustomExamineSystem : EntitySystem
 {
     public static ProtoId<ConsentTogglePrototype> NsfwDescConsent = "NSFWDescriptions";
     public static int PublicMaxLength = 256, SubtleMaxLength = 256;
@@ -22,11 +22,11 @@ public abstract class SharedCustomExamineSystem : EntitySystem
 
     private static readonly Regex BadMarkupRegex = new("\\[.*?head.*?\\]", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(5));
 
-    [Dependency] private readonly SharedConsentSystem _consent = default!;
-    [Dependency] private readonly ExamineSystemShared _examine = default!;
-    [Dependency] private readonly ISharedAdminManager _admin = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private SharedConsentSystem _consent = default!;
+    [Dependency] private ExamineSystemShared _examine = default!;
+    [Dependency] private ISharedAdminManager _admin = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
 
     public override void Initialize()
     {

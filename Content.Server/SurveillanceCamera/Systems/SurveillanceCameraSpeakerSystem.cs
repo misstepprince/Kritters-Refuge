@@ -18,20 +18,20 @@ namespace Content.Server.SurveillanceCamera;
 /// <summary>
 ///     This handles speech for surveillance camera monitors.
 /// </summary>
-public sealed class SurveillanceCameraSpeakerSystem : EntitySystem
+public sealed partial class SurveillanceCameraSpeakerSystem : EntitySystem
 {
     private const float MinRelayVolumeDb = -20f;
     private const float RelayVolumeStepDb = 5f;
     private static readonly TimeSpan MidiRelayIdleTimeout = TimeSpan.FromSeconds(1.5f);
     private const string EntertainmentFrequencyId = "SurveillanceCameraEntertainment";
 
-    [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
-    [Dependency] private readonly SpeechSoundSystem _speechSound = default!;
-    [Dependency] private readonly ChatSystem _chatSystem = default!;
-    [Dependency] private readonly InstrumentSystem _instrumentSystem = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private SharedAudioSystem _audioSystem = default!;
+    [Dependency] private SpeechSoundSystem _speechSound = default!;
+    [Dependency] private ChatSystem _chatSystem = default!;
+    [Dependency] private InstrumentSystem _instrumentSystem = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     // Numeric frequency value for SurveillanceCameraEntertainment, resolved at init.
     private uint _entertainmentFrequency;

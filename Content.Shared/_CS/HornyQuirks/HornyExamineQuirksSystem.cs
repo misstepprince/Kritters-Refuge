@@ -9,10 +9,10 @@ namespace Content.Shared._CS.HornyQuirks;
 /// <summary>
 /// This handles my balls
 /// </summary>
-public sealed class HornyExamineQuirksSystem : EntitySystem
+public sealed partial class HornyExamineQuirksSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IRobustRandom _rnd = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IRobustRandom _rnd = default!;
 
     /// <inheritdoc/>
     public override void Initialize()

@@ -7,10 +7,10 @@ using Content.Shared.Nutrition.Components;
 
 namespace Content.Server._DV.Feroxi;
 
-public sealed class FeroxiDehydrateSystem : EntitySystem
+public sealed partial class FeroxiDehydrateSystem : EntitySystem
 {
 }
-//     [Dependency] private readonly SharedNeedsSystem _needs = default!;
+//     [Dependency] private SharedNeedsSystem _needs = default!;
 //     public override void Initialize()
 //     {
 //         base.Initialize();

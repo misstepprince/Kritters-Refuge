@@ -16,14 +16,14 @@ namespace Content.Server.Conveyor.EntitySystems
     /// Responsible for taking care of conveyor lag machines without administrative intervention.
     /// </summary>
     [UsedImplicitly]
-    public sealed class ConveyorCleanupSystem : EntitySystem
+    public sealed partial class ConveyorCleanupSystem : EntitySystem
     {
-        [Dependency] private readonly IEntityManager _entityManager = default!;
-        [Dependency] private readonly IAdminLogManager _adminLog = default!;
-        [Dependency] private readonly IConfigurationManager _cfg = default!;
-        [Dependency] private readonly IGameTiming _timing = default!;
-        [Dependency] private readonly SharedAudioSystem _audio = default!;
-        [Dependency] private readonly SharedPopupSystem _popup = default!;
+        [Dependency] private IEntityManager _entityManager = default!;
+        [Dependency] private IAdminLogManager _adminLog = default!;
+        [Dependency] private IConfigurationManager _cfg = default!;
+        [Dependency] private IGameTiming _timing = default!;
+        [Dependency] private SharedAudioSystem _audio = default!;
+        [Dependency] private SharedPopupSystem _popup = default!;
         private TimeSpan _nextCleanup = TimeSpan.Zero;
         private TimeSpan _cleanupInterval = TimeSpan.FromSeconds(51); // Time before next cleanup. Can be tuned in cvars.
         private readonly SoundPathSpecifier _breaksound = new("/Audio/Effects/metal_crunch.ogg");

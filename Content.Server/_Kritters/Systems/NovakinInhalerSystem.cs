@@ -16,12 +16,12 @@ namespace Content.Server._Kritters.Systems;
 /// Converts gas held by the native tank component into Novakin reserve. Gas
 /// storage, canister refilling, and pressure behavior remain owned by atmos.
 /// </summary>
-public sealed class NovakinInhalerSystem : EntitySystem
+public sealed partial class NovakinInhalerSystem : EntitySystem
 {
-    [Dependency] private readonly NovakinPhysiologySystem _physiology = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly UseDelaySystem _useDelay = default!;
+    [Dependency] private NovakinPhysiologySystem _physiology = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private UseDelaySystem _useDelay = default!;
 
     public override void Initialize()
     {

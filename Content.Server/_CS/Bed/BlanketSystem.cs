@@ -13,12 +13,12 @@ namespace Content.Server._CS.Bed;
 ///     Allows items tagged as Bedsheet to be applied to another mob by clicking on them,
 ///     dropping the sheet at their coordinates.
 /// </summary>
-public sealed class BlanketSystem : EntitySystem
+public sealed partial class BlanketSystem : EntitySystem
 {
-    [Dependency] private readonly HandsSystem _hands = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private HandsSystem _hands = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private TagSystem _tag = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private static readonly ProtoId<TagPrototype> BedsheetTag = "Bedsheet";
 

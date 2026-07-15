@@ -10,7 +10,7 @@ namespace Content.Server.Anomaly;
 /// </summary>
 public sealed partial class AnomalySystem
 {
-    [Dependency] private readonly SharedTransformSystem _coords = default!;
+    [Dependency] private SharedTransformSystem _coords = default!;
 
     /// <summary> Finish unlocking phase when the time is up. </summary>
     private void UpdateLinkExpiry()

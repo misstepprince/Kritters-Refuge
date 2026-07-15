@@ -13,11 +13,11 @@ namespace Content.Server.Administration.UI;
 /// <summary>
 /// Admin EUI for viewing all NanoChat messages between players
 /// </summary>
-public sealed class NanoChatAdminEui : BaseEui
+public sealed partial class NanoChatAdminEui : BaseEui
 {
-    [Dependency] private readonly IAdminManager _adminManager = default!;
-    [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IAdminManager _adminManager = default!;
+    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     public NanoChatAdminEui()
     {

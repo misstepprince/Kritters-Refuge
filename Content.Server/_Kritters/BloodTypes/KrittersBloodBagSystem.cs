@@ -17,13 +17,13 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Kritters.BloodTypes;
 
-public sealed class KrittersBloodBagSystem : EntitySystem
+public sealed partial class KrittersBloodBagSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly KrittersBloodCompatibilitySystem _compatibility = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private KrittersBloodCompatibilitySystem _compatibility = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
 
     private readonly HashSet<EntityUid> _attachedBags = new();
     private readonly List<EntityUid> _bagsToDetach = new();

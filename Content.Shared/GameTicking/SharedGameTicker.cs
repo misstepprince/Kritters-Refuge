@@ -13,10 +13,10 @@ using Content.Shared._NF.Shipyard.Prototypes; // Frontier
 
 namespace Content.Shared.GameTicking
 {
-    public abstract class SharedGameTicker : EntitySystem
+    public abstract partial class SharedGameTicker : EntitySystem
     {
-        [Dependency] private readonly IReplayRecordingManager _replay = default!;
-        [Dependency] private readonly IGameTiming _gameTiming = default!;
+        [Dependency] private IReplayRecordingManager _replay = default!;
+        [Dependency] private IGameTiming _gameTiming = default!;
 
         // See ideally these would be pulled from the job definition or something.
         // But this is easier, and at least it isn't hardcoded.
@@ -58,17 +58,17 @@ namespace Content.Shared.GameTicking
     }
 
     [Serializable, NetSerializable]
-    public sealed class TickerJoinLobbyEvent : EntityEventArgs
+    public sealed partial class TickerJoinLobbyEvent : EntityEventArgs
     {
     }
 
     [Serializable, NetSerializable]
-    public sealed class TickerJoinGameEvent : EntityEventArgs
+    public sealed partial class TickerJoinGameEvent : EntityEventArgs
     {
     }
 
     [Serializable, NetSerializable]
-    public sealed class TickerLateJoinStatusEvent : EntityEventArgs
+    public sealed partial class TickerLateJoinStatusEvent : EntityEventArgs
     {
         // TODO: Make this a replicated CVar, honestly.
         public bool Disallowed { get; }
@@ -80,7 +80,7 @@ namespace Content.Shared.GameTicking
     }
 
     [Serializable, NetSerializable]
-    public sealed class TickerConnectionStatusEvent : EntityEventArgs
+    public sealed partial class TickerConnectionStatusEvent : EntityEventArgs
     {
         public TimeSpan RoundStartTimeSpan { get; }
         public TickerConnectionStatusEvent(TimeSpan roundStartTimeSpan)
@@ -90,7 +90,7 @@ namespace Content.Shared.GameTicking
     }
 
     [Serializable, NetSerializable]
-    public sealed class TickerLobbyStatusEvent : EntityEventArgs
+    public sealed partial class TickerLobbyStatusEvent : EntityEventArgs
     {
         public bool IsRoundStarted { get; }
         public string? LobbyBackground { get; }
@@ -112,7 +112,7 @@ namespace Content.Shared.GameTicking
     }
 
     [Serializable, NetSerializable]
-    public sealed class TickerLobbyInfoEvent : EntityEventArgs
+    public sealed partial class TickerLobbyInfoEvent : EntityEventArgs
     {
         public string TextBlob { get; }
 
@@ -123,7 +123,7 @@ namespace Content.Shared.GameTicking
     }
 
     [Serializable, NetSerializable]
-    public sealed class TickerLobbyCountdownEvent : EntityEventArgs
+    public sealed partial class TickerLobbyCountdownEvent : EntityEventArgs
     {
         /// <summary>
         /// The game time that the game will start at.
@@ -150,7 +150,7 @@ namespace Content.Shared.GameTicking
     /// <param name="jobsAvailable">A dictionary of job prototypes and the number of jobs positions available for it.</param>
     /// <param name="isLateJoinStation">If true, this entity is a station, and not a player ship (displayed under the "Crew" tab).</param>
     [Serializable, NetSerializable]
-    public sealed class StationJobInformation(
+    public sealed partial class StationJobInformation(
         string stationName,
         Dictionary<ProtoId<JobPrototype>, int?> jobsAvailable,
         bool isLateJoinStation,
@@ -174,7 +174,7 @@ namespace Content.Shared.GameTicking
     /// <param name="stationIcon">The icon that represents the station and is shown next to the name.</param>
     /// <param name="lobbySortOrder">The order in which this station should be displayed in the station picker.</param>
     [Serializable, NetSerializable]
-    public sealed class StationDisplayInformation(
+    public sealed partial class StationDisplayInformation(
         LocId? stationSubtext,
         LocId? stationDescription,
         ResPath? stationIcon,
@@ -194,7 +194,7 @@ namespace Content.Shared.GameTicking
     /// <param name="vessel">The prototype ID for the vessel this ship is.</param>
     /// <param name="hiddenIfNoJobs">If true, this vessel should be hidden when there are no open jobs on it.</param>
     [Serializable, NetSerializable]
-    public sealed class VesselDisplayInformation(
+    public sealed partial class VesselDisplayInformation(
         string vesselAdvertisement,
         ProtoId<VesselPrototype>? vessel,
         bool hiddenIfNoJobs
@@ -208,7 +208,7 @@ namespace Content.Shared.GameTicking
     // End Frontier: station job info, optional structs
 
     [Serializable, NetSerializable]
-    public sealed class TickerJobsAvailableEvent(
+    public sealed partial class TickerJobsAvailableEvent(
         Dictionary<NetEntity, StationJobInformation> stationJobList // Frontier addition, replaced with StationJobInformation
     ) : EntityEventArgs
     {

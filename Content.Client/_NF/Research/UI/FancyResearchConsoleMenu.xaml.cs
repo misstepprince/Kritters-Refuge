@@ -25,9 +25,9 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     public Action<string>? OnTechnologyCardPressed;
     public Action? OnServerButtonPressed;
 
-    [Dependency] private readonly IEntityManager _entity = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private IEntityManager _entity = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IPlayerManager _player = default!;
 
     private readonly ResearchSystem _research;
     private readonly SpriteSystem _sprite;
@@ -160,7 +160,7 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
         DragContainer.RemoveAllChildren();
 
         List = dict;
-        var bounds = new Box2i();
+        var bounds = default(Box2i);
         var boundsSet = false;
 
         // Calculate bounds
@@ -171,8 +171,10 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
 
             if (!boundsSet)
             {
-                bounds.BottomLeft = position;
-                bounds.TopRight = position;
+                // A default Box2i is anchored at zero. Assigning a first technology
+                // position to it can violate its invariants when that position is
+                // entirely on one side of the origin.
+                bounds = new Box2i(position, position);
                 boundsSet = true;
             }
             else

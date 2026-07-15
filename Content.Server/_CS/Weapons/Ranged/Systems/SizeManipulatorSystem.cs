@@ -11,11 +11,11 @@ using System.Numerics;
 
 namespace Content.Server.Weapons.Ranged.Systems;
 
-public sealed class SizeManipulatorSystem : EntitySystem
+public sealed partial class SizeManipulatorSystem : EntitySystem
 {
-    [Dependency] private readonly SizeManipulationSystem _sizeManipulation = default!;
-    [Dependency] private readonly DeviceLinkSystem _deviceLink = default!;
-    [Dependency] private readonly GunSystem _gunSystem = default!;
+    [Dependency] private SizeManipulationSystem _sizeManipulation = default!;
+    [Dependency] private DeviceLinkSystem _deviceLink = default!;
+    [Dependency] private GunSystem _gunSystem = default!;
 
     public override void Initialize()
     {
