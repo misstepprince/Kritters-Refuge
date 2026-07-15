@@ -21,7 +21,6 @@
       temperature: 293.15
     tankLowPressure: 0
   - type: NovakinInhaler
-    gas: NovakinGasNitrogen
     maxMoles: 0.125
     reservePerMole: 400
     transferAmount: 10
@@ -30,99 +29,13 @@
 
 - type: entity
   parent: BaseNovakinInhaler
-  id: NovakinInhalerAdaptive
-  name: adaptive Novakin inhaler
-  suffix: Starting kit
-  components:
-  - type: NovakinInhaler
-    gas: NovakinGasNitrogen
-    adaptToOwnerGas: true
-  - type: GasTank
-    air:
-      volume: 0.66
-      moles: [0, 0.125]
-      temperature: 293.15
-
-- type: entity
-  parent: BaseNovakinInhaler
-  id: NovakinInhalerOxygen
-  name: oxygen Novakin inhaler
-  suffix: Filled
-  components:
-  - type: NovakinInhaler
-    gas: NovakinGasOxygen
-  - type: GasTank
-    air:
-      volume: 0.66
-      moles: [0.125]
-      temperature: 293.15
-
-- type: entity
-  parent: BaseNovakinInhaler
   id: NovakinInhalerNitrogen
   name: nitrogen Novakin inhaler
   suffix: Filled
   components:
   - type: NovakinInhaler
-    gas: NovakinGasNitrogen
   - type: GasTank
     air:
       volume: 0.66
       moles: [0, 0.125]
-      temperature: 293.15
-
-- type: entity
-  parent: BaseNovakinInhaler
-  id: NovakinInhalerCarbonDioxide
-  name: carbon dioxide Novakin inhaler
-  suffix: Filled
-  components:
-  - type: NovakinInhaler
-    gas: NovakinGasCarbonDioxide
-  - type: GasTank
-    air:
-      volume: 0.66
-      moles: [0, 0, 0.125]
-      temperature: 293.15
-
-- type: entity
-  parent: BaseNovakinInhaler
-  id: NovakinInhalerWaterVapor
-  name: water vapor Novakin inhaler
-  suffix: Filled
-  components:
-  - type: NovakinInhaler
-    gas: NovakinGasWaterVapor
-  - type: GasTank
-    air:
-      volume: 0.66
-      moles: [0, 0, 0, 0, 0, 0.125]
-      temperature: 293.15
-
-- type: entity
-  parent: BaseNovakinInhaler
-  id: NovakinInhalerAmmonia
-  name: ammonia Novakin inhaler
-  suffix: Filled
-  components:
-  - type: NovakinInhaler
-    gas: NovakinGasAmmonia
-  - type: GasTank
-    air:
-      volume: 0.66
-      moles: [0, 0, 0, 0, 0, 0, 0.125]
-      temperature: 293.15
-
-- type: entity
-  parent: BaseNovakinInhaler
-  id: NovakinInhalerNitrousOxide
-  name: nitrous oxide Novakin inhaler
-  suffix: Filled
-  components:
-  - type: NovakinInhaler
-    gas: NovakinGasNitrousOxide
-  - type: GasTank
-    air:
-      volume: 0.66
-      moles: [0, 0, 0, 0, 0, 0, 0, 0.125]
       temperature: 293.15

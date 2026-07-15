@@ -247,9 +247,6 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         string? bloodTypeName = null; // Kritters
         var bloodTypeColor = Color.White; // Kritters
         var hasBloodTypeColor = false; // Kritters
-        // Kritters: the optional value keeps all non-Novakin analyzer state unchanged.
-        float? novakinIntegrity = null;
-        string? novakinGasName = null;
 
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream) &&
             _solutionContainerSystem.ResolveSolution(entity, bloodstream.BloodSolutionName,
@@ -271,16 +268,6 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             unclonable = true;
         // End Frontier: add unclonable
 
-        // Kritters: expose the Novakin-only structural integrity to analyzers.
-        if (TryComp<NovakinPhysiologyComponent>(entity, out var physiology))
-        {
-            novakinIntegrity = physiology.MaxReserve > 0f
-                ? Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve * 100f, 0f, 100f)
-                : 0f;
-            if (_prototypes.TryIndex(physiology.Gas, out var gasPrototype))
-                novakinGasName = Loc.GetString(gasPrototype.Name);
-        }
-
         var printable = HasComp<HealthAnalyzerPrinterComponent>(healthAnalyzer); // Frontier
 
         var state = new HealthAnalyzerUiState(
@@ -294,9 +281,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             printable, // Frontier
             bloodTypeName, // Kritters
             bloodTypeColor, // Kritters
-            hasBloodTypeColor, // Kritters
-            novakinIntegrity, // Kritters
-            novakinGasName // Kritters
+            hasBloodTypeColor // Kritters
         );
 
         _uiSystem.ServerSendUiMessage(healthAnalyzer, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(state));

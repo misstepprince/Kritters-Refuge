@@ -140,6 +140,15 @@ namespace Content.Server.Atmos.EntitySystems
         }
 
         /// <summary>
+        /// Re-evaluates innate and worn pressure protection after a physiology state changes.
+        /// </summary>
+        public void RefreshProtection(EntityUid uid, BarotraumaComponent? barotrauma = null)
+        {
+            if (Resolve(uid, ref barotrauma, false))
+                UpdateCachedResistances(uid, barotrauma);
+        }
+
+        /// <summary>
         /// Returns adjusted pressure after having applied resistances from equipment and innate (if any), to check against a low pressure hazard threshold
         /// </summary>
         public float GetFeltLowPressure(EntityUid uid, BarotraumaComponent barotrauma, float environmentPressure)

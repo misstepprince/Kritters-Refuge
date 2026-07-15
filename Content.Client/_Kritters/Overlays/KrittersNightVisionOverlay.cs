@@ -30,6 +30,8 @@ public sealed partial class KrittersNightVisionOverlay : Robust.Client.Graphics.
         ZIndex = 10001;
     }
 
+    public void SetFacing(float angle) => _shader.SetParameter("FacingAngle", angle);
+
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
         var player = _playerManager.LocalSession?.AttachedEntity;
