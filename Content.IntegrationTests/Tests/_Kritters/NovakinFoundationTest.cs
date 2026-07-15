@@ -19,9 +19,12 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
 using Content.Shared.Interaction.Events;
+using Content.Shared.DoAfter;
+using Content.Shared.Medical;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Stacks;
 using Content.Shared.Tag;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -138,6 +141,48 @@ public sealed class NovakinFoundationTest
     }
 
     [Test]
+    public async Task StandardTopicalsHealAndRepeatForNovakin()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var damageable = entities.System<DamageableSystem>();
+        var doAfter = entities.System<SharedDoAfterSystem>();
+        var map = await pair.CreateTestMap();
+
+        EntityUid novakin = default;
+        EntityUid ointment = default;
+        await server.WaitAssertion(() =>
+        {
+            var coordinates = new MapCoordinates(Vector2.Zero, map.MapId);
+            novakin = entities.SpawnEntity("MobNovakin", coordinates);
+            ointment = entities.SpawnEntity("Ointment", coordinates);
+            damageable.TryChangeDamage(novakin, new DamageSpecifier { DamageDict = { ["Heat"] = 10 } });
+
+            Assert.That(doAfter.TryStartDoAfter(new DoAfterArgs(entities, novakin, 0.01f,
+                new HealingDoAfterEvent(), novakin, target: novakin, used: ointment)
+            {
+                NeedHand = false,
+                BreakOnMove = false,
+            }), Is.True);
+        });
+
+        await server.WaitRunTicks(5);
+        await server.WaitAssertion(() =>
+        {
+            var damage = entities.GetComponent<DamageableComponent>(novakin);
+            var stack = entities.GetComponent<StackComponent>(ointment);
+            Assert.Multiple(() =>
+            {
+                Assert.That(damage.Damage.DamageDict["Heat"], Is.EqualTo(FixedPoint2.Zero));
+                Assert.That(stack.Count, Is.EqualTo(8));
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task CriticalTemperatureShattersShell()
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -155,6 +200,32 @@ public sealed class NovakinFoundationTest
             physiologySystem.Update(30f);
 
             Assert.That(entities.GetComponent<NovakinPhysiologyComponent>(novakin).ShellShattered, Is.True);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ColdShellDamageIsHalfTheHighHeatRate()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var physiologySystem = entities.System<NovakinPhysiologySystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var cold = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var hot = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.One, map.MapId));
+            entities.GetComponent<TemperatureComponent>(cold).CurrentTemperature = 300f;
+            entities.GetComponent<TemperatureComponent>(hot).CurrentTemperature = 800f;
+
+            physiologySystem.Update(15f);
+
+            var coldDamage = entities.GetComponent<DamageableComponent>(cold).TotalDamage.Float();
+            var hotDamage = entities.GetComponent<DamageableComponent>(hot).TotalDamage.Float();
+            Assert.That(coldDamage * 2f, Is.EqualTo(hotDamage).Within(0.02f));
         });
 
         await pair.CleanReturnAsync();

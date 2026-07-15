@@ -1,5 +1,4 @@
 using Content.Server.Atmos.EntitySystems;
-using Content.Server.Atmos.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Body.Components;
 using Content.Server.Stack;
@@ -25,7 +24,7 @@ using Robust.Server.GameObjects;
 
 namespace Content.Server._Kritters.Systems;
 
-/// <summary>Compact nitrogen/blood and thermal-shell physiology.</summary>
+/// <summary>Compact nitrogen reserve, core fuel, and thermal-shell physiology.</summary>
 public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
 {
     private const float DangerousCold = 323.15f;
@@ -89,7 +88,6 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
             }
 
             ApplyGasBloodloss(uid, physiology, mobState);
-            UpdateVacuumGrace(uid, physiology, transform, elapsed);
             ClearRecoveredShell(uid, physiology, temperature, mobState);
         }
     }
@@ -105,7 +103,11 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         var remaining = CriticalDamage - damageable.TotalDamage.Float();
         if (remaining > 0f)
         {
-            _damageable.TryChangeDamage(uid, new DamageSpecifier { DamageDict = { ["Blunt"] = Math.Min(ThermalDamagePerSecond * elapsed, remaining) } },
+            var thermalDamage = ThermalDamagePerSecond * elapsed;
+            if (temperature.CurrentTemperature < DangerousCold)
+                thermalDamage *= 0.5f;
+
+            _damageable.TryChangeDamage(uid, new DamageSpecifier { DamageDict = { ["Blunt"] = Math.Min(thermalDamage, remaining) } },
                 ignoreResistances: true, interruptsDoAfters: false);
         }
 
@@ -194,39 +196,6 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
                 return;
             }
         }
-    }
-
-    private void UpdateVacuumGrace(EntityUid uid, NovakinPhysiologyComponent physiology, TransformComponent transform, float elapsed)
-    {
-        var exposedToVacuum = (_atmosphere.GetTileMixture((uid, transform))?.Pressure ?? 0f) <= 0.01f;
-        if (!exposedToVacuum)
-        {
-            physiology.UnsuitedVacuumTime = 0f;
-            RemoveNovakinPressureImmunity(uid, physiology);
-            return;
-        }
-
-        if (physiology.UnsuitedVacuumTime < 60f)
-        {
-            if (!HasComp<PressureImmunityComponent>(uid))
-            {
-                AddComp<PressureImmunityComponent>(uid);
-                physiology.NovakinPressureImmunityAdded = true;
-            }
-
-            physiology.UnsuitedVacuumTime = Math.Min(60f, physiology.UnsuitedVacuumTime + elapsed);
-            if (physiology.UnsuitedVacuumTime >= 60f)
-                RemoveNovakinPressureImmunity(uid, physiology);
-        }
-    }
-
-    private void RemoveNovakinPressureImmunity(EntityUid uid, NovakinPhysiologyComponent physiology)
-    {
-        if (!physiology.NovakinPressureImmunityAdded)
-            return;
-
-        RemComp<PressureImmunityComponent>(uid);
-        physiology.NovakinPressureImmunityAdded = false;
     }
 
     private void UpdateThermalRegulation(EntityUid uid, NovakinPhysiologyComponent physiology, NeedsComponent needs)

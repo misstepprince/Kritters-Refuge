@@ -57,12 +57,6 @@ public sealed partial class NovakinPhysiologyComponent : Component
 
     public float BaseFuelDecayRate = -1f;
 
-    /// <summary>Elapsed unprotected vacuum exposure for the current spacewalk.</summary>
-    public float UnsuitedVacuumTime;
-
-    /// <summary>True only when this system added the current pressure-immunity component.</summary>
-    public bool NovakinPressureImmunityAdded;
-
     public float BaseImplicitHeatRegulation = -1f;
     public float BaseSweatHeatRegulation = -1f;
     public float BaseShiveringHeatRegulation = -1f;

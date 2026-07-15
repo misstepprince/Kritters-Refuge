@@ -50,18 +50,24 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
         if (args.Handled || !TryComp<NovakinPhysiologyComponent>(entity, out var physiology))
             return;
 
+        // Only welders participate in the dormant-core restart interaction.
+        // Other tools, including medical topicals and health analyzers, must continue
+        // through their normal interaction systems while the shell is being repaired.
+        if (!TryComp<WelderComponent>(args.Used, out var welder))
+            return;
+
+        if (!welder.Enabled)
+        {
+            _popup.PopupEntity(Loc.GetString("novakin-core-restart-welder"), entity, args.User);
+            args.Handled = true;
+            return;
+        }
+
         if (!HasShellRepair(entity) || physiology.CurrentReserve < physiology.MaxReserve * 0.5f)
         {
             _popup.PopupEntity(Loc.GetString(!HasShellRepair(entity)
                 ? "novakin-core-restart-shell"
                 : "novakin-core-restart-gas"), entity, args.User);
-            args.Handled = true;
-            return;
-        }
-
-        if (!TryComp<WelderComponent>(args.Used, out var welder) || !welder.Enabled)
-        {
-            _popup.PopupEntity(Loc.GetString("novakin-core-restart-welder"), entity, args.User);
             args.Handled = true;
             return;
         }
@@ -74,7 +80,8 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
     private void OnRestartFinished(Entity<NovakinDormantCoreComponent> entity, ref NovakinCoreRestartFinishedEvent args)
     {
         if (args.Cancelled || !TryComp<NovakinPhysiologyComponent>(entity, out var physiology)
-            || !HasShellRepair(entity) || physiology.CurrentReserve < physiology.MaxReserve * 0.5f)
+            || !HasShellRepair(entity) || physiology.CurrentReserve < physiology.MaxReserve * 0.5f
+            || args.Used is not { } used || !TryComp<WelderComponent>(used, out var welder) || !welder.Enabled)
             return;
 
         RemComp<UnrevivableComponent>(entity);
@@ -86,7 +93,7 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
 
     private bool HasShellRepair(EntityUid uid)
         => TryComp<DamageableComponent>(uid, out var damageable)
-           && (!damageable.DamagePerGroup.TryGetValue("Brute", out var brute) || brute < 100);
+           && damageable.TotalDamage.Float() < 100f;
 
     private void OpenReturnToBody(EntityUid uid)
     {
