@@ -3,6 +3,8 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Body.Components;
 using System.Linq;
 using Content.Shared.Body.Systems;
+using Content.Shared._Kritters.Systems;
+using Content.Shared._Kritters.Components;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
@@ -127,7 +129,8 @@ public abstract partial class SharedCryoPodSystem: EntitySystem
                     CryoPodComponent.InjectionBufferSolutionName,
                     out var injectingSolution,
                     out _)
-            || !_bloodstreamQuery.TryComp(patient, out var bloodstream))
+            || (!_bloodstreamQuery.HasComp(patient) && !HasComp<NovakinPhysiologyComponent>(patient))
+            )
         {
             return;
         }
@@ -145,8 +148,15 @@ public abstract partial class SharedCryoPodSystem: EntitySystem
 
         if (solutionToInject.Volume > 0)
         {
-            _bloodstream.TryAddToChemicals((patient.Value, bloodstream), solutionToInject);
-            _reactive.DoEntityReaction(patient.Value, solutionToInject, ReactionMethod.Injection);
+            if (_bloodstreamQuery.TryComp(patient, out var bloodstream))
+            {
+                _bloodstream.TryAddToChemicals((patient.Value, bloodstream), solutionToInject);
+                _reactive.DoEntityReaction(patient.Value, solutionToInject, ReactionMethod.Injection);
+            }
+            else
+            {
+                EntityManager.EventBus.RaiseLocalEvent(patient.Value, new NovakinCryoPodInjectionEvent(solutionToInject));
+            }
         }
     }
 

@@ -11,7 +11,6 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IOverlayManager _overlayMan = default!;
-    [Dependency] private TransformSystem _xformSys = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private FlashImmunitySystem _flashImmunity = default!;
 
@@ -73,9 +72,12 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
         if (_effect != null) return;
 
         _overlayMan.AddOverlay(_overlay);
+    }
 
-        _effect = SpawnAttachedTo(nightVision.EffectPrototype, Transform(uid).Coordinates);
-        _xformSys.SetParent(_effect.Value, uid);
+    public override void FrameUpdate(float frameTime)
+    {
+        if (_player.LocalSession?.AttachedEntity is { } uid)
+            _overlay.SetFacing((float) Transform(uid).WorldRotation.Theta);
     }
 
     /// <summary>

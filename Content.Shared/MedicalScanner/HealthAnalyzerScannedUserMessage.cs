@@ -33,14 +33,10 @@ public struct HealthAnalyzerUiState
     public string? BloodTypeName; // Kritters
     public Color BloodTypeColor; // Kritters
     public bool HasBloodTypeColor; // Kritters
-    // Kritters: null for every non-Novakin target.
-    public float? NovakinIntegrity;
-    // Kritters: localized gas name for Novakin targets.
-    public string? NovakinGasName;
 
     public HealthAnalyzerUiState() {}
 
-    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? unclonable, bool printable = false, string? bloodTypeName = null, Color bloodTypeColor = default, bool hasBloodTypeColor = false, float? novakinIntegrity = null, string? novakinGasName = null) // Frontier: added unclonable, printable // Kritters: blood type display and optional Novakin diagnostics
+    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? unclonable, bool printable = false, string? bloodTypeName = null, Color bloodTypeColor = default, bool hasBloodTypeColor = false) // Frontier: added unclonable, printable
     {
         TargetEntity = targetEntity;
         Temperature = temperature;
@@ -53,7 +49,5 @@ public struct HealthAnalyzerUiState
         BloodTypeName = bloodTypeName; // Kritters
         BloodTypeColor = hasBloodTypeColor ? bloodTypeColor : Color.White; // Kritters
         HasBloodTypeColor = hasBloodTypeColor; // Kritters
-        NovakinIntegrity = novakinIntegrity; // Kritters
-        NovakinGasName = novakinGasName; // Kritters
     }
 }

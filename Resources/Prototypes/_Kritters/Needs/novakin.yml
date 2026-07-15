@@ -5,7 +5,7 @@
   color: Orange
   maxValue: 150
   minValue: 0
-  minutesFromMaxToMin: 300
+  minutesFromMaxToMin: 45
   startingMinutesWorthOfDecay: 0
   secondsPerUpdate: 1
   alertCategory: Hunger
