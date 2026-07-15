@@ -25,5 +25,6 @@ seeds-glowshroom-nf-display-name = glowshroom
 botany-seed-jar-name = jar of {$seedName} {$seedNoun}
 
 # Missing upstream definitions
+seeds-lemoon-name = lemoon
 seeds-lemoon-display-name = lemoon trees
 # _CS End
