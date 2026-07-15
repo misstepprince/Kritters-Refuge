@@ -8,11 +8,11 @@ using Robust.Shared.Random; // Coyote
 
 namespace Content.Server.Arcade.BlockGame;
 
-public sealed class BlockGameArcadeSystem : EntitySystem
+public sealed partial class BlockGameArcadeSystem : EntitySystem
 {
-    [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
-    [Dependency] private readonly SpeakOnUIClosedSystem _speakOnUIClosed = default!;
-    [Dependency] private readonly IRobustRandom _random = default!; // Coyote
+    [Dependency] private UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private SpeakOnUIClosedSystem _speakOnUIClosed = default!;
+    [Dependency] private IRobustRandom _random = default!; // Coyote
 
     public override void Initialize()
     {

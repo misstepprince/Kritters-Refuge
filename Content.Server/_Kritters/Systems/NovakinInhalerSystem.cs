@@ -1,5 +1,4 @@
 using Content.Shared._Kritters.Components;
-using Content.Shared._Kritters.Prototypes;
 using Content.Shared._Kritters;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
@@ -8,7 +7,6 @@ using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
 using Content.Shared.Timing;
-using Robust.Shared.Prototypes;
 
 namespace Content.Server._Kritters.Systems;
 
@@ -16,12 +14,11 @@ namespace Content.Server._Kritters.Systems;
 /// Converts gas held by the native tank component into Novakin reserve. Gas
 /// storage, canister refilling, and pressure behavior remain owned by atmos.
 /// </summary>
-public sealed class NovakinInhalerSystem : EntitySystem
+public sealed partial class NovakinInhalerSystem : EntitySystem
 {
-    [Dependency] private readonly NovakinPhysiologySystem _physiology = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly UseDelaySystem _useDelay = default!;
+    [Dependency] private NovakinPhysiologySystem _physiology = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private UseDelaySystem _useDelay = default!;
 
     public override void Initialize()
     {
@@ -62,9 +59,7 @@ public sealed class NovakinInhalerSystem : EntitySystem
             return true;
         }
 
-        if (!TryComp<GasTankComponent>(inhaler, out var tank)
-            || !_prototypes.TryIndex(physiology.Gas, out var gasPrototype)
-            || !_prototypes.TryIndex(inhaler.Comp.Gas, out var inhalerGas))
+        if (!TryComp<GasTankComponent>(inhaler, out var tank))
         {
             return false;
         }
@@ -75,14 +70,13 @@ public sealed class NovakinInhalerSystem : EntitySystem
             return true;
         }
 
-        if (inhalerGas.Gas != gasPrototype.Gas || !ContainsOnly(tank.Air, gasPrototype.Gas))
+        if (!ContainsOnly(tank.Air, Gas.Nitrogen))
         {
-            _popup.PopupEntity(Loc.GetString("novakin-inhaler-gas-mismatch",
-                ("gas", Loc.GetString(gasPrototype.Name))), target, user);
+            _popup.PopupEntity(Loc.GetString("novakin-inhaler-gas-mismatch", ("gas", "nitrogen")), target, user);
             return true;
         }
 
-        var availableMoles = tank.Air.GetMoles(gasPrototype.Gas);
+        var availableMoles = tank.Air.GetMoles(Gas.Nitrogen);
         if (availableMoles <= Atmospherics.GasMinMoles)
         {
             _popup.PopupEntity(Loc.GetString("novakin-inhaler-empty"), inhaler, user);
@@ -95,16 +89,16 @@ public sealed class NovakinInhalerSystem : EntitySystem
         var missingReserve = physiology.MaxReserve - physiology.CurrentReserve;
         var reserve = Math.Min(inhaler.Comp.TransferAmount, missingReserve);
         reserve = Math.Min(reserve, availableMoles * inhaler.Comp.ReservePerMole);
-        var accepted = _physiology.AddReserve((target, physiology), physiology.Gas, reserve);
+        var accepted = _physiology.AddReserve((target, physiology), reserve);
         if (accepted <= 0f)
             return true;
 
-        tank.Air.AdjustMoles(gasPrototype.Gas, -accepted / inhaler.Comp.ReservePerMole);
+        tank.Air.AdjustMoles(Gas.Nitrogen, -accepted / inhaler.Comp.ReservePerMole);
         Dirty(inhaler.Owner, tank);
 
         _popup.PopupEntity(Loc.GetString("novakin-inhaler-success",
             ("amount", NovakinDisplayFormat.Number(accepted)),
-            ("gas", Loc.GetString(gasPrototype.Name))), target, user);
+            ("gas", "nitrogen")), target, user);
         return true;
     }
 
@@ -113,20 +107,19 @@ public sealed class NovakinInhalerSystem : EntitySystem
         Entity<GasTankComponent> sourceTank,
         EntityUid user)
     {
-        if (!TryComp<GasTankComponent>(inhaler, out var tank)
-            || !_prototypes.TryIndex(inhaler.Comp.Gas, out var gasPrototype))
+        if (!TryComp<GasTankComponent>(inhaler, out var tank))
         {
             return false;
         }
 
-        if (!ContainsOnly(sourceTank.Comp.Air, gasPrototype.Gas))
+        if (!ContainsOnly(sourceTank.Comp.Air, Gas.Nitrogen))
         {
             _popup.PopupEntity(Loc.GetString("novakin-inhaler-refill-mismatch",
-                ("gas", Loc.GetString(gasPrototype.Name))), inhaler, user);
+                ("gas", "nitrogen")), inhaler, user);
             return true;
         }
 
-        var stored = tank.Air.GetMoles(gasPrototype.Gas);
+        var stored = tank.Air.GetMoles(Gas.Nitrogen);
         var capacity = Math.Max(0f, inhaler.Comp.MaxMoles - stored);
         if (capacity <= Atmospherics.GasMinMoles)
         {
@@ -137,14 +130,14 @@ public sealed class NovakinInhalerSystem : EntitySystem
         if (!_useDelay.TryResetDelay(inhaler, checkDelayed: true))
             return true;
 
-        var transferred = Math.Min(capacity, sourceTank.Comp.Air.GetMoles(gasPrototype.Gas));
-        sourceTank.Comp.Air.AdjustMoles(gasPrototype.Gas, -transferred);
-        tank.Air.AdjustMoles(gasPrototype.Gas, transferred);
+        var transferred = Math.Min(capacity, sourceTank.Comp.Air.GetMoles(Gas.Nitrogen));
+        sourceTank.Comp.Air.AdjustMoles(Gas.Nitrogen, -transferred);
+        tank.Air.AdjustMoles(Gas.Nitrogen, transferred);
         Dirty(sourceTank);
         Dirty(inhaler.Owner, tank);
 
         _popup.PopupEntity(Loc.GetString("novakin-inhaler-refill-success",
-            ("gas", Loc.GetString(gasPrototype.Name))), inhaler, user);
+            ("gas", "nitrogen")), inhaler, user);
         return true;
     }
 
@@ -153,20 +146,17 @@ public sealed class NovakinInhalerSystem : EntitySystem
         if (!TryComp<GasTankComponent>(inhaler, out var tank))
             return;
 
-        if (!_prototypes.TryIndex(inhaler.Comp.Gas, out var gasPrototype))
-            return;
-
-        if (tank.Air.GetMoles(gasPrototype.Gas) <= Atmospherics.GasMinMoles)
+        if (tank.Air.GetMoles(Gas.Nitrogen) <= Atmospherics.GasMinMoles)
         {
             args.PushMarkup(Loc.GetString("novakin-inhaler-examine-empty",
-                ("gas", Loc.GetString(gasPrototype.Name))));
+                ("gas", "nitrogen")));
             return;
         }
 
-        var reserve = tank.Air.GetMoles(gasPrototype.Gas) * inhaler.Comp.ReservePerMole;
+        var reserve = tank.Air.GetMoles(Gas.Nitrogen) * inhaler.Comp.ReservePerMole;
         var uses = (int) MathF.Ceiling(reserve / inhaler.Comp.TransferAmount);
         args.PushMarkup(Loc.GetString("novakin-inhaler-examine",
-            ("gas", Loc.GetString(gasPrototype.Name)),
+            ("gas", "nitrogen"),
             ("uses", uses)));
     }
 

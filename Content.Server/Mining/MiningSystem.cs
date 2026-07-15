@@ -14,12 +14,12 @@ namespace Content.Server.Mining;
 /// <summary>
 /// This handles creating ores when the entity is destroyed.
 /// </summary>
-public sealed class MiningSystem : EntitySystem
+public sealed partial class MiningSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly RoleplayIncentiveSystem _RpiSystem = default!;
-    [Dependency] private readonly IGameTiming _timing = null!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private RoleplayIncentiveSystem _RpiSystem = default!;
+    [Dependency] private IGameTiming _timing = null!;
 
     /// <inheritdoc/>
     public override void Initialize()

@@ -16,14 +16,14 @@ namespace Content.Server._CS.Body.Systems;
 /// System that handles size reverters - items that revert players to acceptable sizes
 /// when they walk past within a certain range.
 /// </summary>
-public sealed class SizeReverterSystem : EntitySystem
+public sealed partial class SizeReverterSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SizeManipulationSystem _sizeManipulation = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SizeManipulationSystem _sizeManipulation = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
 
     public override void Initialize()
     {

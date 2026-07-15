@@ -11,10 +11,10 @@ namespace Content.Shared._DV.Abilities.Felinid;
 /// Makes eating <see cref="FelinidFoodComponent"/> enable a felinids hairball action.
 /// Other interactions are in the server system.
 /// </summary>
-public abstract class SharedFelinidSystem : EntitySystem
+public abstract partial class SharedFelinidSystem : EntitySystem
 {
-    [Dependency] private readonly SharedNeedsSystem _needs = default!;
-    [Dependency] private readonly ItemCougherSystem _cougher = default!;
+    [Dependency] private SharedNeedsSystem _needs = default!;
+    [Dependency] private ItemCougherSystem _cougher = default!;
 
     public override void Initialize()
     {

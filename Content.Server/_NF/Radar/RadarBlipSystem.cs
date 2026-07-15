@@ -23,8 +23,8 @@ public sealed partial class RadarBlipSystem : EntitySystem
 {
     private readonly record struct ShuttleGridContact(EntityUid GridUid, MapId MapId, Vector2 Position, float Radius);
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedTransformSystem _xform = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedTransformSystem _xform = default!;
 
     private Dictionary<NetUserId, TimeSpan> _nextBlipRequestPerUser = new();
     private readonly List<ShuttleGridContact> _cachedShuttleContacts = new();

@@ -14,17 +14,17 @@ using Robust.Shared.Timing;
 
 namespace Content.Shared.Movement.Systems;
 
-public sealed class SpeedModifierContactsSystem : EntitySystem
+public sealed partial class SpeedModifierContactsSystem : EntitySystem
 {
     private static readonly TimeSpan ContactRemovalGrace = TimeSpan.FromMilliseconds(150);
 
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly SharedGravitySystem _gravity = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _speedModifierSystem = default!;
-    [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private SharedGravitySystem _gravity = default!;
+    [Dependency] private MovementSpeedModifierSystem _speedModifierSystem = default!;
+    [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
-    [Dependency] private readonly SharedMapSystem _map = default!; // imp edit
+    [Dependency] private SharedMapSystem _map = default!; // imp edit
 
     // TODO full-game-save
     // Either these need to be processed before a map is saved, or slowed/slowing entities need to update on init.

@@ -9,9 +9,9 @@ using static Content.Shared.Decals.DecalGridComponent;
 
 namespace Content.Shared.Decals
 {
-    public abstract class SharedDecalSystem : EntitySystem
+    public abstract partial class SharedDecalSystem : EntitySystem
     {
-        [Dependency] protected readonly IPrototypeManager PrototypeManager = default!;
+        [Dependency] protected IPrototypeManager PrototypeManager = default!;
 
         protected bool PvsEnabled;
 
@@ -125,7 +125,7 @@ namespace Content.Shared.Decals
     ///     Sent by clients to request that a decal is placed on the server.
     /// </summary>
     [Serializable, NetSerializable]
-    public sealed class RequestDecalPlacementEvent : EntityEventArgs
+    public sealed partial class RequestDecalPlacementEvent : EntityEventArgs
     {
         public Decal Decal;
         public NetCoordinates Coordinates;
@@ -138,7 +138,7 @@ namespace Content.Shared.Decals
     }
 
     [Serializable, NetSerializable]
-    public sealed class RequestDecalRemovalEvent : EntityEventArgs
+    public sealed partial class RequestDecalRemovalEvent : EntityEventArgs
     {
         public NetCoordinates Coordinates;
 

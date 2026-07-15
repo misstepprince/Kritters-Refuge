@@ -4,11 +4,14 @@ using Content.Client.UserInterface.Systems.Inventory.Controls;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Input;
+using Robust.Shared.Log;
 
 namespace Content.Client.UserInterface.Controls
 {
     public abstract class SlotControl : Control, IEntityControl
     {
+        private static readonly ISawmill Sawmill = Logger.GetSawmill("ui.slot-control");
+
         public static int DefaultButtonSize = 64;
 
         public TextureRect ButtonRect { get; }
@@ -33,7 +36,7 @@ namespace Content.Client.UserInterface.Controls
                 //this auto registers the button with it's parent container when it's set
                 if (_slotNameSet)
                 {
-                    Logger.Warning("Tried to set slotName after init for:" + Name);
+                    Sawmill.Warning("Tried to set slot name after initialization for {0}", Name);
                     return;
                 }
                 _slotNameSet = true;

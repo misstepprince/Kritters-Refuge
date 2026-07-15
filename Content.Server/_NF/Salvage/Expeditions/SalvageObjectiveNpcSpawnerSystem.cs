@@ -15,16 +15,16 @@ namespace Content.Server._NF.Salvage.Expeditions;
 /// <summary>
 /// Drives <see cref="SalvageObjectiveNpcSpawnerComponent"/> objective structure spawning.
 /// </summary>
-public sealed class SalvageObjectiveNpcSpawnerSystem : EntitySystem
+public sealed partial class SalvageObjectiveNpcSpawnerSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly SharedTransformSystem _xforms = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedTransformSystem _xforms = default!;
     // _CS Start: salvage objective nearby NPC spawn placement
-    [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly AnchorableSystem _anchorable = default!;
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private AnchorableSystem _anchorable = default!;
     // _CS End: salvage objective nearby NPC spawn placement
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     public override void Initialize()
     {

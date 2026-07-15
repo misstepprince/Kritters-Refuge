@@ -18,8 +18,8 @@ namespace Content.Server._NF.ShuttleRecords;
 
 public sealed partial class ShuttleRecordsSystem
 {
-    [Dependency] private readonly BankSystem _bank = default!;
-    [Dependency] private readonly BluespaceDrydockSystem _drydock = default!;
+    [Dependency] private BankSystem _bank = default!;
+    [Dependency] private BluespaceDrydockSystem _drydock = default!;
 
     public void InitializeShuttleRecords()
     {

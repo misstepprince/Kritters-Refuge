@@ -51,7 +51,7 @@ namespace Content.Server._EE.Supermatter.Systems;
 
 public sealed partial class SupermatterSystem
 {
-    [Dependency] private readonly GameTicker _gameTicker = default!; // Coyote
+    [Dependency] private GameTicker _gameTicker = default!; // Coyote
     /// <summary>
     /// Handle power and radiation output depending on atmospheric things.
     /// </summary>

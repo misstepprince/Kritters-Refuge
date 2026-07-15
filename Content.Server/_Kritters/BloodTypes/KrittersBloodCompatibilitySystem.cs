@@ -9,11 +9,11 @@ using System.Linq;
 
 namespace Content.Server._Kritters.BloodTypes;
 
-public sealed class KrittersBloodCompatibilitySystem : EntitySystem
+public sealed partial class KrittersBloodCompatibilitySystem : EntitySystem
 {
-    [Dependency] private readonly Content.Shared._Kritters.BloodTypes.KrittersBloodTypeSystem _bloodTypes = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly TagSystem _tags = default!;
+    [Dependency] private Content.Shared._Kritters.BloodTypes.KrittersBloodTypeSystem _bloodTypes = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private TagSystem _tags = default!;
 
     [ValidatePrototypeId<TagPrototype>]
     private const string ActiveTag = KrittersServerBloodTypeSystem.ActiveTag;

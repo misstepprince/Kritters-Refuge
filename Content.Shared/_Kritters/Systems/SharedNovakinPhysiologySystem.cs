@@ -1,30 +1,14 @@
 using Content.Shared._Kritters.Components;
-using Content.Shared._Kritters.Prototypes;
-using Robust.Shared.Prototypes;
+using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.Reagent;
 
 namespace Content.Shared._Kritters.Systems;
 
-public abstract class SharedNovakinPhysiologySystem : EntitySystem
+public abstract partial class SharedNovakinPhysiologySystem : EntitySystem
 {
-    [Dependency] protected readonly IPrototypeManager Prototypes = default!;
-
-    public bool SetGas(Entity<NovakinPhysiologyComponent> entity, ProtoId<NovakinGasPrototype> gas)
+    public float AddReserve(Entity<NovakinPhysiologyComponent> entity, float amount)
     {
-        if (!Prototypes.TryIndex(gas, out var gasPrototype))
-            return false;
-
-        entity.Comp.Gas = gas;
-        entity.Comp.MaxReserve = gasPrototype.MaxReserve;
-        entity.Comp.CurrentReserve = Math.Clamp(entity.Comp.CurrentReserve, 0f, entity.Comp.MaxReserve);
-        Dirty(entity);
-        return true;
-    }
-
-    public float AddReserve(Entity<NovakinPhysiologyComponent> entity,
-        ProtoId<NovakinGasPrototype> gas,
-        float amount)
-    {
-        if (amount <= 0f || entity.Comp.Gas != gas)
+        if (amount <= 0f)
             return 0f;
 
         var accepted = Math.Min(amount, entity.Comp.MaxReserve - entity.Comp.CurrentReserve);
@@ -43,4 +27,10 @@ public abstract class SharedNovakinPhysiologySystem : EntitySystem
         Dirty(entity);
         return removed;
     }
+}
+
+/// <summary>Delivers a cryotube-filtered dose to a bloodless Novakin Core.</summary>
+public sealed class NovakinCryoPodInjectionEvent(Solution solution) : EntityEventArgs
+{
+    public Solution Solution { get; } = solution;
 }

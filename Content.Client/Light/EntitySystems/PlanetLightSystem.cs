@@ -2,9 +2,9 @@ using Robust.Client.Graphics;
 
 namespace Content.Client.Light.EntitySystems;
 
-public sealed class PlanetLightSystem : EntitySystem
+public sealed partial class PlanetLightSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayMan = default!;
+    [Dependency] private IOverlayManager _overlayMan = default!;
 
     public override void Initialize()
     {

@@ -16,16 +16,16 @@ namespace Content.Server._CS.Salvage;
 /// a medical tracking implant dies on an open-contract shared expedition.
 /// Does not modify any existing implant or expedition logic.
 /// </summary>
-public sealed class ExpeditionMedicalSOSSystem : EntitySystem
+public sealed partial class ExpeditionMedicalSOSSystem : EntitySystem
 {
     private const string RelaySpeakerName = "Planetary Relay";
     private static readonly ProtoId<RadioChannelPrototype> MedicalChannel = "Medical";
 
-    [Dependency] private readonly RadioSystem _radio = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly SharedMapSystem _mapManager = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
+    [Dependency] private RadioSystem _radio = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private SharedMapSystem _mapManager = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
 
     public override void Initialize()
     {

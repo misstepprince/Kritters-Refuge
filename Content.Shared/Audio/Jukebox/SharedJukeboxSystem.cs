@@ -3,14 +3,14 @@ using Robust.Shared.Serialization; // Frontier
 
 namespace Content.Shared.Audio.Jukebox;
 
-public abstract class SharedJukeboxSystem : EntitySystem
+public abstract partial class SharedJukeboxSystem : EntitySystem
 {
-    [Dependency] protected readonly SharedAudioSystem Audio = default!;
+    [Dependency] protected SharedAudioSystem Audio = default!;
 }
 
 // Frontier: Shuffle & Repeat
 [Serializable, NetSerializable]
-public sealed class JukeboxInterfaceState(JukeboxPlaybackMode playbackMode) : BoundUserInterfaceState
+public sealed partial class JukeboxInterfaceState(JukeboxPlaybackMode playbackMode) : BoundUserInterfaceState
 {
     public JukeboxPlaybackMode PlaybackMode { get; set; } = playbackMode;
 }

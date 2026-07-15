@@ -8,10 +8,10 @@ using Robust.Shared.Utility;
 
 namespace Content.Server.Consent;
 
-public sealed class ConsentSystem : SharedConsentSystem
+public sealed partial class ConsentSystem : SharedConsentSystem
 {
-    [Dependency] private readonly IServerConsentManager _consent = default!;
-    [Dependency] private readonly MindSystem _serverMindSystem = default!;
+    [Dependency] private IServerConsentManager _consent = default!;
+    [Dependency] private MindSystem _serverMindSystem = default!;
 
     protected override FormattedMessage GetConsentText(NetUserId userId)
     {

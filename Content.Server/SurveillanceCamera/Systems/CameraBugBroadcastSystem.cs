@@ -10,10 +10,10 @@ namespace Content.Server.SurveillanceCamera;
 ///     Speech, emotes, and MIDI are picked up by the spawned camera's microphone and
 ///     relayed through the normal surveillance camera relay path.
 /// </summary>
-public sealed class CameraBugBroadcastSystem : EntitySystem
+public sealed partial class CameraBugBroadcastSystem : EntitySystem
 {
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     public override void Initialize()
     {

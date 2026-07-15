@@ -12,9 +12,9 @@ namespace Content.Server.GhostKick;
 // Basically we boot the client off the server without telling them, so the game shits itself.
 // Hilariously isn't it?
 
-public sealed class GhostKickManager
+public sealed partial class GhostKickManager
 {
-    [Dependency] private readonly IServerNetManager _netManager = default!;
+    [Dependency] private IServerNetManager _netManager = default!;
 
     public void Initialize()
     {
@@ -45,7 +45,7 @@ public sealed class GhostKickManager
 }
 
 [AdminCommand(AdminFlags.Moderator)]
-public sealed class GhostKickCommand : IConsoleCommand
+public sealed partial class GhostKickCommand : IConsoleCommand
 {
     public string Command => "ghostkick";
     public string Description => "Kick a client from the server as if their network just dropped.";

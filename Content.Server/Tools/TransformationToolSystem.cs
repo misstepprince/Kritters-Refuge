@@ -32,18 +32,18 @@ namespace Content.Server.Tools;
 // Cuffle (Robyn) of CoyoteSector - November 2025
 // *********
 
-public sealed class TransformationToolSystem : EntitySystem
+public sealed partial class TransformationToolSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly PolymorphSystem _polymorph = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
-    [Dependency] private readonly ConsentSystem _consent = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private PolymorphSystem _polymorph = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private ConsentSystem _consent = default!;
+    [Dependency] private TagSystem _tag = default!;
+    [Dependency] private MovementSpeedModifierSystem _movement = default!;
 
     private static readonly ProtoId<ConsentTogglePrototype> TransformationConsent = "Transformation";
 

@@ -49,23 +49,23 @@ namespace Content.Server.Chat.Systems;
 /// </summary>
 public sealed partial class ChatSystem : SharedChatSystem
 {
-    [Dependency] private readonly IReplayRecordingManager _replay = default!;
-    [Dependency] private readonly IConfigurationManager _configurationManager = default!;
-    [Dependency] private readonly IChatManager _chatManager = default!;
-    [Dependency] private readonly IChatSanitizationManager _sanitizer = default!;
-    [Dependency] private readonly IAdminManager _adminManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IAdminLogManager _adminLogger = default!;
-    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
-    [Dependency] private readonly StationSystem _stationSystem = default!;
-    [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly ReplacementAccentSystem _wordreplacement = default!;
-    [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
-    [Dependency] private readonly ExamineSystemShared _examineSystem = default!;
-    [Dependency] private readonly IConsoleHost _conHost = default!; // Imp: supermatter yelling
+    [Dependency] private IReplayRecordingManager _replay = default!;
+    [Dependency] private IConfigurationManager _configurationManager = default!;
+    [Dependency] private IChatManager _chatManager = default!;
+    [Dependency] private IChatSanitizationManager _sanitizer = default!;
+    [Dependency] private IAdminManager _adminManager = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IAdminLogManager _adminLogger = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private StationSystem _stationSystem = default!;
+    [Dependency] private MobStateSystem _mobStateSystem = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private ReplacementAccentSystem _wordreplacement = default!;
+    [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private ExamineSystemShared _examineSystem = default!;
+    [Dependency] private IConsoleHost _conHost = default!; // Imp: supermatter yelling
     public const float VoiceRange = 12f; // how far voice goes in world units
     public const float ShoutRange = 30f; // how far Shout goes in world units
     public const float EmoteRange = 12f; // how far Emote goes in world units
@@ -1358,7 +1358,7 @@ public record ExpandICChatRecipientsEvent(EntityUid Source, float VoiceRange, Di
 /// <summary>
 ///     Raised broadcast in order to transform speech.transmit
 /// </summary>
-public sealed class TransformSpeechEvent : EntityEventArgs
+public sealed partial class TransformSpeechEvent : EntityEventArgs
 {
     public EntityUid Sender;
     public string Message;
@@ -1370,7 +1370,7 @@ public sealed class TransformSpeechEvent : EntityEventArgs
     }
 }
 
-public sealed class CheckIgnoreSpeechBlockerEvent : EntityEventArgs
+public sealed partial class CheckIgnoreSpeechBlockerEvent : EntityEventArgs
 {
     public EntityUid Sender;
     public bool IgnoreBlocker;
@@ -1385,7 +1385,7 @@ public sealed class CheckIgnoreSpeechBlockerEvent : EntityEventArgs
 /// <summary>
 ///     Raised on an entity when it speaks, either through 'say' or 'whisper'.
 /// </summary>
-public sealed class EntitySpokeEvent : EntityEventArgs
+public sealed partial class EntitySpokeEvent : EntityEventArgs
 {
     public readonly EntityUid Source;
     public readonly string Message;
@@ -1410,7 +1410,7 @@ public sealed class EntitySpokeEvent : EntityEventArgs
 /// <summary>
 ///     Raised on an entity when it sends a custom emote (one with a message but no sound).
 /// </summary>
-public sealed class NFEntityEmotedEvent : EntityEventArgs
+public sealed partial class NFEntityEmotedEvent : EntityEventArgs
 {
     public readonly EntityUid Source;
     public readonly string Emote;
@@ -1426,7 +1426,7 @@ public sealed class NFEntityEmotedEvent : EntityEventArgs
 /// <summary>
 ///     Raised on an entity when it sends a public emote message.
 /// </summary>
-public sealed class SurveillanceCameraEmoteMessageEvent : EntityEventArgs
+public sealed partial class SurveillanceCameraEmoteMessageEvent : EntityEventArgs
 {
     public readonly EntityUid Source;
     public readonly string Message;

@@ -15,8 +15,8 @@ namespace Content.Client.Changelog
     [GenerateTypedNameReferences]
     public sealed partial class ChangelogWindow : FancyWindow
     {
-        [Dependency] private readonly ChangelogManager _changelog = default!;
-        [Dependency] private readonly IClientAdminManager _adminManager = default!;
+        [Dependency] private ChangelogManager _changelog = default!;
+        [Dependency] private IClientAdminManager _adminManager = default!;
 
         public ChangelogWindow()
         {
@@ -112,7 +112,7 @@ namespace Content.Client.Changelog
     }
 
     [UsedImplicitly, AnyCommand]
-    public sealed class ChangelogCommand : IConsoleCommand
+    public sealed partial class ChangelogCommand : IConsoleCommand
     {
         public string Command => "changelog";
         public string Description => "Opens the changelog";

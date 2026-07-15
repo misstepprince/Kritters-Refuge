@@ -15,7 +15,6 @@
   components:
   - type: ShowHealthBars
     # Kritters: medical HUDs opt into the Novakin-only integrity bar.
-    showNovakinIntegrity: true
     damageContainers:
     - Biological # Coyote: Biological container as a base
     - IPC # Coyote: Add IPC damage container
@@ -184,7 +183,6 @@
     sprite: Clothing/Eyes/Hud/medsecengi.rsi
   - type: ShowHealthBars
     # Kritters: this medical-capable HUD opts into the Novakin-only integrity bar.
-    showNovakinIntegrity: true
     damageContainers:
     - Biological
     - Inorganic
@@ -203,7 +201,6 @@
     sprite: Clothing/Eyes/Hud/omni.rsi
   - type: ShowHealthBars
     # Kritters: this medical-capable HUD opts into the Novakin-only integrity bar.
-    showNovakinIntegrity: true
     damageContainers:
     - Biological
     - Inorganic

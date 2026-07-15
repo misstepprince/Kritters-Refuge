@@ -10,14 +10,14 @@ using Robust.Shared.Timing;
 
 namespace Content.Client.Silicons.Borgs;
 
-public sealed class BorgVisualPoseSystem : EntitySystem
+public sealed partial class BorgVisualPoseSystem : EntitySystem
 {
     private const float MovementDeltaEpsilonSquared = 0.0001f;
 
-    [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

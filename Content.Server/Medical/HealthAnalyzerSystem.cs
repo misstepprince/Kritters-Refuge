@@ -27,20 +27,20 @@ using Content.Server.Body.Systems; // Frontier
 
 namespace Content.Server.Medical;
 
-public sealed class HealthAnalyzerSystem : EntitySystem
+public sealed partial class HealthAnalyzerSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly PowerCellSystem _cell = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
-    [Dependency] private readonly ItemToggleSystem _toggle = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
-    [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
-    [Dependency] private readonly TransformSystem _transformSystem = default!;
-    [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
-    [Dependency] private readonly BloodstreamSystem _bloodstreamSystem = default!;
-    [Dependency] private readonly KrittersBloodTypeSystem _krittersBloodTypes = default!; // Kritters
-    [Dependency] private readonly IPrototypeManager _prototypes = default!; // Kritters: resolve Novakin analyzer gas names.
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private PowerCellSystem _cell = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedDoAfterSystem _doAfterSystem = default!;
+    [Dependency] private ItemToggleSystem _toggle = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
+    [Dependency] private UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private TransformSystem _transformSystem = default!;
+    [Dependency] private SharedPopupSystem _popupSystem = default!;
+    [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
+    [Dependency] private KrittersBloodTypeSystem _krittersBloodTypes = default!; // Kritters
+    [Dependency] private IPrototypeManager _prototypes = default!; // Kritters: resolve Novakin analyzer gas names.
 
     public override void Initialize()
     {
@@ -247,9 +247,6 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         string? bloodTypeName = null; // Kritters
         var bloodTypeColor = Color.White; // Kritters
         var hasBloodTypeColor = false; // Kritters
-        // Kritters: the optional value keeps all non-Novakin analyzer state unchanged.
-        float? novakinIntegrity = null;
-        string? novakinGasName = null;
 
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream) &&
             _solutionContainerSystem.ResolveSolution(entity, bloodstream.BloodSolutionName,
@@ -271,16 +268,6 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             unclonable = true;
         // End Frontier: add unclonable
 
-        // Kritters: expose the Novakin-only structural integrity to analyzers.
-        if (TryComp<NovakinPhysiologyComponent>(entity, out var physiology))
-        {
-            novakinIntegrity = physiology.MaxReserve > 0f
-                ? Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve * 100f, 0f, 100f)
-                : 0f;
-            if (_prototypes.TryIndex(physiology.Gas, out var gasPrototype))
-                novakinGasName = Loc.GetString(gasPrototype.Name);
-        }
-
         var printable = HasComp<HealthAnalyzerPrinterComponent>(healthAnalyzer); // Frontier
 
         var state = new HealthAnalyzerUiState(
@@ -294,9 +281,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             printable, // Frontier
             bloodTypeName, // Kritters
             bloodTypeColor, // Kritters
-            hasBloodTypeColor, // Kritters
-            novakinIntegrity, // Kritters
-            novakinGasName // Kritters
+            hasBloodTypeColor // Kritters
         );
 
         _uiSystem.ServerSendUiMessage(healthAnalyzer, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(state));

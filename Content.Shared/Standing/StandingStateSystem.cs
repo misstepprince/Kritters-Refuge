@@ -15,15 +15,15 @@ using Content.Shared._NF.Standing; // Frontier
 
 namespace Content.Shared.Standing;
 
-public sealed class StandingStateSystem : EntitySystem
+public sealed partial class StandingStateSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
-    [Dependency] private readonly SharedBuckleSystem _buckle = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!; // EE
-    [Dependency] private readonly ClimbSystem _climb = default!; // Ee
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private SharedBuckleSystem _buckle = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!; // EE
+    [Dependency] private ClimbSystem _climb = default!; // Ee
 
 
     // If StandingCollisionLayer value is ever changed to more than one layer, the logic needs to be edited.
@@ -166,24 +166,24 @@ public sealed class StandingStateSystem : EntitySystem
     }
 }
 
-public sealed class DropHandItemsEvent : EventArgs { }
+public sealed partial class DropHandItemsEvent : EventArgs { }
 
 /// <summary>
 ///     Subscribe if you can potentially block a down attempt.
 /// </summary>
-public sealed class DownAttemptEvent : CancellableEntityEventArgs { }
+public sealed partial class DownAttemptEvent : CancellableEntityEventArgs { }
 
 /// <summary>
 ///     Subscribe if you can potentially block a stand attempt.
 /// </summary>
-public sealed class StandAttemptEvent : CancellableEntityEventArgs { }
+public sealed partial class StandAttemptEvent : CancellableEntityEventArgs { }
 
 /// <summary>
 ///     Raised when an entity becomes standing
 /// </summary>
-public sealed class StoodEvent : EntityEventArgs { }
+public sealed partial class StoodEvent : EntityEventArgs { }
 
 /// <summary>
 ///     Raised when an entity is not standing
 /// </summary>
-public sealed class DownedEvent : EntityEventArgs { }
+public sealed partial class DownedEvent : EntityEventArgs { }

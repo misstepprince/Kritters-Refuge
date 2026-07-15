@@ -7,13 +7,12 @@ using Content.Shared._Kritters.Overlays;
 
 namespace Content.Client._Kritters.Overlays;
 
-public sealed class KrittersNightVisionSystem : EntitySystem
+public sealed partial class KrittersNightVisionSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IOverlayManager _overlayMan = default!;
-    [Dependency] private readonly TransformSystem _xformSys = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly FlashImmunitySystem _flashImmunity = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IOverlayManager _overlayMan = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private FlashImmunitySystem _flashImmunity = default!;
 
     private KrittersNightVisionOverlay _overlay = default!;
     [ViewVariables]
@@ -73,9 +72,12 @@ public sealed class KrittersNightVisionSystem : EntitySystem
         if (_effect != null) return;
 
         _overlayMan.AddOverlay(_overlay);
+    }
 
-        _effect = SpawnAttachedTo(nightVision.EffectPrototype, Transform(uid).Coordinates);
-        _xformSys.SetParent(_effect.Value, uid);
+    public override void FrameUpdate(float frameTime)
+    {
+        if (_player.LocalSession?.AttachedEntity is { } uid)
+            _overlay.SetFacing((float) Transform(uid).WorldRotation.Theta);
     }
 
     /// <summary>

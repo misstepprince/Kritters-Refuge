@@ -27,7 +27,7 @@ namespace Content.Server.Explosion.EntitySystems;
 
 public sealed partial class ExplosionSystem
 {
-    [Dependency] private readonly FlammableSystem _flammableSystem = default!;
+    [Dependency] private FlammableSystem _flammableSystem = default!;
 
     /// <summary>
     ///     Used to limit explosion processing time. See <see cref="MaxProcessingTime"/>.
@@ -555,7 +555,7 @@ public sealed partial class ExplosionSystem
 ///     iterating over the tiles, along with the ability to keep track of what entities have already been damaged by
 ///     this explosion.
 /// </remarks>
-sealed class Explosion
+sealed partial class Explosion
 {
     /// <summary>
     ///     For every grid (+ space) that the explosion reached, this data struct stores information about the tiles and
@@ -915,7 +915,7 @@ sealed class Explosion
 /// <summary>
 /// Data needed to spawn an explosion with <see cref="ExplosionSystem.SpawnExplosion"/>.
 /// </summary>
-public sealed class QueuedExplosion
+public sealed partial class QueuedExplosion
 {
     public MapCoordinates Epicenter;
     public ExplosionPrototype Proto = new();

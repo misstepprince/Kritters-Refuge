@@ -14,15 +14,15 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server.Consent;
 
-public sealed class ServerConsentManager : IServerConsentManager
+public sealed partial class ServerConsentManager : IServerConsentManager
 {
-    [Dependency] private readonly IConfigurationManager _configManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IServerNetManager _netManager = default!;
-    [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
-    [Dependency] private readonly IServerPreferencesManager _preferencesManager = default!;
+    [Dependency] private IConfigurationManager _configManager = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IServerNetManager _netManager = default!;
+    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private IServerPreferencesManager _preferencesManager = default!;
 
     /// <summary>
     /// Stores consent settigns for all connected players, including guests.

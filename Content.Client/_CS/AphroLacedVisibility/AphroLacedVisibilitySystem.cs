@@ -11,10 +11,10 @@ namespace Content.Client._CS.AphroLacedVisibility;
 /// <summary>
 /// System that shows visual feedback to any container that is injected with a aphrodisiac.
 /// </summary>
-public sealed class AphroLacedVisibilitySystem : EntitySystem
+public sealed partial class AphroLacedVisibilitySystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IClientConsentManager _consentManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IClientConsentManager _consentManager = default!;
 
     private readonly string _consentId = "AphrodisiacsVisibility";
     private bool? _consentOn = null;

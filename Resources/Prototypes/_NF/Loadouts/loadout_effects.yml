@@ -47,7 +47,6 @@
   - !type:SpeciesLoadoutEffect
     species:
     - Sheleg
-    - Novakin # Kritters: Novakin use pressure-protective headwear.
     inverted: true
 
 - type: loadoutEffectGroup
@@ -56,7 +55,6 @@
   - !type:SpeciesLoadoutEffect
     species:
     - Sheleg
-    - Novakin # Kritters: Novakin use pressure-protective outerwear.
     inverted: true
 
 - type: loadoutEffectGroup
@@ -65,7 +63,6 @@
   - !type:SpeciesLoadoutEffect
     species:
     - Sheleg
-    - Novakin # Kritters: Novakin receive a job-appropriate EVA suit.
 
 - type: loadoutEffectGroup
   id: NFNotDocOrStc

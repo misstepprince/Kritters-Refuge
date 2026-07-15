@@ -9,9 +9,9 @@ using JetBrains.Annotations;
 
 namespace Content.Server._NF.Auth;
 
-public sealed class MiniAuthManager
+public sealed partial class MiniAuthManager
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private readonly HttpClient _http = new();
 
@@ -70,7 +70,7 @@ public sealed class MiniAuthManager
         public required string? MOTD { get; init; }
         public required Dictionary<string, object> PanicBunker { get; init; }
 
-        public sealed class Player
+        public sealed partial class Player
         {
             public required Guid UserId { get; init; }
             public required string Name { get; init; }
@@ -78,7 +78,7 @@ public sealed class MiniAuthManager
             public required bool IsDeadminned { get; init; }
         }
 
-        public sealed class MapInfo
+        public sealed partial class MapInfo
         {
             public required string Id { get; init; }
             public required string Name { get; init; }
