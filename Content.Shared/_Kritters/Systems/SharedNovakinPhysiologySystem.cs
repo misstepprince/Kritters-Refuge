@@ -4,9 +4,9 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Kritters.Systems;
 
-public abstract class SharedNovakinPhysiologySystem : EntitySystem
+public abstract partial class SharedNovakinPhysiologySystem : EntitySystem
 {
-    [Dependency] protected readonly IPrototypeManager Prototypes = default!;
+    [Dependency] protected IPrototypeManager Prototypes = default!;
 
     public bool SetGas(Entity<NovakinPhysiologyComponent> entity, ProtoId<NovakinGasPrototype> gas)
     {

@@ -11,10 +11,10 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server.Body.Systems;
 
-public sealed class SizeManipulationSystem : EntitySystem
+public sealed partial class SizeManipulationSystem : EntitySystem
 {
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly ConsentSystem _consent = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private ConsentSystem _consent = default!;
 
     private static readonly ProtoId<ConsentTogglePrototype> SizeManipulationConsent = "SizeManipulation";
 

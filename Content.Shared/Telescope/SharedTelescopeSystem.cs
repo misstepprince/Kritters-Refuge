@@ -7,9 +7,9 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared.Telescope;
 
-public abstract class SharedTelescopeSystem : EntitySystem
+public abstract partial class SharedTelescopeSystem : EntitySystem
 {
-    [Dependency] private readonly SharedEyeSystem _eye = default!;
+    [Dependency] private SharedEyeSystem _eye = default!;
 
     public override void Initialize()
     {
@@ -104,7 +104,7 @@ public abstract class SharedTelescopeSystem : EntitySystem
 }
 
 [Serializable, NetSerializable]
-public sealed class EyeOffsetChangedEvent : EntityEventArgs
+public sealed partial class EyeOffsetChangedEvent : EntityEventArgs
 {
     public Vector2 Offset;
 }

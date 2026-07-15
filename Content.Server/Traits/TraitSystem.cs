@@ -10,15 +10,15 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server.Traits;
 
-public sealed class TraitSystem : EntitySystem
+public sealed partial class TraitSystem : EntitySystem
 {
     private const string LegacyInHeatTraitId = "HornyInHeat";
     private const string LegacyInRutTraitId = "HornyInRut";
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly SharedHandsSystem _sharedHandsSystem = default!;
-    [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
-    [Dependency] private readonly ScentSystem _scentSystem = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private SharedHandsSystem _sharedHandsSystem = default!;
+    [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private ScentSystem _scentSystem = default!;
 
     public override void Initialize()
     {

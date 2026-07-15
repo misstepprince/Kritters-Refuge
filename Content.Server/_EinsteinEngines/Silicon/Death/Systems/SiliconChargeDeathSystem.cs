@@ -8,11 +8,11 @@ using Content.Shared.Humanoid;
 
 namespace Content.Server._EinsteinEngines.Silicon.Death;
 
-public sealed class SiliconDeathSystem : EntitySystem
+public sealed partial class SiliconDeathSystem : EntitySystem
 {
-    [Dependency] private readonly SleepingSystem _sleep = default!;
-    [Dependency] private readonly SiliconChargeSystem _silicon = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoidAppearanceSystem = default!;
+    [Dependency] private SleepingSystem _sleep = default!;
+    [Dependency] private SiliconChargeSystem _silicon = default!;
+    [Dependency] private HumanoidAppearanceSystem _humanoidAppearanceSystem = default!;
 
     public override void Initialize()
     {
@@ -78,7 +78,7 @@ public sealed class SiliconDeathSystem : EntitySystem
 ///     This probably shouldn't be modified unless you intend to fill the Silicon's battery,
 ///     as otherwise it'll just be triggered again next frame.
 /// </remarks>
-public sealed class SiliconChargeDyingEvent : CancellableEntityEventArgs
+public sealed partial class SiliconChargeDyingEvent : CancellableEntityEventArgs
 {
     public EntityUid SiliconUid { get; }
     public BatteryComponent? BatteryComp { get; }
@@ -95,7 +95,7 @@ public sealed class SiliconChargeDyingEvent : CancellableEntityEventArgs
 /// <summary>
 ///     An event raised after a Silicon has gone down due to charge.
 /// </summary>
-public sealed class SiliconChargeDeathEvent : EntityEventArgs
+public sealed partial class SiliconChargeDeathEvent : EntityEventArgs
 {
     public EntityUid SiliconUid { get; }
     public BatteryComponent? BatteryComp { get; }
@@ -112,7 +112,7 @@ public sealed class SiliconChargeDeathEvent : EntityEventArgs
 /// <summary>
 ///     An event raised after a Silicon has reawoken due to an increase in charge.
 /// </summary>
-public sealed class SiliconChargeAliveEvent : EntityEventArgs
+public sealed partial class SiliconChargeAliveEvent : EntityEventArgs
 {
     public EntityUid SiliconUid { get; }
     public BatteryComponent? BatteryComp { get; }

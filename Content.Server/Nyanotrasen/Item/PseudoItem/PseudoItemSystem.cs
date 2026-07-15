@@ -9,10 +9,10 @@ using Content.Shared.Verbs;
 
 namespace Content.Server.Nyanotrasen.Item.PseudoItem;
 
-public sealed class PseudoItemSystem : SharedPseudoItemSystem
+public sealed partial class PseudoItemSystem : SharedPseudoItemSystem
 {
-    [Dependency] private readonly CarryingSystem _carrying = default!;
-    [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private CarryingSystem _carrying = default!;
+    [Dependency] private PopupSystem _popup = default!;
 
     public override void Initialize()
     {

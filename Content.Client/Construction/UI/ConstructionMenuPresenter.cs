@@ -21,18 +21,22 @@ namespace Content.Client.Construction.UI
     /// model. This is where the bulk of UI work is done, either calling functions in the model to change state, or collecting
     /// data out of the model to *present* to the screen though the UI framework.
     /// </summary>
-    internal sealed class ConstructionMenuPresenter : IDisposable
+    internal sealed partial class ConstructionMenuPresenter : IDisposable
     {
-        [Dependency] private readonly EntityManager _entManager = default!;
-        [Dependency] private readonly IEntitySystemManager _systemManager = default!;
-        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-        [Dependency] private readonly IPlacementManager _placementManager = default!;
-        [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
-        [Dependency] private readonly IPlayerManager _playerManager = default!;
-        [Dependency] private readonly IClientPreferencesManager _preferencesManager = default!;
+        [Dependency] private EntityManager _entManager = default!;
+        [Dependency] private IEntitySystemManager _systemManager = default!;
+        [Dependency] private IPrototypeManager _prototypeManager = default!;
+        [Dependency] private IPlacementManager _placementManager = default!;
+        [Dependency] private IUserInterfaceManager _uiManager = default!;
+        [Dependency] private IPlayerManager _playerManager = default!;
+        [Dependency] private IClientPreferencesManager _preferencesManager = default!;
         private readonly SpriteSystem _spriteSystem;
 
         private readonly IConstructionMenuView _constructionView;
+        // BeginPlacing clears the previous placement state before activating the new one.
+        // That clear raises PlacementChanged, which is a real cancellation signal for the
+        // menu but must not cancel the placement operation that caused it.
+        private bool _updatingGhostPlacement;
         private readonly EntityWhitelistSystem _whitelistSystem;
 
         private ConstructionSystem? _constructionSystem;
@@ -141,6 +145,9 @@ namespace Content.Client.Construction.UI
 
         private void OnPlacementChanged(object? sender, EventArgs e)
         {
+            if (_updatingGhostPlacement)
+                return;
+
             _constructionView.ResetPlacement();
         }
 
@@ -431,13 +438,6 @@ namespace Content.Client.Construction.UI
                     return;
                 }
 
-                _placementManager.BeginPlacing(new PlacementInformation
-                    {
-                        IsTile = false,
-                        PlacementOption = _selected.PlacementMode
-                    },
-                    new ConstructionPlacementHijack(_constructionSystem, _selected));
-
                 UpdateGhostPlacement();
             }
             else
@@ -459,14 +459,22 @@ namespace Content.Client.Construction.UI
 
             var constructSystem = _systemManager.GetEntitySystem<ConstructionSystem>();
 
-            _placementManager.BeginPlacing(new PlacementInformation()
-                {
-                    IsTile = false,
-                    PlacementOption = _selected.PlacementMode,
-                },
-                new ConstructionPlacementHijack(constructSystem, _selected));
+            _updatingGhostPlacement = true;
+            try
+            {
+                _placementManager.BeginPlacing(new PlacementInformation()
+                    {
+                        IsTile = false,
+                        PlacementOption = _selected.PlacementMode,
+                    },
+                    new ConstructionPlacementHijack(constructSystem, _selected));
+            }
+            finally
+            {
+                _updatingGhostPlacement = false;
+            }
 
-            _constructionView.BuildButtonPressed = true;
+            _constructionView.BuildButtonPressed = _placementManager.IsActive;
         }
 
         private void OnSystemLoaded(object? sender, SystemChangedArgs args)

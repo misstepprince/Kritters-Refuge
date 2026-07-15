@@ -13,13 +13,13 @@ namespace Content.Server.Explosion.EntitySystems;
 /// <summary>
 /// Handles creating smoke when <see cref="SmokeOnTriggerComponent"/> is triggered.
 /// </summary>
-public sealed class SmokeOnTriggerSystem : SharedSmokeOnTriggerSystem
+public sealed partial class SmokeOnTriggerSystem : SharedSmokeOnTriggerSystem
 {
-    [Dependency] private readonly SharedMapSystem _mapMan = default!;
-    [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly SmokeSystem _smoke = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
-    [Dependency] private readonly SpreaderSystem _spreader = default!;
+    [Dependency] private SharedMapSystem _mapMan = default!;
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SmokeSystem _smoke = default!;
+    [Dependency] private TransformSystem _transform = default!;
+    [Dependency] private SpreaderSystem _spreader = default!;
 
     public override void Initialize()
     {

@@ -6,9 +6,9 @@ using Robust.Shared.Enums;
 namespace Content.Server.Chat.Commands
 {
     [AnyCommand]
-    internal sealed class SubtleLOOCCommand : IConsoleCommand
+    internal sealed partial class SubtleLOOCCommand : IConsoleCommand
     {
-        [Dependency] private readonly IEntityManager _e = default!;
+        [Dependency] private IEntityManager _e = default!;
 
         public string Command => "subtlelooc";
         public string Description => "Send private-ish Local Out Of Character chat messages.";

@@ -3,9 +3,9 @@ using Robust.Client.GameObjects;
 
 namespace Content.Client.Clothing;
 
-public sealed class CycleableClothingVisualsSystem : EntitySystem
+public sealed partial class CycleableClothingVisualsSystem : EntitySystem
 {
-    [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public override void Initialize()
     {

@@ -17,16 +17,16 @@ namespace Content.Shared._CS;
 /// <summary>
 /// This handles...
 /// </summary>
-public sealed class OverweightTraitSystem : EntitySystem
+public sealed partial class OverweightTraitSystem : EntitySystem
 {
-    [Dependency] private readonly MovementSpeedModifierSystem _moveSys = default!;
-    [Dependency] private readonly IPrototypeManager _protoMan = default!;
-    [Dependency] private readonly SharedNeedsSystem _needsSys = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly SharedAudioSystem _soundSystem = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+    [Dependency] private MovementSpeedModifierSystem _moveSys = default!;
+    [Dependency] private IPrototypeManager _protoMan = default!;
+    [Dependency] private SharedNeedsSystem _needsSys = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private SharedAudioSystem _soundSystem = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
 
     private const float FatSpeedMod = 0.90f;
     private const float ChanceToCreak = 0.10f;

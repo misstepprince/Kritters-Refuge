@@ -25,19 +25,19 @@ using Robust.Server.GameObjects;
 
 namespace Content.Server._Kritters.Systems;
 
-public sealed class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
+public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySystem
 {
-    [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
-    [Dependency] private readonly AlertsSystem _alerts = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
-    [Dependency] private readonly SharedNeedsSystem _needs = default!;
-    [Dependency] private readonly InventorySystem _inventory = default!;
-    [Dependency] private readonly PointLightSystem _pointLight = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly StackSystem _stacks = default!;
-    [Dependency] private readonly TemperatureSystem _temperature = default!;
+    [Dependency] private AtmosphereSystem _atmosphere = default!;
+    [Dependency] private AlertsSystem _alerts = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private SharedNeedsSystem _needs = default!;
+    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private PointLightSystem _pointLight = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private StackSystem _stacks = default!;
+    [Dependency] private TemperatureSystem _temperature = default!;
 
     private float _accumulator;
 

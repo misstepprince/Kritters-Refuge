@@ -9,8 +9,8 @@ namespace Content.Server.Cargo.Systems;
 
 public sealed partial class PricingSystem
 {
-    [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly SharedMapSystem _mapManager = default!;
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedMapSystem _mapManager = default!;
     /// <summary>
     /// Minimum price added to a ship for being exped capable.
     /// </summary>

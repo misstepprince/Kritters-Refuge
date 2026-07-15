@@ -11,8 +11,8 @@ namespace Content.Server.Humanoid;
 
 public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
 {
-    [Dependency] private readonly MarkingManager _markingManager = default!;
-    [Dependency] private readonly GrammarSystem _grammar = default!;
+    [Dependency] private MarkingManager _markingManager = default!;
+    [Dependency] private GrammarSystem _grammar = default!;
 
     public override void Initialize()
     {

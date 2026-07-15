@@ -16,12 +16,12 @@ namespace Content.Server._CS.ShuttleCrewStatus;
 /// Only applies to shuttles with the PlayerShuttle flag set (excludes asteroids, wrecks, and other non-player grids).
 /// Shuttles with no crew or only disconnected crew show a gray label, while shuttles with active crew show normal white labels.
 /// </summary>
-public sealed class ShuttleCrewStatusSystem : EntitySystem
+public sealed partial class ShuttleCrewStatusSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedShuttleSystem _shuttle = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ISharedPlayerManager _playerManager = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedShuttleSystem _shuttle = default!;
 
     /// <summary>
     /// How often to check crew status on shuttles. Default: 3 minutes.

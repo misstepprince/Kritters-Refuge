@@ -13,12 +13,12 @@ namespace Content.Shared.Animals;
 ///     Gives ability to produce fiber reagents;
 ///     produces endlessly if the owner has no NeedsComponent that supports Hunger.
 /// </summary>
-public sealed class WoolySystem : EntitySystem
+public sealed partial class WoolySystem : EntitySystem
 {
-    [Dependency] private readonly SharedNeedsSystem _needs = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
+    [Dependency] private SharedNeedsSystem _needs = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
 
     public override void Initialize()
     {

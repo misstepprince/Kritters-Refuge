@@ -9,13 +9,13 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client.Light;
 
-public sealed class SunShadowOverlay : Overlay
+public sealed partial class SunShadowOverlay : Overlay
 {
     public override OverlaySpace Space => OverlaySpace.BeforeLighting;
 
-    [Dependency] private readonly IClyde _clyde = default!;
-    [Dependency] private readonly IEntityManager _entManager = default!;
-    [Dependency] private readonly IPrototypeManager _protoManager = default!;
+    [Dependency] private IClyde _clyde = default!;
+    [Dependency] private IEntityManager _entManager = default!;
+    [Dependency] private IPrototypeManager _protoManager = default!;
     private readonly EntityLookupSystem _lookup;
     private readonly SharedTransformSystem _xformSys;
     private readonly SharedMapSystem _mapSystem;

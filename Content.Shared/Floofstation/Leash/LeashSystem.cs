@@ -24,16 +24,16 @@ using Robust.Shared.Timing;
 
 namespace Content.Shared.Floofstation.Leash;
 
-public sealed class LeashSystem : EntitySystem
+public sealed partial class LeashSystem : EntitySystem
 {
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfters = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedJointSystem _joints = default!;
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
-    [Dependency] private readonly ThrowingSystem _throwing = default!;
-    [Dependency] private readonly SharedTransformSystem _xform = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private SharedDoAfterSystem _doAfters = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedJointSystem _joints = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
+    [Dependency] private ThrowingSystem _throwing = default!;
+    [Dependency] private SharedTransformSystem _xform = default!;
 
     public static VerbCategory LeashLengthConfigurationCategory =
         new("verb-categories-leash-config", "/Textures/Floof/Interface/VerbIcons/resize.svg.192dpi.png");

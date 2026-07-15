@@ -14,11 +14,11 @@ namespace Content.Server._CS.SpaceJanitor;
 /// This is to prevent space from being cluttered with debris and items that have been left behind.
 /// This is a server-side system only, and does not need to be networked to clients.
 /// </summary>
-public sealed class SpaceJanitorSystem : EntitySystem
+public sealed partial class SpaceJanitorSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly EntityStorageSystem _entityStorage = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private EntityStorageSystem _entityStorage = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
 
     private const int MinutesBetweenChecks = 29;
     private const int MinutesBeforeCleanup = 1; // 12 hours

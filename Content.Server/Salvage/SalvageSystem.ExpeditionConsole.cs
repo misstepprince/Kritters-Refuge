@@ -22,7 +22,7 @@ public sealed partial class SalvageSystem
 {
     public static readonly string CoordinatesDisk = "CoordinatesDisk";
 
-    [Dependency] private readonly SharedPopupSystem _popupSystem = default!; // Frontier
+    [Dependency] private SharedPopupSystem _popupSystem = default!; // Frontier
 
     private const float ShuttleFTLMassThreshold = 50f; // Frontier
     private const float ShuttleFTLRange = 150f; // Frontier

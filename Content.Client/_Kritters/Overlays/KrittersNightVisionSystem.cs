@@ -7,13 +7,13 @@ using Content.Shared._Kritters.Overlays;
 
 namespace Content.Client._Kritters.Overlays;
 
-public sealed class KrittersNightVisionSystem : EntitySystem
+public sealed partial class KrittersNightVisionSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IOverlayManager _overlayMan = default!;
-    [Dependency] private readonly TransformSystem _xformSys = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly FlashImmunitySystem _flashImmunity = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IOverlayManager _overlayMan = default!;
+    [Dependency] private TransformSystem _xformSys = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private FlashImmunitySystem _flashImmunity = default!;
 
     private KrittersNightVisionOverlay _overlay = default!;
     [ViewVariables]

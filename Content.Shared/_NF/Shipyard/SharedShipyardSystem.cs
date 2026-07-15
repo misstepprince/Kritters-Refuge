@@ -28,9 +28,9 @@ public enum ShipyardConsoleUiKey : byte
     JanusCorp
 }
 
-public abstract class SharedShipyardSystem : EntitySystem
+public abstract partial class SharedShipyardSystem : EntitySystem
 {
-    [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
+    [Dependency] private ItemSlotsSystem _itemSlotsSystem = default!;
 
     public override void Initialize()
     {
@@ -76,7 +76,7 @@ public abstract class SharedShipyardSystem : EntitySystem
     }
 
     [Serializable, NetSerializable]
-    private sealed class ShipyardConsoleComponentState : ComponentState
+    private sealed partial class ShipyardConsoleComponentState : ComponentState
     {
         public List<string> AccessLevels;
 

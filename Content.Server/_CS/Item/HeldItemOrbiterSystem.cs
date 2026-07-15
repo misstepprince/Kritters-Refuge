@@ -5,10 +5,10 @@ using Content.Shared.Item.Orbiter;
 namespace Content.Server.Item.Orbiter;
 
 //There's 100% a much better and more elegant way to do this but I cannot find it.
-public sealed class HeldItemOrbiterSystem : EntitySystem
+public sealed partial class HeldItemOrbiterSystem : EntitySystem
 {
-    [Dependency] private readonly FollowerSystem _follower = default!;
-    [Dependency] private readonly IEntityManager _entMan = default!;
+    [Dependency] private FollowerSystem _follower = default!;
+    [Dependency] private IEntityManager _entMan = default!;
 
     public override void Initialize()
     {

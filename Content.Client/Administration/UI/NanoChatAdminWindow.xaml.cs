@@ -11,9 +11,9 @@ using Robust.Shared.Timing;
 
 namespace Content.Client.Administration.UI;
 
-public sealed class NanoChatAdminWindow : DefaultWindow
+public sealed partial class NanoChatAdminWindow : DefaultWindow
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private NanoChatAdminEuiState? _state;
     private NanoChatCardData? _selectedCard;

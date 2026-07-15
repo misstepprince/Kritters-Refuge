@@ -18,8 +18,8 @@ public sealed partial class BountyContractSystem
 {
     [Dependency] SectorServiceSystem _sectorService = default!;
     [Dependency] IGameTiming _timing = default!;
-    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
-    [Dependency] private readonly EntityManager _entityManager = default!;
+    [Dependency] private ISharedPlayerManager _playerManager = default!;
+    [Dependency] private EntityManager _entityManager = default!;
 
     private void InitializeUi()
     {

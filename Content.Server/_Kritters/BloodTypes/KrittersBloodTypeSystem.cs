@@ -19,15 +19,15 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Server._Kritters.BloodTypes;
 
-public sealed class KrittersServerBloodTypeSystem : EntitySystem
+public sealed partial class KrittersServerBloodTypeSystem : EntitySystem
 {
-    [Dependency] private readonly Content.Shared._Kritters.BloodTypes.KrittersBloodTypeSystem _bloodTypes = default!;
-    [Dependency] private readonly KrittersBloodMetabolismSystem _bloodMetabolism = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly TemperatureSystem _temperature = default!;
-    [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
-    [Dependency] private readonly TagSystem _tags = default!;
+    [Dependency] private Content.Shared._Kritters.BloodTypes.KrittersBloodTypeSystem _bloodTypes = default!;
+    [Dependency] private KrittersBloodMetabolismSystem _bloodMetabolism = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private TemperatureSystem _temperature = default!;
+    [Dependency] private SharedBloodstreamSystem _bloodstream = default!;
+    [Dependency] private TagSystem _tags = default!;
 
     [ValidatePrototypeId<TagPrototype>]
     public const string ActiveTag = "KrittersBloodTypesActive";

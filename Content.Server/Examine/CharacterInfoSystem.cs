@@ -14,12 +14,12 @@ namespace Content.Server.Examine;
 /// <summary>
 /// Handles character information requests and sends character data to clients
 /// </summary>
-public sealed class CharacterInfoSystem : EntitySystem
+public sealed partial class CharacterInfoSystem : EntitySystem
 {
-    [Dependency] private readonly IServerConsentManager _consentManager = default!;
-    [Dependency] private readonly MindSystem _mindSystem = default!;
-    [Dependency] private readonly SharedIdCardSystem _idCardSystem = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IServerConsentManager _consentManager = default!;
+    [Dependency] private MindSystem _mindSystem = default!;
+    [Dependency] private SharedIdCardSystem _idCardSystem = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     public override void Initialize()
     {

@@ -12,10 +12,10 @@ namespace Content.Server._CS.BlipCartridge;
 /// This system handles the Blip Cartridge, which adds a radar blip for your PDA!
 /// You can customize it too!
 /// </summary>
-public sealed class BlipCartridgeSystem : EntitySystem
+public sealed partial class BlipCartridgeSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
 
     public static readonly VerbCategory BlipPresetCat =
         new("verb-categories-blip-preset", null);

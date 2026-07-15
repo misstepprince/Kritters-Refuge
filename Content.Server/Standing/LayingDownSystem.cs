@@ -6,9 +6,9 @@ using Robust.Shared.Configuration;
 namespace Content.Server.Standing;
 
 // Largerly rewritten by EE. Take care when merging changes.
-public sealed class LayingDownSystem : SharedLayingDownSystem
+public sealed partial class LayingDownSystem : SharedLayingDownSystem
 {
-    [Dependency] private readonly INetConfigurationManager _cfg = default!;
+    [Dependency] private INetConfigurationManager _cfg = default!;
 
     public override void Initialize()
     {
