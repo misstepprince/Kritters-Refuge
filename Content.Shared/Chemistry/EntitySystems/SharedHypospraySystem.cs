@@ -10,17 +10,17 @@ using Content.Shared.Mobs.Systems; // Coyote
 
 namespace Content.Shared.Chemistry.EntitySystems;
 
-public abstract class SharedHypospraySystem : EntitySystem
+public abstract partial class SharedHypospraySystem : EntitySystem
 {
-    [Dependency] protected readonly UseDelaySystem _useDelay = default!;
-    [Dependency] protected readonly SharedPopupSystem _popup = default!;
-    [Dependency] protected readonly SharedSolutionContainerSystem _solutionContainers = default!;
-    [Dependency] protected readonly ISharedAdminLogManager _adminLogger = default!;
-    [Dependency] protected readonly ReactiveSystem _reactiveSystem = default!;
+    [Dependency] protected UseDelaySystem _useDelay = default!;
+    [Dependency] protected SharedPopupSystem _popup = default!;
+    [Dependency] protected SharedSolutionContainerSystem _solutionContainers = default!;
+    [Dependency] protected ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] protected ReactiveSystem _reactiveSystem = default!;
     // Coyote: Port in jet injectors from Den
-    [Dependency] protected readonly MobStateSystem MobState = default!;
-    [Dependency] protected readonly SharedCombatModeSystem Combat = default!;
-    [Dependency] protected readonly ISharedAdminLogManager AdminLogger = default!;
+    [Dependency] protected MobStateSystem MobState = default!;
+    [Dependency] protected SharedCombatModeSystem Combat = default!;
+    [Dependency] protected ISharedAdminLogManager AdminLogger = default!;
     // Coyote End
 
     public override void Initialize()

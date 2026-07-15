@@ -26,7 +26,7 @@ using Content.Shared._NF.DisplacementMap.Components; // Frontier
 
 namespace Content.Client.Clothing;
 
-public sealed class ClientClothingSystem : ClothingSystem
+public sealed partial class ClientClothingSystem : ClothingSystem
 {
     public const string Jumpsuit = "jumpsuit";
 
@@ -54,11 +54,11 @@ public sealed class ClientClothingSystem : ClothingSystem
         {"suitstorage", "SUITSTORAGE"},
     };
 
-    [Dependency] private readonly IResourceCache _cache = default!;
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
-    [Dependency] private readonly DisplacementMapSystem _displacement = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoidSystem = default!;
+    [Dependency] private IResourceCache _cache = default!;
+    [Dependency] private InventorySystem _inventorySystem = default!;
+    [Dependency] private DisplacementMapSystem _displacement = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private HumanoidAppearanceSystem _humanoidSystem = default!;
 
     public override void Initialize()
     {

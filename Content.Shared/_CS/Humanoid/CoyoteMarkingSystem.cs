@@ -4,9 +4,9 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._CS.Humanoid;
 
-public sealed class CoyoteMarkingSystem : EntitySystem
+public sealed partial class CoyoteMarkingSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
 
     public bool TryGetWaggingId(ProtoId<MarkingPrototype> markingId, [NotNullWhen(true)] out string? waggingId)
     {

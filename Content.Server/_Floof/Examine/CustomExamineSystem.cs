@@ -6,9 +6,9 @@ using Robust.Shared.Prototypes;
 namespace Content.Server._Floof.Examine;
 
 
-public sealed class CustomExamineSystem : SharedCustomExamineSystem
+public sealed partial class CustomExamineSystem : SharedCustomExamineSystem
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     private const string InHeatProtoId = "hornyExamineInHeat";
     private const string InRutProtoId = "hornyExamineInRut";

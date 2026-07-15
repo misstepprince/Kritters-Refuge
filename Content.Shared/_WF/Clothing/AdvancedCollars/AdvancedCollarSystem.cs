@@ -20,16 +20,16 @@ namespace Content.Shared.Clothing.EntitySystems;
 /// <summary>
 /// System for handling advanced collar module installation and removal.
 /// </summary>
-public sealed class AdvancedCollarSystem : EntitySystem
+public sealed partial class AdvancedCollarSystem : EntitySystem
 {
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedToolSystem _tool = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly IComponentFactory _componentFactory = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly ISerializationManager _serializationManager = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedToolSystem _tool = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private ISerializationManager _serializationManager = default!;
 
     public const string ModuleContainerName = "collar_module_container";
 

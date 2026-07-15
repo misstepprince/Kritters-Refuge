@@ -12,9 +12,9 @@ namespace Content.Client.Administration.UI;
 [GenerateTypedNameReferences]
 public sealed partial class ShiftSettingsWindow : DefaultWindow
 {
-    [Dependency] private readonly IClientConsoleHost _console = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
+    [Dependency] private IClientConsoleHost _console = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private IEntitySystemManager _entitySystem = default!;
 
     private readonly ClientGameTicker _gameTicker;
     private readonly ButtonGroup _timeModeButtonGroup = new();

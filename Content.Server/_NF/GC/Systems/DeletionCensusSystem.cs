@@ -22,16 +22,16 @@ namespace Content.Server._NF.GC.Systems;
 /// Deletes unused entities parented on the main map if they've been on an unloaded chunk for a given number of passes.
 /// Each pass runs at a configurable period.
 /// </summary>
-public sealed class DeletionCensusSystem : EntitySystem
+public sealed partial class DeletionCensusSystem : EntitySystem
 {
     // Dependencies
-    [Dependency] private readonly GameTicker _gameTicker = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly LinkedLifecycleGridSystem _linkedLifecycleGrid = default!;
-    [Dependency] private readonly MapSystem _map = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
-    [Dependency] private readonly WorldControllerSystem _world = default!;
+    [Dependency] private GameTicker _gameTicker = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private LinkedLifecycleGridSystem _linkedLifecycleGrid = default!;
+    [Dependency] private MapSystem _map = default!;
+    [Dependency] private TransformSystem _transform = default!;
+    [Dependency] private WorldControllerSystem _world = default!;
 
     // Entity queries
     EntityQuery<DeletionCensusExemptComponent> _deletionCensusExemptQuery = default!;

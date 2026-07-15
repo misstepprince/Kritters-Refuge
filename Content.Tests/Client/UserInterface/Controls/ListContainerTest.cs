@@ -278,7 +278,9 @@ public sealed class ListContainerTest : RobustUnitTest
         // Test that the button is selected even when scrolled away and scrolled back.
         scrollbar.Value = 11;
         listContainer.Arrange(root.SizeBox);
-        Assert.That(oldButton.Disposed);
+        // Kritters: Robust 282+ removes controls from the UI tree instead of disposing them.
+        Assert.That(oldButton.Parent, Is.Null);
+        Assert.That(oldButton.Disposed, Is.False);
         scrollbar.Value = 0;
         listContainer.Arrange(root.SizeBox);
         children = listContainer.Children.ToList();

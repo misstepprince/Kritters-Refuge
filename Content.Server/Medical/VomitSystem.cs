@@ -19,25 +19,25 @@ using Robust.Shared.Containers;
 
 namespace Content.Server.Medical
 {
-    public sealed class VomitSystem : EntitySystem
+    public sealed partial class VomitSystem : EntitySystem
     {
-        [Dependency] private readonly IPrototypeManager _proto = default!;
-        [Dependency] private readonly AudioSystem _audio = default!;
-        [Dependency] private readonly BodySystem _body = default!;
-        [Dependency] private readonly SharedNeedsSystem _needs = default!;
-        [Dependency] private readonly PopupSystem _popup = default!;
-        [Dependency] private readonly PuddleSystem _puddle = default!;
-        [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
-        [Dependency] private readonly StunSystem _stun = default!;
-        [Dependency] private readonly ForensicsSystem _forensics = default!;
-        [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
+        [Dependency] private IPrototypeManager _proto = default!;
+        [Dependency] private AudioSystem _audio = default!;
+        [Dependency] private BodySystem _body = default!;
+        [Dependency] private SharedNeedsSystem _needs = default!;
+        [Dependency] private PopupSystem _popup = default!;
+        [Dependency] private PuddleSystem _puddle = default!;
+        [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
+        [Dependency] private StunSystem _stun = default!;
+        [Dependency] private ForensicsSystem _forensics = default!;
+        [Dependency] private BloodstreamSystem _bloodstream = default!;
 
         [ValidatePrototypeId<SoundCollectionPrototype>]
         private const string VomitCollection = "Vomit";
 
         private readonly SoundSpecifier _vomitSound = new SoundCollectionSpecifier(VomitCollection,
             AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
-        [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
+        [Dependency] private SharedContainerSystem _containerSystem = default!;
 
         /// <summary>
         /// Make an entity vomit, if they have a stomach.

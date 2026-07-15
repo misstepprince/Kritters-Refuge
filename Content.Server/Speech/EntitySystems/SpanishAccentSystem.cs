@@ -3,9 +3,9 @@ using Content.Server.Speech.Components;
 
 namespace Content.Server.Speech.EntitySystems
 {
-    public sealed class SpanishAccentSystem : EntitySystem
+    public sealed partial class SpanishAccentSystem : EntitySystem
     {
-        [Dependency] private readonly ReplacementAccentSystem _replacement = default!;
+        [Dependency] private ReplacementAccentSystem _replacement = default!;
         public override void Initialize()
         {
             SubscribeLocalEvent<SpanishAccentComponent, AccentGetEvent>(OnAccent);

@@ -29,27 +29,27 @@ using Content.Shared.Body.Events;
 
 namespace Content.Server.FloofStation;
 
-public sealed class VoreSystem : EntitySystem
+public sealed partial class VoreSystem : EntitySystem
 {
-    [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
-    [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
-    [Dependency] private readonly ConsentSystem _consent = default!;
-    [Dependency] private readonly BlindableSystem _blindableSystem = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
-    [Dependency] private readonly IChatManager _chatManager = default!;
-    [Dependency] private readonly DoAfterSystem _doAfterSystem = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
-    // [Dependency] private readonly SharedNeedsSystem _needs = default!;
-    // [Dependency] private readonly BatterySystem _battery = default!;
-    [Dependency] private readonly ContestsSystem _contests = default!;
-    [Dependency] private readonly StandingStateSystem _standingState = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly FoodSystem _food = default!;
+    [Dependency] private SharedContainerSystem _containerSystem = default!;
+    [Dependency] private SharedAudioSystem _audioSystem = default!;
+    [Dependency] private ConsentSystem _consent = default!;
+    [Dependency] private BlindableSystem _blindableSystem = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
+    [Dependency] private IChatManager _chatManager = default!;
+    [Dependency] private DoAfterSystem _doAfterSystem = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private InventorySystem _inventorySystem = default!;
+    // [Dependency] private SharedNeedsSystem _needs = default!;
+    // [Dependency] private BatterySystem _battery = default!;
+    [Dependency] private ContestsSystem _contests = default!;
+    [Dependency] private StandingStateSystem _standingState = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private FoodSystem _food = default!;
 
     public override void Initialize()
     {

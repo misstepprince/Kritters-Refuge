@@ -49,12 +49,12 @@ public sealed partial class SalvageSystem
      * Handles actively running a salvage expedition.
      */
 
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly GameTicker _gameTicker = default!; // _CS
-    [Dependency] private readonly BuckleSystem _buckle = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly TemperatureSystem _temperature = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private GameTicker _gameTicker = default!; // _CS
+    [Dependency] private BuckleSystem _buckle = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private TemperatureSystem _temperature = default!;
 
     private static readonly TimeSpan StandardShipExpeditionDuration = TimeSpan.FromMinutes(15);
     // _CS Start: extended shared expedition duration
@@ -1031,7 +1031,7 @@ public sealed partial class SalvageSystem
     }
 
     // class that holds a set of destinations with a priority
-    private sealed class DestinationPriority
+    private sealed partial class DestinationPriority
     {
         public List<EntityUid> Beds = new();
         public List<EntityUid> Chairs = new();

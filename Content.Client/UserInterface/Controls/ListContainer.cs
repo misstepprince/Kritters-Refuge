@@ -296,7 +296,7 @@ public class ListContainer : Control
             foreach (var (data, button) in toRemove)
             {
                 _buttons.Remove(data);
-                button.Dispose();
+                RemoveChild(button);
             }
 
             _vScrollBar.SetPositionLast();

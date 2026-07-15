@@ -43,12 +43,12 @@ public sealed partial class ShuttleSystem
     private static readonly SoundPathSpecifier ProximityInitialSound = new("/Audio/_Mono/Effects/Computer/beep_series1.ogg");
     private static readonly SoundPathSpecifier ProximityPingSound = new("/Audio/_Mono/Effects/Computer/short_beep2.ogg");
 
-    [Dependency] private readonly RadarConsoleSystem _radarConsole = default!;
-    [Dependency] private readonly RadarBlipSystem _radarBlips = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly PopupSystem _popupSystem = null!;
-    [Dependency] private readonly AutopilotSystem _autopilot = default!; // Wayfarer: Autopilot
+    [Dependency] private RadarConsoleSystem _radarConsole = default!;
+    [Dependency] private RadarBlipSystem _radarBlips = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private PopupSystem _popupSystem = null!;
+    [Dependency] private AutopilotSystem _autopilot = default!; // Wayfarer: Autopilot
 
     private const float SpaceFrictionStrength = 0.000f; // slip slide
     private const float DampenDampingStrength = 0.25f;

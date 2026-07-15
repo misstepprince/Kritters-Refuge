@@ -11,9 +11,9 @@ namespace Content.Shared.Clothing.EntitySystems;
 /// Can be configured to lock specific slots or all slots.
 /// This is intended for use with collar modules to create a clothing lock.
 /// </summary>
-public sealed class ClothingLockSystem : EntitySystem
+public sealed partial class ClothingLockSystem : EntitySystem
 {
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
+    [Dependency] private InventorySystem _inventorySystem = default!;
 
     public override void Initialize()
     {

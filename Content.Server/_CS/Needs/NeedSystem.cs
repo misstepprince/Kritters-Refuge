@@ -12,10 +12,10 @@ namespace Content.Server._CS.Needs;
 /// <summary>
 /// This handles...
 /// </summary>
-public sealed class NeedSystem : SharedNeedsSystem
+public sealed partial class NeedSystem : SharedNeedsSystem
 {
-    [Dependency] private readonly IEntityManager _entMan = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoid = default!;
+    [Dependency] private IEntityManager _entMan = default!;
+    [Dependency] private HumanoidAppearanceSystem _humanoid = default!;
 
     /// <summary>
     /// Gets the examine text for all needs on an entity.

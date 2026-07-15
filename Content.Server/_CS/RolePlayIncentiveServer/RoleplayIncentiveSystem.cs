@@ -40,24 +40,24 @@ namespace Content.Server._CS;
 /// <summary>
 /// This handles...
 /// </summary>
-public sealed class RoleplayIncentiveSystem : EntitySystem
+public sealed partial class RoleplayIncentiveSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming          _timing = null!;
-    [Dependency] private readonly BankSystem           _bank = null!;
-    [Dependency] private readonly PopupSystem          _popupSystem = null!;
-    [Dependency] private readonly ChatSystem           _chatsys = null!;
-    [Dependency] private readonly IChatManager         _chatManager = null!;
-    [Dependency] private readonly IPlayerManager       _playerManager = null!;
-    [Dependency] private readonly SSDIndicatorSystem   _ssdThing = null!;
-    [Dependency] private readonly IPrototypeManager    _prototype = default!;
-    [Dependency] private readonly TagSystem            _tagSystem = default!;
-    [Dependency] private readonly MobStateSystem       _mobStateSystem = default!;
-    [Dependency] private readonly ExamineSystemShared  _examineSystem = default!;
-    [Dependency] private readonly TransformSystem      _tf = default!;
-    [Dependency] private readonly PaperSystem          _paperSystem = default!;
-    [Dependency] private readonly IEntityManager       _entityManager = default!;
-    [Dependency] private readonly HandsSystem          _heandsSystem = default!;
-    [Dependency] private readonly StackSystem          _stack = default!;
+    [Dependency] private IGameTiming          _timing = null!;
+    [Dependency] private BankSystem           _bank = null!;
+    [Dependency] private PopupSystem          _popupSystem = null!;
+    [Dependency] private ChatSystem           _chatsys = null!;
+    [Dependency] private IChatManager         _chatManager = null!;
+    [Dependency] private IPlayerManager       _playerManager = null!;
+    [Dependency] private SSDIndicatorSystem   _ssdThing = null!;
+    [Dependency] private IPrototypeManager    _prototype = default!;
+    [Dependency] private TagSystem            _tagSystem = default!;
+    [Dependency] private MobStateSystem       _mobStateSystem = default!;
+    [Dependency] private ExamineSystemShared  _examineSystem = default!;
+    [Dependency] private TransformSystem      _tf = default!;
+    [Dependency] private PaperSystem          _paperSystem = default!;
+    [Dependency] private IEntityManager       _entityManager = default!;
+    [Dependency] private HandsSystem          _heandsSystem = default!;
+    [Dependency] private StackSystem          _stack = default!;
 
     private List<ProtoId<RpiTaxBracketPrototype>> RpiDatumPrototypes = new()
     {
@@ -750,7 +750,7 @@ public sealed class RoleplayIncentiveSystem : EntitySystem
         return paydata;
     }
 
-    public sealed class RpiLightFixData(int basePay)
+    public sealed partial class RpiLightFixData(int basePay)
     {
         public int BasePay = basePay;
         public int FinalPay = basePay;

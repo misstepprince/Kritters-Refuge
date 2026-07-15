@@ -17,9 +17,9 @@ namespace Content.Client.Guidebook.RichText;
 /// Usage: [extlink="Click here" link="https://example.com"]
 /// </summary>
 [UsedImplicitly]
-public sealed class ExternalLinkTag : IMarkupTag
+public sealed partial class ExternalLinkTag : IMarkupTag
 {
-    [Dependency] private readonly IUriOpener _uriOpener = default!;
+    [Dependency] private IUriOpener _uriOpener = default!;
 
     public static Color LinkColor => Color.CornflowerBlue;
 

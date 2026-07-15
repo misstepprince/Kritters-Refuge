@@ -27,19 +27,19 @@ namespace Content.Shared._CS.Needs;
 /// <summary>
 /// This handles your needs.
 /// </summary>
-public abstract class SharedNeedsSystem : EntitySystem
+public abstract partial class SharedNeedsSystem : EntitySystem
 {
-    [Dependency] private readonly ISharedPlayerManager _players = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly AlertsSystem _alerts = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IEntityManager _entMan = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoid = default!;
-    [Dependency] private readonly ExamineSystemShared _examineSystem = default!;
-    [Dependency] private readonly SharedPopupSystem _popupSystem = null!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private ISharedPlayerManager _players = default!;
+    [Dependency] private MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private AlertsSystem _alerts = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IEntityManager _entMan = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedHumanoidAppearanceSystem _humanoid = default!;
+    [Dependency] private ExamineSystemShared _examineSystem = default!;
+    [Dependency] private SharedPopupSystem _popupSystem = null!;
+    [Dependency] private MobStateSystem _mobState = default!;
 
     private int _decayIterations = 1;
     private TimeSpan _nextDecIterRoll = TimeSpan.Zero;

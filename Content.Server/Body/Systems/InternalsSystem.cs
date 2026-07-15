@@ -1,4 +1,5 @@
 using Content.Server.Atmos.EntitySystems;
+using Content.Server.Body.Components;
 using Content.Server.Popups;
 using Content.Shared.Alert;
 using Content.Shared.Atmos;
@@ -12,11 +13,11 @@ using Content.Shared.Roles;
 
 namespace Content.Server.Body.Systems;
 
-public sealed class InternalsSystem : SharedInternalsSystem
+public sealed partial class InternalsSystem : SharedInternalsSystem
 {
-    [Dependency] private readonly AlertsSystem _alerts = default!;
-    [Dependency] private readonly GasTankSystem _gasTank = default!;
-    [Dependency] private readonly RespiratorSystem _respirator = default!;
+    [Dependency] private AlertsSystem _alerts = default!;
+    [Dependency] private GasTankSystem _gasTank = default!;
+    [Dependency] private RespiratorSystem _respirator = default!;
 
     private EntityQuery<InternalsComponent> _internalsQuery;
 
@@ -38,8 +39,13 @@ public sealed class InternalsSystem : SharedInternalsSystem
         if (component.GasTankEntity != null)
             return; // already connected
 
+        // Some entities (e.g. Novakin) have internals for inventory compatibility but do not use the
+        // standard RespiratorComponent. They cannot use a conventional breathing tank.
+        if (!TryComp<RespiratorComponent>(uid, out var respirator))
+            return;
+
         // Can the entity breathe the air it is currently exposed to?
-        if (_respirator.CanMetabolizeInhaledAir(uid))
+        if (_respirator.CanMetabolizeInhaledAir((uid, respirator)))
             return;
 
         var tank = FindBestGasTank(uid);
@@ -47,7 +53,7 @@ public sealed class InternalsSystem : SharedInternalsSystem
             return;
 
         // Could the entity metabolise the air in the linked gas tank?
-        if (!_respirator.CanMetabolizeGas(uid, tank.Value.Comp.Air))
+        if (!_respirator.CanMetabolizeGas((uid, respirator), tank.Value.Comp.Air))
             return;
 
         ToggleInternals(uid, uid, force: false, component, ToggleMode.On);

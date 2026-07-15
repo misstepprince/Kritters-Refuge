@@ -10,7 +10,7 @@ namespace Content.Client.Shuttles.UI;
 public sealed partial class RadarConsoleWindow : FancyWindow,
     IComputerWindow<NavInterfaceState>
 {
-    [Dependency] private readonly IEntityManager _entManager = default!;
+    [Dependency] private IEntityManager _entManager = default!;
 
     protected override void EnteredTree()
     {

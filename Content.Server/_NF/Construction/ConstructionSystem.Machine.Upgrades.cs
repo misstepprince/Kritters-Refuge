@@ -126,14 +126,14 @@ public sealed partial class ConstructionSystem
         }, true);
     }
 }
-public sealed class RefreshPartsEvent : EntityEventArgs
+public sealed partial class RefreshPartsEvent : EntityEventArgs
 {
     public IReadOnlyList<MachinePartState> Parts = new List<MachinePartState>(); // Frontier: MachinePartComponent<MachinePartState
 
     public Dictionary<string, float> PartRatings = new Dictionary<string, float>();
 }
 
-public sealed class UpgradeExamineEvent : EntityEventArgs
+public sealed partial class UpgradeExamineEvent : EntityEventArgs
 {
     private FormattedMessage _message;
 

@@ -16,15 +16,15 @@ using Robust.Shared.Serialization; // Frontier
 
 namespace Content.Shared.Access.Systems;
 
-public abstract class SharedIdCardSystem : EntitySystem
+public abstract partial class SharedIdCardSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfgManager = default!;
-    [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedAccessSystem _access = default!;
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
-    [Dependency] private readonly MetaDataSystem _metaSystem = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IConfigurationManager _cfgManager = default!;
+    [Dependency] private ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedAccessSystem _access = default!;
+    [Dependency] private InventorySystem _inventorySystem = default!;
+    [Dependency] private MetaDataSystem _metaSystem = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     // CCVar.
     private int _maxNameLength;
@@ -334,7 +334,7 @@ public abstract class SharedIdCardSystem : EntitySystem
 
     // Frontier: rename IDs & shuttles
     [Serializable, NetSerializable]
-    public sealed class WriteToTargetIdMessage : BoundUserInterfaceMessage
+    public sealed partial class WriteToTargetIdMessage : BoundUserInterfaceMessage
     {
         public readonly string FullName;
         public readonly string JobTitle;
@@ -351,7 +351,7 @@ public abstract class SharedIdCardSystem : EntitySystem
     }
 
     [Serializable, NetSerializable]
-    public sealed class WriteToShuttleDeedMessage : BoundUserInterfaceMessage
+    public sealed partial class WriteToShuttleDeedMessage : BoundUserInterfaceMessage
     {
         public readonly string ShuttleName;
         public readonly string ShuttleSuffix;

@@ -4,9 +4,9 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared.Clothing.EntitySystems;
 
-public sealed class CycleableClothingVisualsSystem : EntitySystem
+public sealed partial class CycleableClothingVisualsSystem : EntitySystem
 {
-    [Dependency] private readonly ClothingSystem _clothing = default!;
+    [Dependency] private ClothingSystem _clothing = default!;
 
     public override void Initialize()
     {

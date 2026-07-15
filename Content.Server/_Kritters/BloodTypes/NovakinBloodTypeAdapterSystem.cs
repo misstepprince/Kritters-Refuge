@@ -7,10 +7,10 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Kritters.BloodTypes;
 
-public sealed class NovakinBloodTypeAdapterSystem : EntitySystem
+public sealed partial class NovakinBloodTypeAdapterSystem : EntitySystem
 {
-    [Dependency] private readonly NovakinPhysiologySystem _physiology = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private NovakinPhysiologySystem _physiology = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
     private static readonly Dictionary<string, ProtoId<NovakinGasPrototype>> GasSelections = new()
     {

@@ -16,15 +16,15 @@ namespace Content.Shared._CS.MobDice;
 /// <summary>
 /// This handles...
 /// </summary>
-public sealed class MobDiceSystem : EntitySystem
+public sealed partial class MobDiceSystem : EntitySystem
 {
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly IGameTiming _time = default!;
-    [Dependency] private readonly IRobustRandom _rand = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedPopupSystem _pop = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doafter = default!;
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private IGameTiming _time = default!;
+    [Dependency] private IRobustRandom _rand = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedPopupSystem _pop = default!;
+    [Dependency] private SharedDoAfterSystem _doafter = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
 
     /// <inheritdoc/>
     public override void Initialize()

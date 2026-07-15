@@ -10,10 +10,10 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Kritters.BloodTypes;
 
-public sealed class KrittersBloodTypeSystem : EntitySystem
+public sealed partial class KrittersBloodTypeSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
 
     private readonly List<KrittersBloodTypePrototype> _bloodTypes = new();
     private readonly Dictionary<ProtoId<ReagentPrototype>, KrittersBloodTypePrototype> _bloodTypesByReagent = new();

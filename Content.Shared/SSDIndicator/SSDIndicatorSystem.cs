@@ -17,13 +17,13 @@ namespace Content.Shared.SSDIndicator;
 /// <summary>
 ///     Handle changing player SSD indicator status
 /// </summary>
-public sealed class SSDIndicatorSystem : EntitySystem
+public sealed partial class SSDIndicatorSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
-    [Dependency] private readonly SharedStationSystem _stationSystem = default!;
-    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
+    [Dependency] private SharedStationSystem _stationSystem = default!;
+    [Dependency] private ISharedPlayerManager _playerManager = default!;
 
     private bool _icSsdSleep;
     private float _icSsdSleepTime;
@@ -267,7 +267,7 @@ public sealed class SSDIndicatorSystem : EntitySystem
 /// <summary>
 /// Just tells the job system to try to reopen the job.
 /// </summary>
-public sealed class SSDJobReopenEvent : EntityEventArgs
+public sealed partial class SSDJobReopenEvent : EntityEventArgs
 {
     public EntityUid User { get; set; }
 
@@ -280,7 +280,7 @@ public sealed class SSDJobReopenEvent : EntityEventArgs
 /// <summary>
 /// Raised to shove someone into cryosleep.
 /// </summary>
-public sealed class ForceCryoSleepEvent : EntityEventArgs
+public sealed partial class ForceCryoSleepEvent : EntityEventArgs
 {
     public EntityUid User { get; set; }
     public EntityUid Cryopod { get; set; }

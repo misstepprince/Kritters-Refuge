@@ -35,22 +35,22 @@ using Robust.Shared.Serialization;
 
 namespace Content.Server._NF.Shipyard.Systems;
 
-public sealed class BluespaceDrydockSystem : EntitySystem
+public sealed partial class BluespaceDrydockSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly PopupSystem _popup = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly StationSystem _station = default!;
-    [Dependency] private readonly ShuttleSystem _shuttle = default!;
-    [Dependency] private readonly DockingSystem _docking = default!;
-    [Dependency] private readonly MapLoaderSystem _mapLoader = default!;
-    [Dependency] private readonly MapSystem _map = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
-    [Dependency] private readonly IResourceManager _resourceManager = default!;
-    [Dependency] private readonly GeneratorSystem _generator = default!;
-    [Dependency] private readonly PowerChargeSystem _powerCharge = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private StationSystem _station = default!;
+    [Dependency] private ShuttleSystem _shuttle = default!;
+    [Dependency] private DockingSystem _docking = default!;
+    [Dependency] private MapLoaderSystem _mapLoader = default!;
+    [Dependency] private MapSystem _map = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private IResourceManager _resourceManager = default!;
+    [Dependency] private GeneratorSystem _generator = default!;
+    [Dependency] private PowerChargeSystem _powerCharge = default!;
 
     private ISawmill _sawmill = default!;
 

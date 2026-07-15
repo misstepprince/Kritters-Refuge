@@ -8,14 +8,14 @@ using Robust.Client.Graphics;
 
 namespace Content.Client.Buckle;
 
-internal sealed class BuckleSystem : SharedBuckleSystem
+internal sealed partial class BuckleSystem : SharedBuckleSystem
 {
     private const int BehindViewTopDepth = Robust.Shared.GameObjects.DrawDepth.Default + 7;
 
-    [Dependency] private readonly RotationVisualizerSystem _rotationVisualizerSystem = default!;
-    [Dependency] private readonly IEyeManager _eye = default!;
-    [Dependency] private readonly SharedTransformSystem _xformSystem = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private RotationVisualizerSystem _rotationVisualizerSystem = default!;
+    [Dependency] private IEyeManager _eye = default!;
+    [Dependency] private SharedTransformSystem _xformSystem = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     private readonly Dictionary<EntityUid, int> _originalStrapDepth = new();
     private readonly List<EntityUid> _staleDepthKeys = new();

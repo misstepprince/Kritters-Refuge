@@ -9,11 +9,11 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._Kritters.Overlays;
 
-public sealed class NovakinHeatOverlay : Robust.Client.Graphics.Overlay
+public sealed partial class NovakinHeatOverlay : Robust.Client.Graphics.Overlay
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
     private readonly ShaderInstance _shader;
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 

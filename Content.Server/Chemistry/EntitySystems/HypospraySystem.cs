@@ -43,15 +43,15 @@ using Content.Shared.Body.Components;
 
 namespace Content.Server.Chemistry.EntitySystems;
 
-public sealed class HypospraySystem : SharedHypospraySystem
+public sealed partial class HypospraySystem : SharedHypospraySystem
 {
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
-    [Dependency] private readonly AudioSystem _audio = default!;
-    [Dependency] private readonly InteractionSystem _interaction = default!;
-    [Dependency] protected readonly SharedPopupSystem Popup = default!;
-    [Dependency] private readonly IChatManager _chat = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private AtmosphereSystem _atmosphere = default!;
+    [Dependency] private AudioSystem _audio = default!;
+    [Dependency] private InteractionSystem _interaction = default!;
+    [Dependency] protected SharedPopupSystem Popup = default!;
+    [Dependency] private IChatManager _chat = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     private const ChatChannel BlockInjectionDenyChannel = ChatChannel.Emotes;
 

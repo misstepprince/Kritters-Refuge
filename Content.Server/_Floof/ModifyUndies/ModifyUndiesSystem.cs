@@ -24,14 +24,14 @@ namespace Content.Server.FloofStation.ModifyUndies;
 /// This is a component that lets you show/hide specific underwear slots.
 ///
 /// </summary>
-public sealed class ModifyUndiesSystem : EntitySystem
+public sealed partial class ModifyUndiesSystem : EntitySystem
 {
-    [Dependency] private readonly MarkingManager _markingManager = default!;
-    [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
-    [Dependency] private readonly AudioSystem _audio = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoid = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
-    [Dependency] private readonly SharedConsentSystem _consentSystem = default!;
+    [Dependency] private MarkingManager _markingManager = default!;
+    [Dependency] private SharedPopupSystem _popupSystem = default!;
+    [Dependency] private AudioSystem _audio = default!;
+    [Dependency] private HumanoidAppearanceSystem _humanoid = default!;
+    [Dependency] private SharedDoAfterSystem _doAfterSystem = default!;
+    [Dependency] private SharedConsentSystem _consentSystem = default!;
 
     public static ProtoId<ConsentTogglePrototype> GenitalMarkingsConsent = "GenitalMarkings";
 

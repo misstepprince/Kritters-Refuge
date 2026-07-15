@@ -3,9 +3,9 @@ using Robust.Client.Graphics;
 
 namespace Content.Client.Floofstation.Leash;
 
-public sealed class LeashVisualsSystem : EntitySystem
+public sealed partial class LeashVisualsSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlay = default!;
+    [Dependency] private IOverlayManager _overlay = default!;
 
     public override void Initialize()
     {

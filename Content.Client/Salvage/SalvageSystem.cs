@@ -11,12 +11,12 @@ using Robust.Shared.Player; // _CS
 
 namespace Content.Client.Salvage;
 
-public sealed class SalvageSystem : SharedSalvageSystem
+public sealed partial class SalvageSystem : SharedSalvageSystem
 {
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly ContentAudioSystem _audio = default!;
-    [Dependency] private readonly AudioSystem _audioSystem = default!; // _CS
-    [Dependency] private readonly IConfigurationManager _cfg = default!; // _CS
+    [Dependency] private IPlayerManager _playerManager = default!;
+    [Dependency] private ContentAudioSystem _audio = default!;
+    [Dependency] private AudioSystem _audioSystem = default!; // _CS
+    [Dependency] private IConfigurationManager _cfg = default!; // _CS
 
     const float SalvageExpeditionMinMusicVolume = -30f; // _CS: expedition volume range
     const float SalvageExpeditionMaxMusicVolume = 3.0f; // _CS: expedition volume range

@@ -17,12 +17,12 @@ using Content.Server.Construction; // Frontier
 
 namespace Content.Server.Bed
 {
-    public sealed class BedSystem : SharedBedSystem
+    public sealed partial class BedSystem : SharedBedSystem
     {
-        [Dependency] private readonly DamageableSystem _damageableSystem = default!;
-        [Dependency] private readonly EmagSystem _emag = default!;
-        [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-        [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
+        [Dependency] private DamageableSystem _damageableSystem = default!;
+        [Dependency] private EmagSystem _emag = default!;
+        [Dependency] private SharedAppearanceSystem _appearance = default!;
+        [Dependency] private MobStateSystem _mobStateSystem = default!;
 
         private EntityQuery<SleepingComponent> _sleepingQuery;
 

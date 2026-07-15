@@ -18,15 +18,15 @@ namespace Content.Shared._CS.SniffAndSmell;
 /// <summary>
 /// This handles...
 /// </summary>
-public sealed class ScentSystem : EntitySystem
+public sealed partial class ScentSystem : EntitySystem
 {
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedInteractionSystem _interact = default!;
-    [Dependency] private readonly IGameTiming _time = default!;
-    [Dependency] private readonly IRobustRandom _rng = default!;
-    [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
-    [Dependency] private readonly SharedConsentSystem _consent = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedInteractionSystem _interact = default!;
+    [Dependency] private IGameTiming _time = default!;
+    [Dependency] private IRobustRandom _rng = default!;
+    [Dependency] private SharedPopupSystem _popupSystem = default!;
+    [Dependency] private SharedConsentSystem _consent = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
 
     public TimeSpan BaseSmellCooldown = TimeSpan.FromSeconds(5);
     public TimeSpan NextSmellDetectionTime = TimeSpan.Zero;

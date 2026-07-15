@@ -10,10 +10,10 @@ using static Content.Server.Chat.Systems.ChatSystem;
 
 namespace Content.Server.SurveillanceCamera;
 
-public sealed class SurveillanceCameraMicrophoneSystem : EntitySystem
+public sealed partial class SurveillanceCameraMicrophoneSystem : EntitySystem
 {
-    [Dependency] private readonly SharedTransformSystem _xforms = default!;
-    [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private SharedTransformSystem _xforms = default!;
+    [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
 
     // _CS Start: emote and MIDI relay expansion
 
@@ -218,7 +218,7 @@ public sealed class SurveillanceCameraMicrophoneSystem : EntitySystem
 }
 
 // _CS Start: surveillance camera relay event payloads
-public sealed class SurveillanceCameraSpeechSendEvent : EntityEventArgs
+public sealed partial class SurveillanceCameraSpeechSendEvent : EntityEventArgs
 {
     public EntityUid Speaker { get; }
     public string Message { get; }
@@ -232,7 +232,7 @@ public sealed class SurveillanceCameraSpeechSendEvent : EntityEventArgs
     }
 }
 
-public sealed class SurveillanceCameraMidiSendEvent : EntityEventArgs
+public sealed partial class SurveillanceCameraMidiSendEvent : EntityEventArgs
 {
     public EntityUid Source { get; }
     public RobustMidiEvent[] MidiEvents { get; }
@@ -244,7 +244,7 @@ public sealed class SurveillanceCameraMidiSendEvent : EntityEventArgs
     }
 }
 
-public sealed class SurveillanceCameraMidiChannelFilterSyncEvent : EntityEventArgs
+public sealed partial class SurveillanceCameraMidiChannelFilterSyncEvent : EntityEventArgs
 {
     public EntityUid Source { get; }
     public int Channel { get; }

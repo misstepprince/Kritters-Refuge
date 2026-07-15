@@ -10,9 +10,9 @@ namespace Content.Client._Kritters.Visuals;
 /// remains luminous in darkness. Layers are inserted directly above each body
 /// layer, allowing clothing and equipment to continue covering them normally.
 /// </summary>
-public sealed class NovakinGlowVisualizerSystem : EntitySystem
+public sealed partial class NovakinGlowVisualizerSystem : EntitySystem
 {
-    [Dependency] private readonly SpriteSystem _sprites = default!;
+    [Dependency] private SpriteSystem _sprites = default!;
 
     private readonly HashSet<EntityUid> _dirty = new();
     private readonly Dictionary<EntityUid, HashSet<string>> _markingGlowLayers = new();

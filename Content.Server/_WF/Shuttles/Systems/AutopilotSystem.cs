@@ -19,14 +19,14 @@ namespace Content.Server._WF.Shuttles.Systems;
 /// Uses Reynolds steering behaviors for autonomous character movement.
 /// Reference: "Steering Behaviors For Autonomous Characters" by Craig W. Reynolds (1999)
 /// </summary>
-public sealed class AutopilotSystem : EntitySystem
+public sealed partial class AutopilotSystem : EntitySystem
 {
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly ThrusterSystem _thruster = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly IChatManager _chatManager = default!;
-    [Dependency] private readonly ShuttleConsoleSystem _console = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private ThrusterSystem _thruster = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private IChatManager _chatManager = default!;
+    [Dependency] private ShuttleConsoleSystem _console = default!;
 
     private readonly HashSet<Entity<MapGridComponent>> _nearbyGrids = new();
 

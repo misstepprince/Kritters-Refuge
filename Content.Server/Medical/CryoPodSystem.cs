@@ -36,22 +36,22 @@ namespace Content.Server.Medical;
 
 public sealed partial class CryoPodSystem : SharedCryoPodSystem
 {
-    [Dependency] private readonly AtmosphereSystem _atmosphereSystem = default!;
-    [Dependency] private readonly GasCanisterSystem _gasCanisterSystem = default!;
-    [Dependency] private readonly ClimbSystem _climbSystem = default!;
-    [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
-    [Dependency] private readonly BloodstreamSystem _bloodstreamSystem = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
-    [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
-    [Dependency] private readonly SharedToolSystem _toolSystem = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly MetaDataSystem _metaDataSystem = default!;
-    [Dependency] private readonly ReactiveSystem _reactiveSystem = default!;
-    [Dependency] private readonly IAdminLogManager _adminLogger = default!;
-    [Dependency] private readonly NodeContainerSystem _nodeContainer = default!;
-    [Dependency] private readonly GasAnalyzerSystem _gasAnalyzerSystem = default!;
-    [Dependency] private readonly HealthAnalyzerSystem _healthAnalyzerSystem = default!;
+    [Dependency] private AtmosphereSystem _atmosphereSystem = default!;
+    [Dependency] private GasCanisterSystem _gasCanisterSystem = default!;
+    [Dependency] private ClimbSystem _climbSystem = default!;
+    [Dependency] private ItemSlotsSystem _itemSlotsSystem = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
+    [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
+    [Dependency] private SharedDoAfterSystem _doAfterSystem = default!;
+    [Dependency] private UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private SharedToolSystem _toolSystem = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private MetaDataSystem _metaDataSystem = default!;
+    [Dependency] private ReactiveSystem _reactiveSystem = default!;
+    [Dependency] private IAdminLogManager _adminLogger = default!;
+    [Dependency] private NodeContainerSystem _nodeContainer = default!;
+    [Dependency] private GasAnalyzerSystem _gasAnalyzerSystem = default!;
+    [Dependency] private HealthAnalyzerSystem _healthAnalyzerSystem = default!;
 
     public override void Initialize()
     {

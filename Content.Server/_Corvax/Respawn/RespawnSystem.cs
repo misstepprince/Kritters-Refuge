@@ -19,18 +19,18 @@ using Content.Shared._NF.Roles.Components; // Frontier
 
 namespace Content.Server._Corvax.Respawn;
 
-public sealed class RespawnSystem : EntitySystem
+public sealed partial class RespawnSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IAdminManager _admin = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IAdminManager _admin = default!;
 
     private float _respawnTimeOnFirstCryo = 0f; // Frontier: shorter time for cryo respawns
     private float _respawnTime = 0f;
 
     // Frontier: struct for respawn lookup
-    private sealed class RespawnData
+    private sealed partial class RespawnData
     {
         public TimeSpan RespawnTime; // The next time the user can respawn.
         public TimeSpan? LastCryoSleep; // The last time the user entered cryosleep.
