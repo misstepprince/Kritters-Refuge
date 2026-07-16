@@ -1,9 +1,11 @@
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
+using Content.Server.Chat.Managers;
 using Content.Shared.Administration;
 using Content.Shared.Database;
 using Robust.Shared.Console;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Kritters.SpaceCleanup.Commands;
 
@@ -16,10 +18,15 @@ public sealed partial class AggressiveSpaceJanitorCommand : IConsoleCommand
     [Dependency] private IEntitySystemManager _systems = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IChatManager _chat = default!;
+    [Dependency] private ILogManager _log = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+
+    private ISawmill? _sawmill;
 
     public string Command => "spacejanitor";
     public string Description => "Runs or reports aggressive space janitor cleanup.";
-    public string Help => "Usage: spacejanitor cleanup | cleanup-cancel | cleanup-force | status [grid [grid-id]] | grid [grid-id] | grid-cancel [grid-id] | grid-force [grid-id]";
+    public string Help => "Usage: spacejanitor cleanup | cleanup-cancel | cleanup-force | cleanup-cull <prototype-id> | status [grid [grid-id]] | grid [grid-id] | grid-cancel [grid-id] | grid-force [grid-id] | grid-cull <prototype-id> [grid-id]";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
@@ -44,6 +51,27 @@ public sealed partial class AggressiveSpaceJanitorCommand : IConsoleCommand
             return;
         }
 
+        if (args.Length >= 1 && args[0] == "cleanup-cull")
+        {
+            if (args.Length != 2)
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
+            var prototypeId = args[1];
+            if (!_prototypes.HasIndex<EntityPrototype>(prototypeId))
+            {
+                shell.WriteError($"The specified prototype does not exist: {prototypeId}.");
+                return;
+            }
+
+            var culled = _systems.GetEntitySystem<AggressiveSpaceJanitorSystem>()
+                .ForceSpacePrototypeCleanup(prototypeId);
+            LogResult(shell, $"culled prototype {prototypeId} in open space", culled);
+            return;
+        }
+
         if (args.Length >= 1 && args[0] == "status")
         {
             if (args.Length == 1)
@@ -62,6 +90,30 @@ public sealed partial class AggressiveSpaceJanitorCommand : IConsoleCommand
 
             var gridCount = _systems.GetEntitySystem<AggressiveSpaceJanitorSystem>().GetForceEligibleCount(statusGrid);
             shell.WriteLine($"Aggressive space janitor found {gridCount} loose items on grid {statusGrid}.");
+            return;
+        }
+
+        if (args.Length >= 1 && args[0] == "grid-cull")
+        {
+            if (args.Length is < 2 or > 3)
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
+            var prototypeId = args[1];
+            if (!_prototypes.HasIndex<EntityPrototype>(prototypeId))
+            {
+                shell.WriteError($"The specified prototype does not exist: {prototypeId}.");
+                return;
+            }
+
+            if (!TryGetGrid(shell, args.Length == 3 ? args[2] : null, out var cullGrid))
+                return;
+
+            var culled = _systems.GetEntitySystem<AggressiveSpaceJanitorSystem>()
+                .ForceGridPrototypeCleanup(cullGrid, prototypeId);
+            LogResult(shell, $"culled prototype {prototypeId} on grid {cullGrid}", culled);
             return;
         }
 
@@ -124,6 +176,10 @@ public sealed partial class AggressiveSpaceJanitorCommand : IConsoleCommand
         var actor = shell.Player is { } player ? $"{player.Name} ({player.UserId})" : "server console";
         _adminLog.Add(LogType.AdminCommands, LogImpact.Extreme,
             $"{actor} {action}; affected {affected} entities.");
-        shell.WriteLine($"Aggressive space janitor {action}; {affected} entities affected.");
+        var report = $"Aggressive space janitor {action}; {affected} entities affected.";
+        _sawmill ??= _log.GetSawmill("space_janitor");
+        _sawmill.Info(report);
+        _chat.SendAdminAnnouncement(report);
+        shell.WriteLine(report);
     }
 }
