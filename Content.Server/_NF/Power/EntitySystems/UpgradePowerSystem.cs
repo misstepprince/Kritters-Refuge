@@ -1,6 +1,7 @@
 using Content.Server.Construction;
 using Content.Server.Construction.Components;
 using Content.Server.Power.Components;
+using Content.Server.Shuttles.Components;
 using Content.Server._NF.Power.Components;
 
 namespace Content.Server._NF.Power.EntitySystems;
@@ -56,6 +57,8 @@ public sealed class UpgradePowerSystem : EntitySystem
             powa.Load = load;
         if (TryComp<PowerConsumerComponent>(uid, out var powa2))
             powa2.DrawRate = load;
+        if (TryComp<ThrusterComponent>(uid, out var thruster))
+            thruster.OriginalLoad = load;
     }
 
     private static float GetNormalizedRating(RefreshPartsEvent args, string partType, int expectedPartCount)

@@ -20,7 +20,7 @@ public sealed partial class HeightAdjustSystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private INetManager _net = default!;
 
-    private const float BagSizeThreshold = 0.75f;
+    private const float BagSizeThreshold = 0.85f;
 
     public override void Initialize()
     {
@@ -153,7 +153,7 @@ public sealed partial class HeightAdjustSystem : EntitySystem
         if (!_net.IsServer)
             return;
 
-        var smallEnough = humanoid.Height < BagSizeThreshold && humanoid.Width < BagSizeThreshold;
+        var smallEnough = humanoid.Height <= BagSizeThreshold && humanoid.Width <= BagSizeThreshold;
         if (smallEnough)
         {
             // Do not overwrite a species' bespoke bag shape.

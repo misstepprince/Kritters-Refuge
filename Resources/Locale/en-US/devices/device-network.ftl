@@ -13,9 +13,12 @@ device-frequency-prototype-name-turret = Sentry Turret
 device-frequency-prototype-name-turret-control = Sentry Turret Control
 device-frequency-prototype-name-xenoborg = Xenoborg
 device-frequency-prototype-name-mothership = Mothership
+device-frequency-prototype-name-shuttle-timer = Shuttle Timer
+device-frequency-prototype-name-arrivals-shuttle-timer = Arrivals Shuttle Timer
 
 ## camera frequencies
 device-frequency-prototype-name-surveillance-camera-test = Subnet Test
+device-frequency-prototype-name-surveillance-camera = Surveillance Cameras
 device-frequency-prototype-name-surveillance-camera-engineering = Engineering Cameras
 device-frequency-prototype-name-surveillance-camera-security = Security Cameras
 device-frequency-prototype-name-surveillance-camera-science = Science Cameras
@@ -54,4 +57,3 @@ device-net-id-wireless = Wireless
 device-net-id-apc = Apc
 device-net-id-atmos-devices = Atmos Devices
 device-net-id-reserved = Reserved
-

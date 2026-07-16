@@ -1,11 +1,13 @@
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
+using Content.Shared.Maps;
 using Content.Shared.RCD;
 using Content.Shared.RCD.Components;
 using Content.Shared.RCD.Systems;
 using Robust.Client.Placement;
 using Robust.Client.Player;
 using Robust.Shared.Enums;
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.RCD;
@@ -15,6 +17,7 @@ public sealed partial class RCDConstructionGhostSystem : EntitySystem
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private IPlacementManager _placementManager = default!;
     [Dependency] private IPrototypeManager _protoManager = default!;
+    [Dependency] private ITileDefinitionManager _tileDefs = default!;
 
     private string _placementMode = typeof(AlignRCDConstruction).Name;
     private Direction _placementDirection = default;
@@ -57,8 +60,14 @@ public sealed partial class RCDConstructionGhostSystem : EntitySystem
             RaiseNetworkEvent(new RCDConstructionGhostRotationEvent(GetNetEntity(heldEntity.Value), _placementDirection));
         }
 
-        // If the placer has not changed, exit
-        if (heldEntity == placerEntity && prototype.Prototype == placerProto)
+        var placementId = prototype.Prototype ?? string.Empty;
+        var tileType = 0;
+        if (prototype.Mode == RcdMode.ConstructTile && _tileDefs.TryGetDefinition(placementId, out var tile))
+            tileType = tile.TileId;
+
+        // Tile recipes may select a different preview as their direction changes.
+        if (heldEntity == placerEntity && placementId == placerProto
+            && _placementManager.CurrentPermission?.TileType == tileType)
             return;
 
         // Create a new placer
@@ -66,7 +75,8 @@ public sealed partial class RCDConstructionGhostSystem : EntitySystem
         {
             MobUid = heldEntity.Value,
             PlacementOption = _placementMode,
-            EntityType = prototype.Prototype,
+            EntityType = placementId,
+            TileType = tileType,
             Range = (int) Math.Ceiling(SharedInteractionSystem.InteractionRange),
             IsTile = (prototype.Mode == RcdMode.ConstructTile),
             UseEditorContext = false,

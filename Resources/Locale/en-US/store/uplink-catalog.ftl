@@ -93,6 +93,12 @@ uplink-pistol-magazine-desc = Pistol magazine with 10 catridges. Compatible with
 uplink-pistol-magazine-c20r-name = SMG magazine (.35 auto)
 uplink-pistol-magazine-c20r-desc = Rifle magazine with 30 catridges. Compatible with C-20r.
 
+uplink-pistol-magazine-40-name = Pistol Magazine (.40 pistol)
+uplink-pistol-magazine-40-desc = Pistol magazine with 10 cartridges. Compatible with .40 pistol firearms.
+
+uplink-pistol-magazine-c20r-40-name = SMG Magazine (.40 pistol)
+uplink-pistol-magazine-c20r-40-desc = SMG magazine with 30 cartridges. Compatible with .40 pistol SMGs.
+
 uplink-estoc-ammo-name = Rifle magazine (.20 rifle)
 uplink-estoc-ammo-desc = A rifle magazine with 25 cartridges. Compatible with the Estoc DMR.
 

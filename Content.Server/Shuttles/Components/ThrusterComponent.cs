@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server.Shuttles.Systems;
+using Content.Server._NF.Power.EntitySystems;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Damage;
 using Content.Shared.DeviceLinking; // Frontier
@@ -11,7 +12,7 @@ using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototy
 namespace Content.Server.Shuttles.Components
 {
     [RegisterComponent, NetworkedComponent, AutoGenerateComponentPause]
-    [Access(typeof(ThrusterSystem))]
+    [Access(typeof(ThrusterSystem), typeof(UpgradePowerSystem))]
     public sealed partial class ThrusterComponent : Component
     {
         /// <summary>

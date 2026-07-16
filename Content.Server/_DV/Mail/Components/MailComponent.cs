@@ -114,7 +114,17 @@ namespace Content.Server._DV.Mail.Components
         /// </summary>
         public bool IsEnabled = true;
 
+        /// <summary>
+        /// Set once a player has held or equipped this parcel. Unopened collected mail is not treated as abandoned.
+        /// </summary>
+        public bool HasBeenPickedUp;
+
         public CancellationTokenSource? PriorityCancelToken;
+
+        /// <summary>
+        /// The priority delivery deadline, when priority delivery applies.
+        /// </summary>
+        public TimeSpan PriorityExpiryTime;
 
         /// <summary>
         /// How long it takes for the mail to be considered trash.
