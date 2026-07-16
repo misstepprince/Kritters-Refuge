@@ -3,12 +3,14 @@ using Content.Server._DV.Mail.Components;
 using Content.Server._Kritters.SpaceCleanup.Components;
 using Content.Server._NF.GC.Components;
 using Content.Server.Cargo.Systems;
+using Content.Server.Chat.Managers;
 using Content.Server.Construction.Components;
 using Content.Shared._Kritters.CCVar;
 using Content.Shared.Construction.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Components;
+using Content.Shared._Goobstation.Vehicles;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
@@ -30,6 +32,7 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
     [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private PricingSystem _pricing = default!;
+    [Dependency] private IChatManager _chat = default!;
 
     private bool _enabled = true;
     private TimeSpan _scanInterval = TimeSpan.FromMinutes(1);
@@ -65,7 +68,13 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
             return;
 
         _nextScan = _timing.CurTime + _scanInterval;
-        RunCleanup();
+        var deleted = RunCleanup();
+        if (deleted == 0)
+            return;
+
+        var report = $"Aggressive space janitor cleanup sweep queued {deleted} entities for deletion.";
+        Log.Info(report);
+        _chat.SendAdminAnnouncement(report);
     }
 
     private void SetEnabled(bool value)
@@ -158,6 +167,43 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
     public int ForceSpaceCleanup()
     {
         return ForceCleanup(null);
+    }
+
+    /// <summary>
+    /// Immediately queues loose instances of an exact prototype on a grid, while preserving player and container safety.
+    /// </summary>
+    public int ForceGridPrototypeCleanup(EntityUid grid, string prototypeId)
+    {
+        return ForcePrototypeCleanup(grid, prototypeId);
+    }
+
+    /// <summary>
+    /// Immediately queues loose instances of an exact prototype in open space, while preserving player and container safety.
+    /// </summary>
+    public int ForceSpacePrototypeCleanup(string prototypeId)
+    {
+        return ForcePrototypeCleanup(null, prototypeId);
+    }
+
+    private int ForcePrototypeCleanup(EntityUid? grid, string prototypeId)
+    {
+        var deleted = 0;
+        var query = EntityQueryEnumerator<TransformComponent>();
+        while (query.MoveNext(out var uid, out var xform))
+        {
+            if (Deleted(uid)
+                || Terminating(uid)
+                || !IsInScope(xform, grid)
+                || !IsPrototypeCullEligible(uid, xform, prototypeId))
+            {
+                continue;
+            }
+
+            QueueDel(uid);
+            deleted++;
+        }
+
+        return deleted;
     }
 
     /// <summary>
@@ -333,6 +379,40 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
         }
 
         return !TryComp<MindContainerComponent>(uid, out var mindContainer) || !mindContainer.HasMind;
+    }
+
+    private static bool IsInScope(TransformComponent xform, EntityUid? grid)
+    {
+        if (grid is { } targetGrid)
+            return xform.GridUid == targetGrid;
+
+        return xform.MapID != MapId.Nullspace && xform.MapUid != null && xform.GridUid == null;
+    }
+
+    private bool IsPrototypeCullEligible(EntityUid uid, TransformComponent xform, string prototypeId)
+    {
+        if (_containers.IsEntityOrParentInContainer(uid, xform: xform)
+            || HasComp<MapComponent>(uid)
+            || HasComp<MapGridComponent>(uid)
+            || HasComp<ActorComponent>(uid))
+        {
+            return false;
+        }
+
+        if (TryComp<MindContainerComponent>(uid, out var mindContainer) && mindContainer.HasMind)
+            return false;
+
+        // NPC bodies contain organs, so only protect contained entities on non-mobs.
+        if (!HasComp<MobStateComponent>(uid) && HasContents(uid))
+            return false;
+
+        if (TryComp<VehicleComponent>(uid, out var vehicle)
+            && (vehicle.Driver != null || HasContents(uid)))
+        {
+            return false;
+        }
+
+        return MetaData(uid).EntityPrototype?.ID == prototypeId;
     }
 
     private bool HasContents(EntityUid uid)

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server.Chat.Managers;
 using Content.Server.Storage.Components;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared.Storage;
@@ -19,6 +20,7 @@ public sealed partial class SpaceJanitorSystem : EntitySystem
     [Dependency] private IGameTiming _gameTiming = default!;
     [Dependency] private EntityStorageSystem _entityStorage = default!;
     [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private IChatManager _chat = default!;
 
     private const int MinutesBetweenChecks = 29;
     private const int MinutesBeforeCleanup = 1; // 12 hours
@@ -38,6 +40,7 @@ public sealed partial class SpaceJanitorSystem : EntitySystem
         if (curTime < _nextCheck)
             return;
         _nextCheck = curTime + TimeSpan.FromMinutes(MinutesBetweenChecks);
+        var deleted = 0;
         var query = EntityQueryEnumerator<SpaceJanitorComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
@@ -52,11 +55,21 @@ public sealed partial class SpaceJanitorSystem : EntitySystem
                 uid,
                 comp,
                 curTime);
-            DeleteIfNeeded(
+            if (DeleteIfNeeded(
                 uid,
                 comp,
-                curTime);
+                curTime))
+            {
+                deleted++;
+            }
         }
+
+        if (deleted == 0)
+            return;
+
+        var report = $"Space janitor cleanup sweep queued {deleted} entities for deletion.";
+        Log.Info(report);
+        _chat.SendAdminAnnouncement(report);
     }
 
     /// <summary>
@@ -96,12 +109,12 @@ public sealed partial class SpaceJanitorSystem : EntitySystem
         comp.FoundInSpaceTime = TimeSpan.Zero;
     }
 
-    private void DeleteIfNeeded(EntityUid uid, SpaceJanitorComponent comp, TimeSpan curTime)
+    private bool DeleteIfNeeded(EntityUid uid, SpaceJanitorComponent comp, TimeSpan curTime)
     {
         if (comp.FoundInSpaceTime == TimeSpan.Zero)
-            return;
+            return false;
         if (curTime - comp.FoundInSpaceTime < TimeSpan.FromMinutes(MinutesBeforeCleanup))
-            return;
+            return false;
         // delete the entity.
         if (TryComp<EntityStorageComponent>(uid, out var storage)
             && !storage.DeleteContentsOnDestruction)
@@ -115,5 +128,6 @@ public sealed partial class SpaceJanitorSystem : EntitySystem
         var myCoords = Transform(uid).LocalPosition;
         Log.Info($"Space janitor sent entity {ToPrettyString(uid)} at {myCoords} to the shadow realm for being in space too long.");
         QueueDel(uid);
+        return true;
     }
 }
