@@ -202,6 +202,8 @@
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
   - type: UpgradePowerDraw
+    machinePartPowerDraw: Manipulator
+    expectedPartCount: 2
     powerDrawMultiplier: 0.75
     scaling: Exponential
   - type: Damageable

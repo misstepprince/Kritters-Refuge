@@ -418,8 +418,7 @@ public sealed partial class StorageUIController : UIController, IOnSystemChanged
             new ItemStorageLocation(DraggingRotation, Vector2i.Zero),
             EntityManager);
 
-        // I don't know why it divides the position by 2. Hope this helps! -emo
-        LayoutContainer.SetPosition(DraggingGhost, UIManager.MousePositionScaled.Position / 2 - offset );
+        LayoutContainer.SetPosition(DraggingGhost, UIManager.MousePositionScaled.Position - offset);
     }
 
     private void OnMenuEndDrag()

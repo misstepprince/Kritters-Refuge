@@ -1,7 +1,12 @@
+using System.Collections.Generic;
 using System.Numerics;
 using Content.Client.Gameplay;
+using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
+using Content.Shared.Maps;
+using Content.Shared.RCD;
 using Content.Shared.RCD.Components;
 using Content.Shared.RCD.Systems;
 using Robust.Client.Placement;
@@ -9,6 +14,8 @@ using Robust.Client.Player;
 using Robust.Client.State;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Client.RCD;
 
@@ -21,11 +28,15 @@ public sealed partial class AlignRCDConstruction : PlacementMode
     private readonly SharedTransformSystem _transformSystem;
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private IStateManager _stateManager = default!;
+    [Dependency] private IPrototypeManager _protoManager = default!;
+    [Dependency] private ITileDefinitionManager _tileDefs = default!;
 
     private const float SearchBoxSize = 2f;
     private const float PlaceColorBaseAlpha = 0.5f;
 
     private EntityCoordinates _unalignedMouseCoords = default;
+    private readonly SpriteSystem _sprite;
+    private string? _lastRcdTilePreviewId;
 
     /// <summary>
     /// This placement mode is not on the engine because it is content specific (i.e., for the RCD)
@@ -35,6 +46,7 @@ public sealed partial class AlignRCDConstruction : PlacementMode
         IoCManager.InjectDependencies(this);
         _mapSystem = _entityManager.System<SharedMapSystem>();
         _rcdSystem = _entityManager.System<RCDSystem>();
+        _sprite = _entityManager.System<SpriteSystem>();
         _transformSystem = _entityManager.System<SharedTransformSystem>();
 
         ValidPlaceColor = ValidPlaceColor.WithAlpha(PlaceColorBaseAlpha);
@@ -59,12 +71,45 @@ public sealed partial class AlignRCDConstruction : PlacementMode
         {
             MouseCoords = new EntityCoordinates(MouseCoords.EntityId, new Vector2(CurrentTile.X + tileSize / 2,
                 CurrentTile.Y + tileSize / 2));
+            UpdateRcdTilePlacementPreview();
         }
         else
         {
+            _lastRcdTilePreviewId = null;
             MouseCoords = new EntityCoordinates(MouseCoords.EntityId, new Vector2(CurrentTile.X + tileSize / 2 + pManager.PlacementOffset.X,
                 CurrentTile.Y + tileSize / 2 + pManager.PlacementOffset.Y));
         }
+    }
+
+    private void UpdateRcdTilePlacementPreview()
+    {
+        var player = _playerManager.LocalSession?.AttachedEntity;
+        if (!_entityManager.TryGetComponent<HandsComponent>(player, out var hands)
+            || hands.ActiveHand?.HeldEntity is not { } held
+            || !_entityManager.TryGetComponent<RCDComponent>(held, out var rcd))
+            return;
+
+        var prototype = _protoManager.Index(rcd.ProtoId);
+        if (prototype.Mode != RcdMode.ConstructTile)
+            return;
+
+        var tileTypeId = prototype.Prototype;
+        if (tileTypeId == null)
+            return;
+        if (tileTypeId == _lastRcdTilePreviewId)
+            return;
+        if (!_tileDefs.TryGetDefinition(tileTypeId, out var definition)
+            || definition is not ContentTileDefinition tile
+            || tile.Sprite is not { } spritePath)
+            return;
+
+        _lastRcdTilePreviewId = tileTypeId;
+        pManager.CurrentTextures = new List<IDirectionalTextureProvider>
+        {
+            _sprite.RsiStateLike(new SpriteSpecifier.Texture(spritePath))
+        };
+        if (pManager.CurrentPermission != null)
+            pManager.CurrentPermission.TileType = tile.TileId;
     }
 
     public override bool IsValidPosition(EntityCoordinates position)

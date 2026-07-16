@@ -161,6 +161,8 @@ public abstract partial class SharedMaterialReclaimerSystem : EntitySystem
         if (!Resolve(uid, ref component, ref active, false))
             return false;
 
+        if (component.CutOffSound)
+            component.Stream = _audio.Stop(component.Stream);
         RemCompDeferred(uid, active);
         return true;
     }
