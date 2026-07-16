@@ -1,6 +1,8 @@
 using System.Numerics;
+using System.Collections.Generic;
 using Content.Server._Kritters.SpaceCleanup;
 using Content.Server._Kritters.SpaceCleanup.Components;
+using Content.Shared.Mobs.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 
@@ -208,6 +210,117 @@ public sealed class SpaceCleanupTest
             Assert.That(entities.EntityExists(nonMatching), Is.True);
             Assert.That(entities.EntityExists(gridMatch), Is.True);
         });
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task PrototypeCleanupSupportsMultiplePrototypesAndProtectsAnchoredOrExemptEntities()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var janitor = entities.System<AggressiveSpaceJanitorSystem>();
+        var map = await pair.CreateTestMap();
+        EntityUid crowbar = default;
+        EntityUid crowbarRed = default;
+        EntityUid anchored = default;
+        EntityUid exempt = default;
+
+        await server.WaitAssertion(() =>
+        {
+            crowbar = entities.SpawnEntity("Crowbar", map.GridCoords);
+            crowbarRed = entities.SpawnEntity("CrowbarRed", map.GridCoords);
+            anchored = entities.SpawnEntity("Crowbar", new EntityCoordinates(map.Grid.Owner, 2, 0));
+            exempt = entities.SpawnEntity("CrowbarRed", map.GridCoords);
+            entities.System<SharedTransformSystem>().AnchorEntity(anchored, entities.GetComponent<TransformComponent>(anchored));
+            entities.AddComponent<AggressiveSpaceJanitorExemptComponent>(exempt);
+
+            var prototypeIds = new HashSet<string>(StringComparer.Ordinal) { "Crowbar", "CrowbarRed" };
+            Assert.That(janitor.ForceGridPrototypeCleanup(map.Grid.Owner, prototypeIds), Is.EqualTo(2));
+        });
+
+        await server.WaitRunTicks(1);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entities.EntityExists(crowbar), Is.False);
+            Assert.That(entities.EntityExists(crowbarRed), Is.False);
+            Assert.That(entities.EntityExists(anchored), Is.True);
+            Assert.That(entities.EntityExists(exempt), Is.True);
+        });
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task GridPrototypeExemptionsAreScopedAndCanBeSwept()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var janitor = entities.System<AggressiveSpaceJanitorSystem>();
+        var map = await pair.CreateTestMap();
+        var otherMap = await pair.CreateTestMap();
+        EntityUid crowbar = default;
+        EntityUid crowbarRed = default;
+        EntityUid otherGridCrowbar = default;
+
+        await server.WaitAssertion(() =>
+        {
+            crowbar = entities.SpawnEntity("Crowbar", map.GridCoords);
+            crowbarRed = entities.SpawnEntity("CrowbarRed", map.GridCoords);
+            otherGridCrowbar = entities.SpawnEntity("Crowbar", otherMap.GridCoords);
+            var prototypeIds = new HashSet<string>(StringComparer.Ordinal) { "Crowbar", "CrowbarRed" };
+            Assert.That(janitor.SetGridPrototypeExemption(map.Grid.Owner, prototypeIds, exempt: true), Is.EqualTo(2));
+            Assert.That(entities.HasComponent<AggressiveSpaceJanitorExemptComponent>(crowbar), Is.True);
+            Assert.That(entities.HasComponent<AggressiveSpaceJanitorExemptComponent>(crowbarRed), Is.True);
+            Assert.That(entities.HasComponent<AggressiveSpaceJanitorTrackedComponent>(crowbar), Is.False);
+            Assert.That(entities.HasComponent<AggressiveSpaceJanitorExemptComponent>(otherGridCrowbar), Is.False);
+
+            Assert.That(janitor.SetGridPrototypeExemption(map.Grid.Owner, prototypeIds, exempt: false), Is.EqualTo(2));
+            Assert.That(entities.HasComponent<AggressiveSpaceJanitorExemptComponent>(crowbar), Is.False);
+            Assert.That(entities.HasComponent<AggressiveSpaceJanitorExemptComponent>(crowbarRed), Is.False);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task InspectionListsAllEntitiesWithFiltersAndCleanupState()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var janitor = entities.System<AggressiveSpaceJanitorSystem>();
+        var map = await pair.CreateTestMap();
+        EntityUid spaceCrowbar = default;
+        EntityUid gridCrowbar = default;
+        EntityUid mob = default;
+
+        await server.WaitAssertion(() =>
+        {
+            spaceCrowbar = entities.SpawnEntity("Crowbar", new MapCoordinates(new Vector2(100, 100), map.MapId));
+            gridCrowbar = entities.SpawnEntity("Crowbar", map.GridCoords);
+            mob = entities.SpawnEntity("MobNovakin", new EntityCoordinates(map.Grid.Owner, 1, 0));
+            janitor.RunCleanup();
+
+            var crowbars = janitor.GetInspectionEntries(new[] { "crow" }, Array.Empty<Type>());
+            Assert.That(crowbars.Count(entry => entry.PrototypeId == "Crowbar"), Is.EqualTo(2));
+            var spaceEntry = crowbars.Single(entry => entry.Entity == spaceCrowbar);
+            Assert.That(spaceEntry.Grid, Is.Null);
+            Assert.That(spaceEntry.Remaining, Is.EqualTo(TimeSpan.FromMinutes(30)));
+            Assert.That(spaceEntry.ScopePrototypeCount, Is.EqualTo(1));
+
+            var gridEntry = crowbars.Single(entry => entry.Entity == gridCrowbar);
+            Assert.That(gridEntry.Grid, Is.EqualTo(map.Grid.Owner));
+            Assert.That(gridEntry.Remaining, Is.Null);
+            Assert.That(gridEntry.IneligibilityReason, Is.EqualTo("on a grid"));
+            Assert.That(gridEntry.ScopePrototypeCount, Is.EqualTo(1));
+
+            var mobs = janitor.GetInspectionEntries(Array.Empty<string>(), new[] { typeof(MobStateComponent) });
+            var mobEntry = mobs.Single(entry => entry.Entity == mob);
+            Assert.That(mobEntry.Remaining, Is.Null);
+            Assert.That(mobEntry.IneligibilityReason, Is.EqualTo("mob"));
+        });
+
         await pair.CleanReturnAsync();
     }
 }

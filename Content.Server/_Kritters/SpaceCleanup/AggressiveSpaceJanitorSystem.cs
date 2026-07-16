@@ -72,7 +72,7 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
         if (deleted == 0)
             return;
 
-        var report = $"Aggressive space janitor cleanup sweep queued {deleted} entities for deletion.";
+        var report = $"Bluespace Janitorial Services cleanup sweep queued {deleted} entities for deletion.";
         Log.Info(report);
         _chat.SendAdminAnnouncement(report);
     }
@@ -174,7 +174,15 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
     /// </summary>
     public int ForceGridPrototypeCleanup(EntityUid grid, string prototypeId)
     {
-        return ForcePrototypeCleanup(grid, prototypeId);
+        return ForceGridPrototypeCleanup(grid, new HashSet<string>(StringComparer.Ordinal) { prototypeId });
+    }
+
+    /// <summary>
+    /// Immediately queues loose instances of exact prototypes on a grid, while preserving player and container safety.
+    /// </summary>
+    public int ForceGridPrototypeCleanup(EntityUid grid, IReadOnlySet<string> prototypeIds)
+    {
+        return ForcePrototypeCleanup(grid, prototypeIds);
     }
 
     /// <summary>
@@ -182,28 +190,137 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
     /// </summary>
     public int ForceSpacePrototypeCleanup(string prototypeId)
     {
-        return ForcePrototypeCleanup(null, prototypeId);
+        return ForceSpacePrototypeCleanup(new HashSet<string>(StringComparer.Ordinal) { prototypeId });
     }
 
-    private int ForcePrototypeCleanup(EntityUid? grid, string prototypeId)
+    /// <summary>
+    /// Immediately queues loose instances of exact prototypes in open space, while preserving player and container safety.
+    /// </summary>
+    public int ForceSpacePrototypeCleanup(IReadOnlySet<string> prototypeIds)
     {
-        var deleted = 0;
+        return ForcePrototypeCleanup(null, prototypeIds);
+    }
+
+    /// <summary>
+    /// Adds or removes the janitor exemption from live instances of exact prototypes on a grid.
+    /// </summary>
+    public int SetGridPrototypeExemption(EntityUid grid, IReadOnlySet<string> prototypeIds, bool exempt)
+    {
+        var matches = new List<EntityUid>();
+        var query = EntityQueryEnumerator<TransformComponent>();
+        while (query.MoveNext(out var uid, out var xform))
+        {
+            if (Deleted(uid)
+                || Terminating(uid)
+                || xform.GridUid != grid
+                || MetaData(uid).EntityPrototype?.ID is not { } prototypeId
+                || !prototypeIds.Contains(prototypeId))
+            {
+                continue;
+            }
+
+            matches.Add(uid);
+        }
+
+        var affected = 0;
+        foreach (var uid in matches)
+        {
+            if (exempt)
+            {
+                if (HasComp<AggressiveSpaceJanitorExemptComponent>(uid))
+                    continue;
+
+                EnsureComp<AggressiveSpaceJanitorExemptComponent>(uid);
+                RemComp<AggressiveSpaceJanitorTrackedComponent>(uid);
+            }
+            else
+            {
+                if (!HasComp<AggressiveSpaceJanitorExemptComponent>(uid))
+                    continue;
+
+                RemComp<AggressiveSpaceJanitorExemptComponent>(uid);
+            }
+
+            affected++;
+        }
+
+        return affected;
+    }
+
+    /// <summary>
+    /// Returns live entities matching all requested prototype and component filters.
+    /// </summary>
+    public List<SpaceJanitorInspectionEntry> GetInspectionEntries(
+        IReadOnlyList<string> prototypeFilters,
+        IReadOnlyList<Type> componentFilters)
+    {
+        var entries = new List<SpaceJanitorInspectionEntry>();
+        var counts = new Dictionary<(string Prototype, EntityUid? Grid, MapId Map), int>();
+        var now = _timing.CurTime;
+        var query = EntityQueryEnumerator<TransformComponent>();
+        while (query.MoveNext(out var uid, out var xform))
+        {
+            if (Deleted(uid) || Terminating(uid))
+                continue;
+
+            var prototypeId = MetaData(uid).EntityPrototype?.ID ?? "<no prototype>";
+            if (!prototypeFilters.All(filter => prototypeId.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                || componentFilters.Any(component => !TryComp(uid, component, out _)))
+            {
+                continue;
+            }
+
+            var eligible = IsEligible(uid, xform, now, null, expedited: false, out var lifetime, out var reason);
+            TimeSpan? remaining = eligible
+                ? TryComp<AggressiveSpaceJanitorTrackedComponent>(uid, out var tracker) && tracker.Started
+                    ? tracker.Remaining
+                    : lifetime
+                : null;
+            var grid = xform.GridUid;
+            var position = grid is { } gridUid
+                ? _transform.ToCoordinates(gridUid, _transform.GetMapCoordinates(uid, xform: xform)).Position
+                : _transform.GetWorldPosition(xform);
+            var scope = (prototypeId, grid, xform.MapID);
+            counts.TryGetValue(scope, out var count);
+            counts[scope] = count + 1;
+            entries.Add(new SpaceJanitorInspectionEntry(uid, prototypeId, grid, xform.MapID, position, remaining, reason, 0));
+        }
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            var entry = entries[i];
+            entries[i] = entry with
+            {
+                ScopePrototypeCount = counts[(entry.PrototypeId, entry.Grid, entry.MapId)],
+            };
+        }
+
+        return entries;
+    }
+
+    private int ForcePrototypeCleanup(EntityUid? grid, IReadOnlySet<string> prototypeIds)
+    {
+        var deleted = new List<EntityUid>();
         var query = EntityQueryEnumerator<TransformComponent>();
         while (query.MoveNext(out var uid, out var xform))
         {
             if (Deleted(uid)
                 || Terminating(uid)
                 || !IsInScope(xform, grid)
-                || !IsPrototypeCullEligible(uid, xform, prototypeId))
+                || !IsPrototypeCullEligible(uid, xform, prototypeIds))
             {
                 continue;
             }
 
-            QueueDel(uid);
-            deleted++;
+            deleted.Add(uid);
         }
 
-        return deleted;
+        foreach (var uid in deleted)
+        {
+            QueueDel(uid);
+        }
+
+        return deleted.Count;
     }
 
     /// <summary>
@@ -224,18 +341,22 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
 
     private int ForceCleanup(EntityUid? grid)
     {
-        var deleted = 0;
+        var deleted = new List<EntityUid>();
         var query = EntityQueryEnumerator<TransformComponent>();
         while (query.MoveNext(out var uid, out var xform))
         {
             if (Deleted(uid) || Terminating(uid) || !IsForceEligible(uid, xform, grid))
                 continue;
 
-            QueueDel(uid);
-            deleted++;
+            deleted.Add(uid);
         }
 
-        return deleted;
+        foreach (var uid in deleted)
+        {
+            QueueDel(uid);
+        }
+
+        return deleted.Count;
     }
 
     private int RunCleanup(EntityUid? grid, bool expedited)
@@ -244,7 +365,7 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
             return 0;
 
         var now = _timing.CurTime;
-        var deleted = 0;
+        var deleted = new List<EntityUid>();
         var query = EntityQueryEnumerator<TransformComponent>();
         while (query.MoveNext(out var uid, out var xform))
         {
@@ -255,7 +376,7 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
             var targetGrid = grid ?? tracker?.TargetGrid;
             var targetExpedited = grid != null ? expedited : tracker?.Expedited ?? expedited;
 
-            if (!IsEligible(uid, xform, now, targetGrid, targetExpedited, out var lifetime))
+            if (!IsEligible(uid, xform, now, targetGrid, targetExpedited, out var lifetime, out _))
             {
                 RemCompDeferred<AggressiveSpaceJanitorTrackedComponent>(uid);
                 continue;
@@ -287,30 +408,36 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
                 continue;
 
             tracker.Remaining -= elapsed;
-            if (tracker.Remaining > TimeSpan.Zero || deleted >= _deletionLimit)
+            if (tracker.Remaining > TimeSpan.Zero || deleted.Count >= _deletionLimit)
                 continue;
 
-            QueueDel(uid);
-            deleted++;
+            deleted.Add(uid);
         }
 
-        return deleted;
+        foreach (var uid in deleted)
+        {
+            QueueDel(uid);
+        }
+
+        return deleted.Count;
     }
 
-    private bool IsEligible(EntityUid uid, TransformComponent xform, TimeSpan now, EntityUid? grid, bool expedited, out TimeSpan lifetime)
+    private bool IsEligible(
+        EntityUid uid,
+        TransformComponent xform,
+        TimeSpan now,
+        EntityUid? grid,
+        bool expedited,
+        out TimeSpan lifetime,
+        out string? ineligibilityReason)
     {
         lifetime = TimeSpan.Zero;
+        ineligibilityReason = null;
         if (xform.MapID == MapId.Nullspace || xform.MapUid == null || xform.Anchored)
+        {
+            ineligibilityReason = xform.Anchored ? "anchored" : "not on a map";
             return false;
-
-        if (grid is { } targetGrid && xform.GridUid != targetGrid)
-            return false;
-
-        if (grid == null && xform.GridUid != null)
-            return false;
-
-        if (_containers.IsEntityOrParentInContainer(uid, xform: xform))
-            return false;
+        }
 
         if (HasComp<MapComponent>(uid)
             || HasComp<MapGridComponent>(uid)
@@ -321,11 +448,33 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
             || HasComp<MachineComponent>(uid)
             || HasComp<ComputerComponent>(uid))
         {
+            ineligibilityReason = GetProtectedEntityReason(uid);
             return false;
         }
 
         if (TryComp<MindContainerComponent>(uid, out var mindContainer) && mindContainer.HasMind)
+        {
+            ineligibilityReason = "has a mind";
             return false;
+        }
+
+        if (grid is { } targetGrid && xform.GridUid != targetGrid)
+        {
+            ineligibilityReason = "outside selected grid";
+            return false;
+        }
+
+        if (grid == null && xform.GridUid != null)
+        {
+            ineligibilityReason = "on a grid";
+            return false;
+        }
+
+        if (_containers.IsEntityOrParentInContainer(uid, xform: xform))
+        {
+            ineligibilityReason = "contained";
+            return false;
+        }
 
         if (TryComp<MailComponent>(uid, out var mail))
         {
@@ -339,14 +488,20 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
                 ? mail.PriorityExpiryTime
                 : mail.TrashTime;
             if (mail.HasBeenPickedUp || now < eligibleAt)
+            {
+                ineligibilityReason = "mail is not ready for cleanup";
                 return false;
+            }
 
             lifetime = _mailLifetime;
             return true;
         }
 
         if (HasContents(uid))
+        {
+            ineligibilityReason = "contains entities";
             return false;
+        }
 
         var highValue = _pricing.GetPrice(uid, includeContents: false) >= _highValueThreshold;
         lifetime = highValue
@@ -389,12 +544,14 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
         return xform.MapID != MapId.Nullspace && xform.MapUid != null && xform.GridUid == null;
     }
 
-    private bool IsPrototypeCullEligible(EntityUid uid, TransformComponent xform, string prototypeId)
+    private bool IsPrototypeCullEligible(EntityUid uid, TransformComponent xform, IReadOnlySet<string> prototypeIds)
     {
-        if (_containers.IsEntityOrParentInContainer(uid, xform: xform)
+        if (xform.Anchored
+            || _containers.IsEntityOrParentInContainer(uid, xform: xform)
             || HasComp<MapComponent>(uid)
             || HasComp<MapGridComponent>(uid)
-            || HasComp<ActorComponent>(uid))
+            || HasComp<ActorComponent>(uid)
+            || HasComp<AggressiveSpaceJanitorExemptComponent>(uid))
         {
             return false;
         }
@@ -412,7 +569,22 @@ public sealed partial class AggressiveSpaceJanitorSystem : EntitySystem
             return false;
         }
 
-        return MetaData(uid).EntityPrototype?.ID == prototypeId;
+        return MetaData(uid).EntityPrototype?.ID is { } prototypeId && prototypeIds.Contains(prototypeId);
+    }
+
+    private string GetProtectedEntityReason(EntityUid uid)
+    {
+        if (HasComp<ActorComponent>(uid))
+            return "actor";
+        if (HasComp<MobStateComponent>(uid))
+            return "mob";
+        if (HasComp<AggressiveSpaceJanitorExemptComponent>(uid))
+            return "exempt";
+        if (HasComp<DeletionCensusExemptComponent>(uid))
+            return "deletion-census exempt";
+        if (HasComp<MachineComponent>(uid) || HasComp<ComputerComponent>(uid))
+            return "machine";
+        return "map or grid";
     }
 
     private bool HasContents(EntityUid uid)
