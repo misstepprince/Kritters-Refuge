@@ -23,6 +23,8 @@ using Content.Shared.Emag.Systems;
 using Content.Shared.Examine;
 using Content.Shared.Fluids.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Hands;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Interaction;
 using Content.Shared.Nutrition.Components;
@@ -51,6 +53,7 @@ using Content.Server.Power.EntitySystems; // Frontier
 using Content.Server._NF.Mail.Components; // Frontier
 using Robust.Server.Player;
 using Robust.Shared.Timing; // Frontier
+using Robust.Shared.Player;
 
 namespace Content.Server._DV.Mail.EntitySystems
 {
@@ -102,6 +105,20 @@ namespace Content.Server._DV.Mail.EntitySystems
             SubscribeLocalEvent<MailComponent, DamageChangedEvent>(OnDamage);
             SubscribeLocalEvent<MailComponent, BreakageEventArgs>(OnBreak);
             SubscribeLocalEvent<MailComponent, GotEmaggedEvent>(OnMailEmagged);
+            SubscribeLocalEvent<MailComponent, GotEquippedHandEvent>(OnMailEquippedHand);
+            SubscribeLocalEvent<MailComponent, GotEquippedEvent>(OnMailEquipped);
+        }
+
+        private void OnMailEquippedHand(EntityUid uid, MailComponent component, GotEquippedHandEvent args)
+        {
+            if (HasComp<ActorComponent>(args.User))
+                component.HasBeenPickedUp = true;
+        }
+
+        private void OnMailEquipped(EntityUid uid, MailComponent component, GotEquippedEvent args)
+        {
+            if (HasComp<ActorComponent>(args.Equipee))
+                component.HasBeenPickedUp = true;
         }
 
         public override void Update(float frameTime)
@@ -561,6 +578,7 @@ namespace Content.Server._DV.Mail.EntitySystems
                 _appearanceSystem.SetData(uid, MailVisuals.IsPriority, true);
 
                 mailComp.PriorityCancelToken = new CancellationTokenSource();
+                mailComp.PriorityExpiryTime = _gameTiming.CurTime + component.PriorityDuration;
 
                 Timer.Spawn((int)component.PriorityDuration.TotalMilliseconds,
                     () =>
