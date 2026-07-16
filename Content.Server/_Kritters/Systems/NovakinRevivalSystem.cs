@@ -3,6 +3,7 @@ using Content.Server.Ghost;
 using Content.Shared._Kritters;
 using Content.Shared._Kritters.Components;
 using Content.Shared.Damage;
+using Content.Shared._CS.Needs;
 using Content.Shared.Interaction;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
@@ -63,11 +64,14 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
             return;
         }
 
-        if (!HasShellRepair(entity) || physiology.CurrentReserve < physiology.MaxReserve * 0.5f)
+        var readiness = GetRestartReadiness(entity, physiology);
+        if (!readiness.Ready)
         {
-            _popup.PopupEntity(Loc.GetString(!HasShellRepair(entity)
-                ? "novakin-core-restart-shell"
-                : "novakin-core-restart-gas"), entity, args.User);
+            _popup.PopupEntity(Loc.GetString("novakin-core-restart-requirements",
+                ("shell", NovakinDisplayFormat.Number(readiness.PhysicalDamage)),
+                ("total", NovakinDisplayFormat.Number(readiness.TotalDamage)),
+                ("gas", NovakinDisplayFormat.Number(readiness.ReservePercent)),
+                ("fuel", NovakinDisplayFormat.Number(readiness.FuelPercent))), entity, args.User);
             args.Handled = true;
             return;
         }
@@ -80,7 +84,7 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
     private void OnRestartFinished(Entity<NovakinDormantCoreComponent> entity, ref NovakinCoreRestartFinishedEvent args)
     {
         if (args.Cancelled || !TryComp<NovakinPhysiologyComponent>(entity, out var physiology)
-            || !HasShellRepair(entity) || physiology.CurrentReserve < physiology.MaxReserve * 0.5f
+            || !GetRestartReadiness(entity, physiology).Ready
             || args.Used is not { } used || !TryComp<WelderComponent>(used, out var welder) || !welder.Enabled)
             return;
 
@@ -91,9 +95,31 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
         args.Handled = true;
     }
 
+    private RestartReadiness GetRestartReadiness(EntityUid uid, NovakinPhysiologyComponent physiology)
+    {
+        if (!TryComp<DamageableComponent>(uid, out var damageable)
+            || !TryComp<NeedsComponent>(uid, out var needs)
+            || !needs.Needs.TryGetValue(NeedType.Fuel, out var fuel))
+            return default;
+
+        var physical = GetBruteDamage(damageable);
+        var reservePercent = physiology.MaxReserve <= 0f ? 0f : physiology.CurrentReserve / physiology.MaxReserve * 100f;
+        var fuelPercent = fuel.MaxValue <= 0f ? 0f : fuel.CurrentValue / fuel.MaxValue * 100f;
+        return new RestartReadiness(physical < 100f && damageable.TotalDamage.Float() < 200f && reservePercent >= 50f && fuelPercent >= 10f,
+            physical, damageable.TotalDamage.Float(), reservePercent, fuelPercent);
+    }
+
     private bool HasShellRepair(EntityUid uid)
         => TryComp<DamageableComponent>(uid, out var damageable)
-           && damageable.TotalDamage.Float() < 100f;
+           && damageable.TotalDamage.Float() < 200f
+           && GetBruteDamage(damageable) < 100f;
+
+    private static float GetBruteDamage(DamageableComponent damageable)
+        => damageable.Damage.DamageDict.GetValueOrDefault("Blunt").Float()
+           + damageable.Damage.DamageDict.GetValueOrDefault("Slash").Float()
+           + damageable.Damage.DamageDict.GetValueOrDefault("Piercing").Float();
+
+    private readonly record struct RestartReadiness(bool Ready, float PhysicalDamage, float TotalDamage, float ReservePercent, float FuelPercent);
 
     private void OpenReturnToBody(EntityUid uid)
     {

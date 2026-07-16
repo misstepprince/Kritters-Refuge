@@ -25,10 +25,9 @@
     - NeedNovakinFuel
   - type: NovakinPhysiology
     fuelConsumptionBaselineTemperature: 373.15
-    fuelConsumptionMaximumTemperature: 700
-    maximumFuelConsumptionMultiplier: 6
-    maximumHeatSpeedMultiplier: 1.3
-    reserveDrainPerSecond: 0.1666667
+    maximumHeatSpeedMultiplier: 1.15
+    maximumHeatSpeedTemperature: 699
+    reserveDrainPerSecond: 0.055555556
     leakedMolesPerReserve: 0.01
   - type: Speech
     speechVerb: Novakin
@@ -44,36 +43,41 @@
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: Novakin
+  - type: DamageVisuals
+    damageOverlayGroups:
+      Brute:
+        sprite: Mobs/Effects/brute_damage.rsi
+        color: "#000000"
+      Burn:
+        sprite: Mobs/Effects/burn_damage.rsi
   - type: TypingIndicator
     proto: alien
   - type: Fingerprint
   - type: Blindable
   - type: KrittersNightVision
   - type: AtmosExposed
+  - type: PointLight
+    enabled: true
+    radius: 1.2
+    energy: 1
+    color: "#ffb36b"
   - type: Temperature
     currentTemperature: 373.15
+    # A fueled Core can hold station temperature without EVA insulation.
+    atmosTemperatureTransferEfficiency: 0.02
+    # The Novakin shell system owns thermal damage and its separate warning alert.
+    heatDamageThreshold: 1000000
+    coldDamageThreshold: 1
     specificHeat: 42
-  - type: TemperatureSpeed
-    thresholds:
-      368.15: 0.9
-      350: 0.75
-      330: 0.5
   - type: ThermalRegulator
     metabolismHeat: 0
     radiatedHeat: 0
     # Exposed heat loss can overpower this regulation; insulated suits reduce that loss natively.
-    implicitHeatRegulation: 500
-    sweatHeatRegulation: 500
-    shiveringHeatRegulation: 500
+    implicitHeatRegulation: 2000
+    sweatHeatRegulation: 2000
+    shiveringHeatRegulation: 2000
     normalBodyTemperature: 373.15
     thermalRegulationTemperatureThreshold: 2
-  - type: Barotrauma
-    damage:
-      types:
-        Blunt: 0.85
-  - type: BlockInjection
-    blockHypospray: true
-    blockInjectOnProjectile: true
   - type: FireVisuals
     alternateState: Standing
   - type: LayingDown

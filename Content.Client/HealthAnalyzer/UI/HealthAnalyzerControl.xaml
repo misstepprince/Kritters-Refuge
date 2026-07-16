@@ -43,11 +43,6 @@
             <!-- Kritters: show blood chemistry alongside blood volume. -->
             <Label Name="BloodTypeTitleLabel" Text="{Loc 'health-analyzer-window-entity-blood-type-text'}" />
             <Label Name="BloodTypeLabel" />
-            <!-- Kritters: only visible for Novakin analyzer states. -->
-            <Label Name="IntegrityTitleLabel" Text="{Loc 'health-analyzer-window-entity-integrity-text'}" Visible="False" />
-            <Label Name="IntegrityLabel" Visible="False" />
-            <Label Name="GasTypeTitleLabel" Text="{Loc 'health-analyzer-window-entity-gas-type-text'}" Visible="False" />
-            <Label Name="GasTypeLabel" Visible="False" />
             <Label Text="{Loc 'health-analyzer-window-entity-damage-total-text'}" />
             <Label Name="DamageLabel" />
         </GridContainer>

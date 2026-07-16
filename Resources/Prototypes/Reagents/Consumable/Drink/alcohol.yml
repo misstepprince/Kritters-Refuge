@@ -213,13 +213,9 @@
           shouldHave: false
       - !type:Drunk
         boozePower: 2
-    # Ethanol's Alcohol metabolism replaces the inherited metabolism map, so
-    # preserve BaseAlcohol's Drink effects explicitly for Novakin metabolism.
+    # Ethanol's Alcohol metabolism replaces the inherited metabolism map.
     Drink:
       effects:
-      # Kritters: raises the Novakin core temperature.
-      - !type:NovakinHeat
-        temperatureDelta: 1
       - !type:SatiateThirst
         factor: 2
       - !type:AdjustReagent

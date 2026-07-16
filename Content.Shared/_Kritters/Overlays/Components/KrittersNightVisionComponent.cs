@@ -4,8 +4,7 @@ using Robust.Shared.Prototypes;
 namespace Content.Shared._Kritters.Overlays;
 
 /// <summary>
-/// Enables the Novakin night-vision overlay and identifies the attached visual
-/// effect spawned while that overlay is active.
+/// Enables the Novakin night-vision overlay.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class KrittersNightVisionComponent : Component

@@ -19,12 +19,6 @@
   color: "#22282b"
   boilingPoint: 4200.0
   meltingPoint: 3550.0
-  metabolisms:
-    Fuel:
-      effects:
-      # Kritters: fuels the Novakin core.
-      - !type:NovakinFuel
-        fuel: 1
 
 - type: reagent
   id: Chlorine
@@ -132,12 +126,6 @@
   color: "#cccccc"
   boilingPoint: -253.0
   meltingPoint: -259.2
-  metabolisms:
-    Fuel:
-      effects:
-      # Kritters: fuels the Novakin core.
-      - !type:NovakinFuel
-        fuel: 1
 
 - type: reagent
   id: Iodine
@@ -335,12 +323,6 @@
   color: "#00ff04"
   meltingPoint: 700.0
   boilingPoint: 1737.0
-  metabolisms:
-    Fuel:
-      effects:
-      # Kritters: fuels the Novakin core.
-      - !type:NovakinFuel
-        fuel: 7
 
 - type: reagent
   id: Silicon
@@ -421,11 +403,6 @@
     probability: 0.2
     amount: 0.1
   metabolisms:
-    Fuel:
-      effects:
-      # Kritters: fuels the Novakin core.
-      - !type:NovakinFuel
-        fuel: 6
     Poison:
       effects:
       - !type:HealthChange

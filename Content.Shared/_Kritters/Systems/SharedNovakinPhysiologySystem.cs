@@ -34,3 +34,9 @@ public sealed class NovakinCryoPodInjectionEvent(Solution solution) : EntityEven
 {
     public Solution Solution { get; } = solution;
 }
+
+/// <summary>Raised by fuel reagents so server temperature handling remains server-side.</summary>
+public sealed class NovakinCoreFuelMetabolizedEvent(float heat) : EntityEventArgs
+{
+    public float Heat { get; } = heat;
+}

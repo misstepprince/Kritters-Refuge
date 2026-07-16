@@ -11,12 +11,14 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IOverlayManager _overlayMan = default!;
+    [Dependency] private TransformSystem _transform = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private FlashImmunitySystem _flashImmunity = default!;
 
     private KrittersNightVisionOverlay _overlay = default!;
     [ViewVariables]
-    private EntityUid? _effect = null;
+    private bool _active;
+    private EntityUid? _effect;
     private const string ModernKrittersNightVisionShaderPrototype = "ModernKrittersNightVisionShader";
 
     public override void Initialize()
@@ -68,16 +70,14 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
         //only add if its active
         if (!TryComp<KrittersNightVisionComponent>(uid, out var nightVision) || !nightVision.Active) return;
 
-        //only add if effect isnt already used
+        // The light effect is local-only and provides the actual illumination;
+        // the overlay supplies the blue-tinted directional presentation.
         if (_effect != null) return;
 
         _overlayMan.AddOverlay(_overlay);
-    }
-
-    public override void FrameUpdate(float frameTime)
-    {
-        if (_player.LocalSession?.AttachedEntity is { } uid)
-            _overlay.SetFacing((float) Transform(uid).WorldRotation.Theta);
+        _effect = SpawnAttachedTo(nightVision.EffectPrototype, Transform(uid).Coordinates);
+        _transform.SetParent(_effect.Value, uid);
+        _active = true;
     }
 
     /// <summary>
@@ -90,8 +90,12 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
         //ENSURE this is the local player
         if (_player.LocalSession?.AttachedEntity != uid && !force) return;
 
+        if (!_active)
+            return;
+
         _overlayMan.RemoveOverlay(_overlay);
         Del(_effect);
         _effect = null;
+        _active = false;
     }
 }

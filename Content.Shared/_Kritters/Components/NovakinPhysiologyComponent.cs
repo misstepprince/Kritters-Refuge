@@ -16,19 +16,31 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField, AutoNetworkedField]
     public float CurrentReserve = 100f;
 
-    /// <summary>Unprotected intact reserve loss: a full reserve lasts ten minutes.</summary>
+    /// <summary>An intact shell's reserve loss. A full shell lasts thirty minutes.</summary>
     [DataField]
-    public float ReserveDrainPerSecond = 1f / 6f;
+    public float ReserveDrainPerSecond = 100f / (30f * 60f);
 
     [DataField]
-    public float ShatteredReserveDrainPerSecond = 100f / 30f;
+    public float ShellFailureReserveDrainPerSecond = 100f / 60f;
+
+    [DataField]
+    public float ThermalLeakMultiplier = 4f;
+
+    [DataField]
+    public float PressureSuitReserveDrainMultiplier = 0.5f;
+
+    [DataField]
+    public float MaximumHeatResourceDrainMultiplier = 1.5f;
+
+    [DataField]
+    public float LowReserveMinimumSpeedMultiplier = 0.75f;
 
     /// <summary>Nitrogen loss starts causing blood-loss symptoms below half reserve.</summary>
     [DataField]
     public float BloodlossReserveThreshold = 0.5f;
 
     [DataField]
-    public DamageSpecifier BloodlossDamage = new() { DamageDict = { ["Bloodloss"] = 0.5f } };
+    public DamageSpecifier BloodlossDamage = new() { DamageDict = { ["Bloodloss"] = 0.25f, ["Cold"] = 0.25f } };
 
     [DataField]
     public DamageSpecifier BloodlossHealDamage = new() { DamageDict = { ["Bloodloss"] = -1f } };
@@ -37,31 +49,48 @@ public sealed partial class NovakinPhysiologyComponent : Component
     public float LeakedMolesPerReserve = 0.01f;
 
     [DataField]
-    public float FuelDepletedCoolingPerSecond = 8f;
+    public float FuelDepletedCoolingPerSecond = 4f;
+
+    [DataField]
+    public float ThermalShellDamagePerSecond = 0.25f;
+
+    [DataField]
+    public float ThermalDamageScaleRange = 50f;
+
+    [DataField]
+    public float MaximumThermalShellDamagePerSecond = 1f;
 
     [DataField]
     public float FuelConsumptionBaselineTemperature = 373.15f;
 
-    [DataField]
-    public float FuelConsumptionMaximumTemperature = 700f;
-
-    [DataField]
-    public float MaximumFuelConsumptionMultiplier = 6f;
-
-    /// <summary>Movement-speed multiplier reached at the 700 K core-temperature cap.</summary>
+    /// <summary>Movement-speed multiplier reached at 650 K.</summary>
     [DataField]
     public float MaximumHeatSpeedMultiplier = 1.3f;
+
+    [DataField]
+    public float MaximumHeatSpeedTemperature = 650f;
 
     [DataField, AutoNetworkedField]
     public float HeatSpeedMultiplier = 1f;
 
-    public float BaseFuelDecayRate = -1f;
+    [DataField, AutoNetworkedField]
+    public float ReserveSpeedMultiplier = 1f;
+
+    [DataField, AutoNetworkedField]
+    public bool ThermalWarningHot;
+
+    [DataField, AutoNetworkedField]
+    public bool ThermalWarningCold;
+
+    /// <summary>Temperature-derived visual intensity for client sprite glow.</summary>
+    [DataField, AutoNetworkedField]
+    public float GlowIntensity = 0.5f;
 
     public float BaseImplicitHeatRegulation = -1f;
     public float BaseSweatHeatRegulation = -1f;
     public float BaseShiveringHeatRegulation = -1f;
 
-    /// <summary>Set only once a dangerous temperature has driven damage to critical.</summary>
+    /// <summary>True while collective Brute damage has broken the shell.</summary>
     [DataField, AutoNetworkedField]
     public bool ShellShattered;
 }
