@@ -6,7 +6,7 @@
   components:
   - type: StorageFill
     contents:
-    - id: NovakinInhalerNitrogen
+    - id: NovakinInhaler
     - id: Flare
   - type: Sprite
     layers:
@@ -21,7 +21,7 @@
   components:
   - type: StorageFill
     contents:
-    - id: NovakinInhalerNitrogen
+    - id: NovakinInhaler
     - id: Flare
     - id: CrowbarPocket
   - type: Sprite

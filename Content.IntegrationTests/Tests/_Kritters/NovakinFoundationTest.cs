@@ -111,7 +111,7 @@ public sealed class NovakinFoundationTest
         {
             var coordinates = new MapCoordinates(Vector2.Zero, map.MapId);
             var novakin = entities.SpawnEntity("MobNovakin", coordinates);
-            var inhaler = entities.SpawnEntity("NovakinInhalerNitrogen", coordinates);
+            var inhaler = entities.SpawnEntity("NovakinInhaler", coordinates);
             var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
             var tank = entities.GetComponent<GasTankComponent>(inhaler);
             var initialMoles = tank.Air.GetMoles(Gas.Nitrogen);
@@ -138,7 +138,7 @@ public sealed class NovakinFoundationTest
         {
             var coordinates = new MapCoordinates(Vector2.Zero, map.MapId);
             var novakin = entities.SpawnEntity("MobNovakin", coordinates);
-            var inhaler = entities.SpawnEntity("NovakinInhalerNitrogen", coordinates);
+            var inhaler = entities.SpawnEntity("NovakinInhaler", coordinates);
             var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
             var tank = entities.GetComponent<GasTankComponent>(inhaler);
             physiology.CurrentReserve = 90f;
@@ -165,7 +165,7 @@ public sealed class NovakinFoundationTest
 
         await server.WaitAssertion(() =>
         {
-            var inhaler = entities.SpawnEntity("NovakinInhalerLargeNitrogen", new MapCoordinates(Vector2.Zero, map.MapId));
+            var inhaler = entities.SpawnEntity("NovakinInhalerLarge", new MapCoordinates(Vector2.Zero, map.MapId));
             var tank = entities.GetComponent<GasTankComponent>(inhaler);
             var inhalerComponent = entities.GetComponent<NovakinInhalerComponent>(inhaler);
 

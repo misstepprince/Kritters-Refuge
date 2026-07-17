@@ -28,7 +28,7 @@
 
 - type: entity
   parent: BaseNovakinInhaler
-  id: NovakinInhalerNitrogen
+  id: NovakinInhaler
   name: Novakin Inhaler
   suffix: Filled
   components:
@@ -41,7 +41,7 @@
 
 - type: entity
   parent: BaseNovakinInhaler
-  id: NovakinInhalerLargeNitrogen
+  id: NovakinInhalerLarge
   name: Large Novakin Inhaler
   suffix: Filled
   components:

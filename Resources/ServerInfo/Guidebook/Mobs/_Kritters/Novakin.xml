@@ -21,7 +21,7 @@ Novakin are vulnerable to blunt, slash, piercing, and caustic damage; they are i
 Their glow grows with Core temperature, and their night vision works best at their standard body temperature of 373.15k, any hotter and it starts getting waashed out, any colder and it disappears.
 
 # Survival equipment
-  <GuideEntityEmbed Entity="NovakinInhalerNitrogen" Caption="Nitrogen Novakin inhaler" Scale="2"/>
+  <GuideEntityEmbed Entity="NovakinInhaler" Caption="Novakin inhaler" Scale="2"/>
 
 Novakin Inhalers hold pure N2. Use one on a Novakin to transfer as much N2 as needed to fill their reserve; any excess stays in the inhaler. Refill an inhaler from a pure N2 tank. Large Novakin Inhalers hold more N2.
 
