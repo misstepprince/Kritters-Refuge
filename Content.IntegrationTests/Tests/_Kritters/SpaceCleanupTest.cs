@@ -196,6 +196,7 @@ public sealed class SpaceCleanupTest
             Assert.That(entities.EntityExists(nonMatching), Is.True);
             Assert.That(entities.EntityExists(otherGridMatch), Is.True);
         });
+        await server.WaitPost(() => entities.DeleteEntity(map.MapUid));
         await pair.CleanReturnAsync();
     }
 
@@ -318,6 +319,7 @@ public sealed class SpaceCleanupTest
             Assert.That(entities.HasComponent<AggressiveSpaceJanitorExemptComponent>(crowbarRed), Is.False);
         });
 
+        await server.WaitPost(() => entities.DeleteEntity(map.MapUid));
         await pair.CleanReturnAsync();
     }
 
