@@ -26,6 +26,22 @@ public sealed partial class AggressiveSpaceJanitorCommand : IConsoleCommand
 
     private ISawmill? _sawmill;
 
+    private static readonly string[] Subcommands =
+    [
+        "list",
+        "exempt",
+        "sweep",
+        "cleanup",
+        "cleanup-cancel",
+        "cleanup-force",
+        "cleanup-cull",
+        "status",
+        "grid",
+        "grid-cancel",
+        "grid-force",
+        "grid-cull",
+    ];
+
     public string Command => "spacejanny";
     public string Description => "Manages Bluespace Janitorial Services cleanup.";
     public string Help => "Usage: spacejanny list [prototype-filter ... | has:<component> ...] | exempt <prototype-id> [<prototype-id> ...] | sweep <prototype-id> [<prototype-id> ...] | cleanup | cleanup-cancel | cleanup-force | cleanup-cull <prototype-id> [<prototype-id> ...] | status [grid [grid-id]] | grid [grid-id] | grid-cancel [grid-id] | grid-force [grid-id] | grid-cull <prototype-id> [<prototype-id> ...] [grid-id]";
@@ -75,6 +91,78 @@ public sealed partial class AggressiveSpaceJanitorCommand : IConsoleCommand
                 shell.WriteError(Help);
                 return;
         }
+    }
+
+    public CompletionResult GetCompletion(IConsoleShell shell, string[] args)
+    {
+        if (args.Length == 1)
+            return CompletionResult.FromHintOptions(Subcommands, "<subcommand>");
+
+        return args[0] switch
+        {
+            "list" => GetListCompletion(args[^1]),
+            "exempt" or "sweep" or "cleanup-cull" => GetPrototypeCompletion(args[^1]),
+            "status" => GetStatusCompletion(args),
+            "grid" or "grid-cancel" or "grid-force" => GetGridCommandCompletion(args),
+            "grid-cull" => GetGridCullCompletion(args[^1]),
+            _ => CompletionResult.Empty,
+        };
+    }
+
+    private CompletionResult GetListCompletion(string argument)
+    {
+        if (argument.StartsWith("has:", StringComparison.OrdinalIgnoreCase))
+        {
+            var componentName = argument[4..];
+            var components = _components.GetAllRegistrations()
+                .Where(registration => registration.Name.StartsWith(componentName, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(registration => registration.Name, StringComparer.OrdinalIgnoreCase)
+                .Take(30)
+                .Select(registration => new CompletionOption($"has:{registration.Name}"));
+            return CompletionResult.FromHintOptions(components, "<component>");
+        }
+
+        var options = CompletionHelper.PrototypeIdsLimited<EntityPrototype>(argument, _prototypes)
+            .Append(new CompletionOption("has:", Flags: CompletionOptionFlags.PartialCompletion));
+        return CompletionResult.FromHintOptions(options, "<prototype filter | has:component>");
+    }
+
+    private CompletionResult GetPrototypeCompletion(string argument)
+    {
+        return CompletionResult.FromHintOptions(
+            CompletionHelper.PrototypeIdsLimited<EntityPrototype>(argument, _prototypes),
+            "<prototype id>");
+    }
+
+    private CompletionResult GetStatusCompletion(string[] args)
+    {
+        if (args.Length == 2)
+            return CompletionResult.FromHintOptions(new[] { "grid" }, "[grid]");
+
+        return args.Length == 3 && args[1] == "grid"
+            ? GetGridCompletion(args[2])
+            : CompletionResult.Empty;
+    }
+
+    private CompletionResult GetGridCommandCompletion(string[] args)
+    {
+        return args.Length == 2
+            ? GetGridCompletion(args[1])
+            : CompletionResult.Empty;
+    }
+
+    private CompletionResult GetGridCullCompletion(string argument)
+    {
+        var options = CompletionHelper.PrototypeIdsLimited<EntityPrototype>(argument, _prototypes)
+            .Concat(CompletionHelper.Components<MapGridComponent>(argument, _entities));
+        return CompletionResult.FromHintOptions(options, "<prototype id | grid id>");
+    }
+
+    private CompletionResult GetGridCompletion(string argument)
+    {
+        return CompletionResult.FromHintOptions(
+            CompletionHelper.Components<MapGridComponent>(argument, _entities),
+            "[grid id]");
     }
 
     private void ListEntities(IConsoleShell shell, AggressiveSpaceJanitorSystem janitor, string[] filters)
