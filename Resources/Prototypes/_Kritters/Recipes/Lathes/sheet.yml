@@ -4,3 +4,23 @@
   completetime: 0.06
   materials:
     RawCobalt: 100
+
+- type: latheRecipe
+  id: SheetCobaltPlasteel1
+  result: SheetPlasteel1
+  completetime: 0.06
+  materials:
+    RawPlasma: 100
+    RawIron: 100
+    RawCobalt: 30
+    Coal: 30
+
+- type: latheRecipe
+  id: SheetCobaltPlasteel30
+  result: SheetPlasteel
+  completetime: 2
+  materials:
+    RawPlasma: 3000
+    RawIron: 3000
+    RawCobalt: 1000
+    Coal: 1000

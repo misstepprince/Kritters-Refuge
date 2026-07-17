@@ -25,5 +25,6 @@
   id: AdvancedSmelting
   recipes:
   - SheetPlasteel1
+  - SheetCobaltPlasteel1
   - SheetUGlass1
   - SheetRUGlass1
