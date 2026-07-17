@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Content.Server._Kritters.SpaceCleanup;
 using Content.Server._Kritters.SpaceCleanup.Components;
 using Content.Shared.Mobs.Components;
+using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 
@@ -11,6 +12,43 @@ namespace Content.IntegrationTests.Tests._Kritters;
 [TestFixture]
 public sealed class SpaceCleanupTest
 {
+    [Test]
+    public async Task CommandCompletionIncludesValidArguments()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var console = server.ResolveDependency<IConsoleHost>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var command = console.AvailableCommands["spacejanny"];
+
+            var subcommands = command.GetCompletion(console.LocalShell, [""]);
+            Assert.That(subcommands.Options.Select(option => option.Value), Does.Contain("cleanup-cull"));
+            Assert.That(subcommands.Options.Select(option => option.Value), Does.Contain("grid-cull"));
+
+            var prototypes = command.GetCompletion(console.LocalShell, ["cleanup-cull", "Crow"]);
+            Assert.That(prototypes.Options.Select(option => option.Value), Does.Contain("Crowbar"));
+
+            var components = command.GetCompletion(console.LocalShell, ["list", "has:MobS"]);
+            Assert.That(components.Options.Select(option => option.Value), Does.Contain("has:MobState"));
+
+            var gridId = entities.GetNetEntity(map.Grid.Owner).ToString();
+            var grids = command.GetCompletion(console.LocalShell, ["grid", ""]);
+            Assert.That(grids.Options.Select(option => option.Value), Does.Contain(gridId));
+
+            var gridCullPrototype = command.GetCompletion(console.LocalShell, ["grid-cull", "Crow"]);
+            Assert.That(gridCullPrototype.Options.Select(option => option.Value), Does.Contain("Crowbar"));
+
+            var gridCullGrid = command.GetCompletion(console.LocalShell, ["grid-cull", gridId]);
+            Assert.That(gridCullGrid.Options.Select(option => option.Value), Does.Contain(gridId));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     [Test]
     public async Task RemovesExpiredLooseItemsButHonorsExemptions()
     {
