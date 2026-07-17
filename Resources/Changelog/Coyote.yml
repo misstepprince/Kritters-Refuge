@@ -2849,3 +2849,16 @@ Entries:
   id: 325
   time: '2026-06-04T05:52:15.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1210
+- author: dijonmustard01
+  changes:
+    - type: Add
+      message: >-
+        Added an alternative plasteel recipe using cobalt in the industrial ore
+        processor
+    - type: Tweak
+      message: >-
+        Put a cobalt requirement on the recipes of the hyper capacity power
+        cell, the microreactor, and the power drill.
+  id: 326
+  time: '2026-07-17T19:13:13.0000000+00:00'
+  url: https://github.com/Dizztrikt/Kritters-Refuge/pull/43

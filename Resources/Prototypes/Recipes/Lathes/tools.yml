@@ -112,6 +112,7 @@
   result: PowerDrill
   materials:
     Steel: 600
+    Cobalt: 200
     Plastic: 200
 
 - type: latheRecipe
