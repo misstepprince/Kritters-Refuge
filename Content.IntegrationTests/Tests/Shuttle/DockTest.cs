@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Tests;
 using Robust.Server.GameObjects;
@@ -125,6 +126,56 @@ public sealed class DockTest : ContentUnitTest
 
             var dockingConfig = dockingSystem.GetDockingConfig(shuttle, map.MapUid);
             Assert.That(dockingConfig, Is.Not.EqualTo(null));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ManualDockingConvergesFromAllowedAngularOffset()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+        var entities = server.ResolveDependency<IEntityManager>();
+        var docking = entities.System<DockingSystem>();
+        var maps = entities.System<SharedMapSystem>();
+        var transforms = entities.System<SharedTransformSystem>();
+        EntityUid dockA = default;
+        EntityUid dockB = default;
+
+        await server.WaitAssertion(() =>
+        {
+            entities.DeleteEntity(map.Grid);
+            var gridA = maps.CreateGridEntity(map.MapId);
+            var gridB = maps.CreateGridEntity(map.MapId);
+            maps.SetTile(gridA, Vector2i.Zero, new Tile(1));
+            maps.SetTile(gridB, Vector2i.Zero, new Tile(1));
+
+            var gridBRotation = Angle.FromDegrees(10);
+            transforms.SetLocalRotation(gridB, gridBRotation);
+            var dockLocalPosition = new Vector2(0.5f, 0.5f);
+            var dockAWorldPosition = dockLocalPosition;
+            var dockBWorldPosition = dockAWorldPosition + Angle.Zero.ToWorldVec() * 1.1f;
+            transforms.SetLocalPosition(gridB, dockBWorldPosition - gridBRotation.RotateVec(dockLocalPosition));
+
+            dockA = entities.SpawnEntity("AirlockShuttle", new EntityCoordinates(gridA, dockLocalPosition));
+            dockB = entities.SpawnEntity("AirlockShuttle", new EntityCoordinates(gridB, dockLocalPosition));
+            transforms.SetLocalRotation(dockA, Angle.Zero);
+            transforms.SetLocalRotation(dockB, new Angle(Math.PI));
+
+            var dockAComponent = entities.GetComponent<DockingComponent>(dockA);
+            var dockBComponent = entities.GetComponent<DockingComponent>(dockB);
+            Assert.That(docking.CanDock((dockA, dockAComponent), (dockB, dockBComponent)), Is.True);
+            docking.Dock((dockA, dockAComponent), (dockB, dockBComponent));
+            Assert.That(dockAComponent.DockJoint, Is.Not.Null);
+        });
+
+        await pair.RunTicksSync(120);
+        await server.WaitAssertion(() =>
+        {
+            var distance = Vector2.Distance(transforms.GetWorldPosition(dockA), transforms.GetWorldPosition(dockB));
+            Assert.That(distance, Is.EqualTo(1f).Within(0.02f));
         });
 
         await pair.CleanReturnAsync();
