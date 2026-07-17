@@ -1,10 +1,10 @@
-interaction-Kiss-name = Kiss
-interaction-Kiss-description = A kiss melts the pains away.
-interaction-Kiss-success-self-popup = You kiss {THE($target)}.
-interaction-Kiss-success-target-popup = {THE($user)} kisses you.
-interaction-Kiss-success-others-popup = {THE($user)} kisses {THE($target)}.
-interaction-Kiss-fail-self-popup = You fail to kiss {THE($target)}.
-interaction-Kiss-fail-target-popup = {THE($user)} fails to kiss you.
+interaction-kiss-name = Kiss
+interaction-kiss-description = A kiss melts the pains away.
+interaction-kiss-success-self-popup = You kiss {THE($target)}.
+interaction-kiss-success-target-popup = {THE($user)} kisses you.
+interaction-kiss-success-others-popup = {THE($user)} kisses {THE($target)}.
+interaction-kiss-fail-self-popup = You fail to kiss {THE($target)}.
+interaction-kiss-fail-target-popup = {THE($user)} fails to kiss you.
 
 interaction-Lick-name = Lick
 interaction-Lick-description = Lick your co-worker, what HR?.

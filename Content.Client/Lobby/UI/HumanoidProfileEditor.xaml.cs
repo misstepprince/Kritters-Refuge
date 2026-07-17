@@ -76,6 +76,7 @@ namespace Content.Client.Lobby.UI
 
         private bool _exporting;
         private bool _imaging;
+        private bool _updatingSkinColor;
 
         /// <summary>
         /// If we're attempting to save.
@@ -1373,7 +1374,8 @@ namespace Content.Client.Lobby.UI
 
         private void OnSkinColorOnValueChanged()
         {
-            if (Profile is null) return;
+            if (_updatingSkinColor || Profile is null)
+                return;
 
             var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
 
@@ -1706,6 +1708,9 @@ namespace Content.Client.Lobby.UI
             if (Profile == null)
                 return;
 
+            _updatingSkinColor = true;
+            try
+            {
             var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
 
             switch (skin)
@@ -1784,6 +1789,11 @@ namespace Content.Client.Lobby.UI
                     break;
                 }
                 // End Frontier
+            }
+            }
+            finally
+            {
+                _updatingSkinColor = false;
             }
 
         }
