@@ -23,6 +23,7 @@ public sealed partial class TestPair
     public async Task<TestMapData> CreateTestMap(bool initialized = true, string tile = "Plating")
     {
         var mapData = new TestMapData();
+        _testMaps.Add(mapData);
         TestMap = mapData;
         await Server.WaitIdleAsync();
         var tileDefinitionManager = Server.ResolveDependency<ITileDefinitionManager>();

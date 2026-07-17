@@ -1,5 +1,6 @@
 #nullable enable
 using Content.Shared.CCVar;
+using Content.Shared._Kritters.CCVar;
 using Robust.Shared;
 using Robust.Shared.Configuration;
 using Robust.UnitTesting;
@@ -42,7 +43,8 @@ public static partial class PoolManager
         (CCVars.MovementMobPushing.Name, "false"),
         (CCVars.GameLobbyDefaultPreset.Name, "nftest"), // Frontier: Adventure takes ages, default to nftest (no need to test events we will not run, e.g. meteor swarm)
         (CCVars.StaticStorageUI.Name, "true"), // Frontier: causes storage test failures
-        (CCVars.StorageLimit.Name, "1")// Frontier: test failures with multiple storage enabled
+        (CCVars.StorageLimit.Name, "1"), // Frontier: test failures with multiple storage enabled
+        (KrittersCCVars.AggressiveSpaceJanitorEnabled.Name, "false"),
     };
 
     public static async Task SetupCVars(RobustIntegrationTest.IntegrationInstance instance, PoolSettings settings)

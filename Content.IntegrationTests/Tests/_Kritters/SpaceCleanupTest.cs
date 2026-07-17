@@ -1,7 +1,9 @@
 using System.Numerics;
 using System.Collections.Generic;
+using Content.IntegrationTests.Pair;
 using Content.Server._Kritters.SpaceCleanup;
 using Content.Server._Kritters.SpaceCleanup.Components;
+using Content.Shared._Kritters.CCVar;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
@@ -12,10 +14,18 @@ namespace Content.IntegrationTests.Tests._Kritters;
 [TestFixture]
 public sealed class SpaceCleanupTest
 {
+    private static async Task<TestPair> GetTestPairAsync()
+    {
+        var pair = await PoolManager.GetServerClient();
+        await pair.Server.WaitPost(() =>
+            pair.Server.CfgMan.SetCVar(KrittersCCVars.AggressiveSpaceJanitorEnabled, true));
+        return pair;
+    }
+
     [Test]
     public async Task CommandCompletionIncludesValidArguments()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var console = server.ResolveDependency<IConsoleHost>();
@@ -52,7 +62,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task RemovesExpiredLooseItemsButHonorsExemptions()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -83,7 +93,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task ForceGridCleanupRemovesItemsButNotMobs()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -119,7 +129,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task ForceSpaceCleanupCountsAndRemovesOnlyLooseItems()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -148,7 +158,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task SpaceCleanupCanBeCancelled()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -170,7 +180,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task GridPrototypeCleanupOnlyRemovesMatchingEntitiesOnTargetGrid()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -196,14 +206,13 @@ public sealed class SpaceCleanupTest
             Assert.That(entities.EntityExists(nonMatching), Is.True);
             Assert.That(entities.EntityExists(otherGridMatch), Is.True);
         });
-        await server.WaitPost(() => entities.DeleteEntity(map.MapUid));
         await pair.CleanReturnAsync();
     }
 
     [Test]
     public async Task GridPrototypeCleanupRemovesUnmindedPests()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -224,7 +233,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task SpacePrototypeCleanupOnlyRemovesMatchingLooseEntities()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -255,7 +264,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task PrototypeCleanupSupportsMultiplePrototypesAndProtectsAnchoredOrExemptEntities()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -292,7 +301,7 @@ public sealed class SpaceCleanupTest
     [Test]
     public async Task GridPrototypeExemptionsAreScopedAndCanBeSwept()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();
@@ -319,14 +328,13 @@ public sealed class SpaceCleanupTest
             Assert.That(entities.HasComponent<AggressiveSpaceJanitorExemptComponent>(crowbarRed), Is.False);
         });
 
-        await server.WaitPost(() => entities.DeleteEntity(map.MapUid));
         await pair.CleanReturnAsync();
     }
 
     [Test]
     public async Task InspectionListsAllEntitiesWithFiltersAndCleanupState()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await GetTestPairAsync();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
         var janitor = entities.System<AggressiveSpaceJanitorSystem>();

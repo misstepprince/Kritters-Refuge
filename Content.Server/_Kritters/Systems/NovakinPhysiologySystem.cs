@@ -58,12 +58,12 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
 
     public override void Update(float frameTime)
     {
-        _accumulator += frameTime;
+        _accumulator = Math.Min(_accumulator + frameTime, 5f);
         if (_accumulator < 0.5f)
             return;
 
-        var elapsed = Math.Min(_accumulator, 5f);
-        _accumulator = 0f;
+        var elapsed = MathF.Floor(_accumulator / 0.5f) * 0.5f;
+        _accumulator -= elapsed;
         var query = EntityQueryEnumerator<NovakinPhysiologyComponent, NeedsComponent, TemperatureComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var physiology, out var needs, out var temperature, out var transform))
         {

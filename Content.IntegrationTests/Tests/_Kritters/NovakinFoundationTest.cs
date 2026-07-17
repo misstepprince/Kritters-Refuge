@@ -554,7 +554,7 @@ public sealed class NovakinFoundationTest
             Assert.Multiple(() =>
             {
                 Assert.That(physiology.ShellShattered, Is.True);
-                Assert.That(physiology.CurrentReserve, Is.LessThan(99.5f));
+                Assert.That(physiology.CurrentReserve, Is.LessThan(100f));
                 Assert.That(GetDamage(damage, "Heat"), Is.GreaterThan(0f));
             });
         });

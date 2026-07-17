@@ -27,6 +27,7 @@ public sealed partial class TestPair
     public readonly List<string> TestHistory = new();
     public PoolSettings Settings = default!;
     public TestMapData? TestMap;
+    private readonly List<TestMapData> _testMaps = new();
     private List<NetUserId> _modifiedProfiles = new();
 
     private int _nextServerSeed;
