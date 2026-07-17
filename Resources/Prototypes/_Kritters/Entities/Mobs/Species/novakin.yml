@@ -24,11 +24,8 @@
     needs:
     - NeedNovakinFuel
   - type: NovakinPhysiology
-    fuelConsumptionBaselineTemperature: 373.15
     maximumHeatSpeedMultiplier: 1.15
     maximumHeatSpeedTemperature: 699
-    reserveDrainPerSecond: 0.055555556
-    leakedMolesPerReserve: 0.01
   - type: Speech
     speechVerb: Novakin
     speechSounds: Novakin

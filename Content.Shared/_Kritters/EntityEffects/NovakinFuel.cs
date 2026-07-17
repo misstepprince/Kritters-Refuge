@@ -1,5 +1,4 @@
 using Content.Shared._Kritters.Components;
-using Content.Shared._Kritters.Systems;
 using Content.Shared._CS.Needs;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.EntityEffects;
@@ -15,24 +14,15 @@ public sealed partial class NovakinFuel : EntityEffect
     [DataField]
     public float Fuel = 5f;
 
-    [DataField]
-    public float Heat;
-
-    /// <summary>Whether this fuel can drive the Core beyond its normal 700 K limit.</summary>
-    [DataField]
-    public bool AllowOverheat;
-
     public override void Effect(EntityEffectBaseArgs args)
     {
         if (!args.EntityManager.TryGetComponent<NovakinPhysiologyComponent>(args.TargetEntity, out _))
             return;
 
-        args.EntityManager.System<SharedNeedsSystem>()
-            .TryModifyNeedLevel(args.TargetEntity, NeedType.Fuel, Fuel);
-
-        if (Heat > 0f)
-            args.EntityManager.EventBus.RaiseLocalEvent(args.TargetEntity,
-                new NovakinCoreFuelMetabolizedEvent(Heat, AllowOverheat));
+        var amount = args is EntityEffectReagentArgs reagentArgs
+            ? Fuel * reagentArgs.Quantity.Float()
+            : Fuel;
+        args.EntityManager.System<SharedNeedsSystem>().TryModifyNeedLevel(args.TargetEntity, NeedType.Fuel, amount);
     }
 
     protected override string? ReagentEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)

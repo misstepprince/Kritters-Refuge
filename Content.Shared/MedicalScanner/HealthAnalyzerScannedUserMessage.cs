@@ -25,6 +25,7 @@ public struct HealthAnalyzerUiState
     public readonly NetEntity? TargetEntity;
     public float Temperature;
     public float BloodLevel;
+    // Kritters: NaN means the scanned entity does not expose Novakin nitrogen physiology.
     public float NitrogenReserve;
     public bool? ScanMode;
     public bool? Bleeding;

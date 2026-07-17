@@ -67,6 +67,31 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField]
     public float FuelDepletedCoolingPerSecond = 4f;
 
+    /// <summary>Flammable volume that generates enough heat to move the baseline Core to peak temperature.</summary>
+    [DataField]
+    public float FlammableUnitsToPeak = 60f;
+
+    /// <summary>Maximum queued reagent heat applied each second.</summary>
+    [DataField]
+    public float ReagentHeatTransferPerSecond = (700f - 373.15f) / 60f;
+
+    /// <summary>Server-owned flammable reagent heat waiting to enter the Core.</summary>
+    public float PendingReagentHeat;
+
+    [DataField]
+    public float IntoxicationStartTemperature = 500f;
+
+    [DataField]
+    public float PeakIntoxicationTemperature = 700f;
+
+    /// <summary>Status duration representing the first visible heat intoxication.</summary>
+    [DataField]
+    public float MinimumIntoxicationSeconds = 50f;
+
+    /// <summary>Status duration matching the standard alcohol overlay's visual peak.</summary>
+    [DataField]
+    public float PeakIntoxicationSeconds = 260f;
+
     [DataField]
     public float ThermalStressDamagePerSecond = 0.25f;
 

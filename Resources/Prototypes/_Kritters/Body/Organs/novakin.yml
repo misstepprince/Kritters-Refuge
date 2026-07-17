@@ -25,10 +25,14 @@
   - type: Metabolizer
     maxReagents: 3
     metabolizerTypes: [Human]
+    removeEmpty: true
+    removeUnmatched: true
     groups:
     - id: Fuel
     - id: Food
     - id: Drink
+    - id: Alcohol
+      skipEffects: true
     - id: Medicine
     - id: Cryogenic
     - id: Poison

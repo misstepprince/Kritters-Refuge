@@ -102,6 +102,7 @@ public sealed partial class HealthAnalyzerControl : BoxContainer
             ? $"{state.BloodLevel * 100:F1} %"
             : Loc.GetString("health-analyzer-window-entity-unknown-value-text");
 
+        // Kritters: bloodless Novakins replace blood diagnostics with their structural nitrogen reserve.
         var isNovakin = !float.IsNaN(state.NitrogenReserve);
         BloodLevelTitleLabel.Visible = !isNovakin;
         BloodLabel.Visible = !isNovakin;

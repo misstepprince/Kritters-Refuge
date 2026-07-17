@@ -56,6 +56,13 @@ namespace Content.Server.Body.Components
         public bool RemoveEmpty = false;
 
         /// <summary>
+        ///     Should this metabolizer remove chemicals that have no supported metabolism group?
+        ///     Kritters uses this for non-organic physiology that cannot retain unknown chemistry.
+        /// </summary>
+        [DataField]
+        public bool RemoveUnmatched = false;
+
+        /// <summary>
         ///     How many reagents can this metabolizer process at once?
         ///     Used to nerf 'stacked poisons' where having 5+ different poisons in a syringe, even at low
         ///     quantity, would be muuuuch better than just one poison acting.

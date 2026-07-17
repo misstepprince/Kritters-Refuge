@@ -21,7 +21,6 @@
       temperature: 293.15
     tankLowPressure: 0
   - type: NovakinInhaler
-    maxMoles: 0.270782035
     reservePerMole: 400
   - type: UseDelay
     delay: 1
@@ -29,10 +28,8 @@
 - type: entity
   parent: BaseNovakinInhaler
   id: NovakinInhaler
-  name: Novakin Inhaler
   suffix: Filled
   components:
-  - type: NovakinInhaler
   - type: GasTank
     air:
       volume: 0.66

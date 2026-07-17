@@ -49,13 +49,6 @@
     requiredSlipSpeed: 3.5
   friction: 0.4
   metabolisms:
-    Fuel:
-      effects:
-      # Alcohol is an energetic Core fuel and briefly heats the shell.
-      - !type:NovakinFuel
-        fuel: 16
-        heat: 15
-        allowOverheat: true
     Drink:
       effects:
       - !type:SatiateThirst

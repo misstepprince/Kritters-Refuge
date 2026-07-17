@@ -1,4 +1,16 @@
 - type: reagent
+  id: BaseNovakinFuelCondiment
+  abstract: true
+  # Kritters: edible sauces are direct Core fuel but retain an empty Food path for organic metabolism.
+  metabolisms:
+    Fuel:
+      effects:
+      - !type:NovakinFuel
+        fuel: 4
+    Food:
+      effects: []
+
+- type: reagent
   id: Astrotame
   name: reagent-name-astrotame
   group: Foods
@@ -10,6 +22,7 @@
 
 - type: reagent
   id: BbqSauce
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-bbq-sauce
   group: Foods
   desc: reagent-desc-bbq-sauce
@@ -20,6 +33,7 @@
 
 - type: reagent
   id: Coldsauce
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-coldsauce
   group: Foods
   desc: reagent-desc-coldsauce
@@ -39,6 +53,7 @@
 
 - type: reagent
   id: HorseradishSauce
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-horseradish-sauce
   group: Foods
   desc: reagent-desc-horseradish-sauce
@@ -49,6 +64,7 @@
 
 - type: reagent
   id: Hotsauce
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-hotsauce
   group: Foods
   desc: reagent-desc-hotsauce
@@ -56,9 +72,17 @@
   flavor: spicy
   color: red
   recognizable: true
+  metabolisms:
+    Fuel:
+      effects:
+      - !type:NovakinFuel
+        fuel: 8
+    Food:
+      effects: []
 
 - type: reagent
   id: Ketchup
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-ketchup
   group: Foods
   desc: reagent-desc-ketchup
@@ -69,6 +93,7 @@
 
 - type: reagent
   id: Ketchunaise
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-ketchunaise
   group: Foods
   desc: reagent-desc-ketchunaise
@@ -89,6 +114,7 @@
 
 - type: reagent
   id: Mayo
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-mayo
   group: Foods
   desc: reagent-desc-mayo
@@ -99,6 +125,7 @@
 
 - type: reagent
   id: Mustard
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-mustard
   group: Foods
   desc: reagent-desc-mustard
@@ -109,6 +136,7 @@
 
 - type: reagent
   id: Vinaigrette
+  parent: BaseNovakinFuelCondiment
   name: reagent-name-vinaigrette
   group: Foods
   desc: reagent-desc-vinaigrette
@@ -127,6 +155,10 @@
   color: saddlebrown
   recognizable: true
   metabolisms:
+    Fuel:
+      effects:
+      - !type:NovakinFuel
+        fuel: 4
     Food:
       effects:
       - !type:SatiateHunger

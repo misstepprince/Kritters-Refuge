@@ -1,6 +1,4 @@
 novakin-core-dormant = The dormant core must be repaired, refilled, and restarted with a welder.
-novakin-core-restart-shell = Their shell must be repaired below 100 physical damage.
-novakin-core-restart-gas = Their core needs at least half of its gas reserve.
 novakin-core-restart-welder = A fueled welding-quality tool is required to restart the core.
 novakin-core-restart-requirements = Core restart requirements: shell damage {$shell}/100; total damage {$total}/200; nitrogen {$gas}/50%; fuel {$fuel}/10%.
 alerts-novakin-gas-name = Shell Nitrogen

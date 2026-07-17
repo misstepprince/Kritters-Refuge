@@ -153,6 +153,8 @@ namespace Content.Server.Body.Systems
                     continue;
 
                 var mostToRemove = FixedPoint2.Zero;
+                var actualEntity = ent.Comp2?.Body ?? solutionEntityUid.Value;
+                var isCryogenic = proto.Metabolisms?.ContainsKey("Cryogenic") == true;
                 if (proto.Metabolisms is null)
                 {
                     if (ent.Comp1.RemoveEmpty)
@@ -163,73 +165,83 @@ namespace Content.Server.Body.Systems
                     continue;
                 }
 
-                // Frontier: all cryogenic reagents in the solution should be processed, others should be limited (buff cryo meds)
-                if (reagents >= ent.Comp1.MaxReagentsProcessable && !proto.Metabolisms.ContainsKey("Cryogenic"))
-                    continue;
-                // End Frontier
-
-
                 // loop over all our groups and see which ones apply
-                if (ent.Comp1.MetabolismGroups is null)
-                    continue;
-
-                foreach (var group in ent.Comp1.MetabolismGroups)
+                var matchedMetabolism = false;
+                if (ent.Comp1.MetabolismGroups is not null)
                 {
-                    if (!proto.Metabolisms.TryGetValue(group.Id, out var entry))
-                        continue;
-
-                    var rate = entry.MetabolismRate * group.MetabolismRateModifier;
-
-                    // Remove $rate, as long as there's enough reagent there to actually remove that much
-                    mostToRemove = FixedPoint2.Clamp(rate, 0, quantity);
-
-                    // Frontier: skip applying effects in metabolism
-                    if (group.SkipEffects)
-                        continue;
-                    // End Frontier
-
-                    float scale = (float) mostToRemove / (float) rate;
-
-                    // if it's possible for them to be dead, and they are,
-                    // then we shouldn't process any effects, but should probably
-                    // still remove reagents
-                    if (TryComp<MobStateComponent>(solutionEntityUid.Value, out var state))
+                    foreach (var group in ent.Comp1.MetabolismGroups)
                     {
-                        if (!proto.WorksOnTheDead && _mobStateSystem.IsDead(solutionEntityUid.Value, state))
-                            continue;
-                    }
-
-                    var actualEntity = ent.Comp2?.Body ?? solutionEntityUid.Value;
-                    var args = new EntityEffectReagentArgs(actualEntity, EntityManager, ent, solution, mostToRemove, proto, null, scale);
-
-                    // do all effects, if conditions apply
-                    foreach (var effect in entry.Effects)
-                    {
-                        if (!effect.ShouldApply(args, _random))
+                        if (!proto.Metabolisms.TryGetValue(group.Id, out var entry))
                             continue;
 
-                        if (effect.ShouldLog)
+                        matchedMetabolism = true;
+
+                        // Frontier: all cryogenic reagents in the solution should be processed, others should be limited (buff cryo meds)
+                        if (reagents >= ent.Comp1.MaxReagentsProcessable && !isCryogenic)
+                            break;
+                        // End Frontier
+
+                        var rate = entry.MetabolismRate * group.MetabolismRateModifier;
+
+                        // Remove $rate, as long as there's enough reagent there to actually remove that much
+                        mostToRemove = FixedPoint2.Clamp(rate, 0, quantity);
+
+                        // Frontier: skip applying effects in metabolism
+                        if (group.SkipEffects)
+                            continue;
+                        // End Frontier
+
+                        float scale = (float) mostToRemove / (float) rate;
+
+                        // if it's possible for them to be dead, and they are,
+                        // then we shouldn't process any effects, but should probably
+                        // still remove reagents
+                        if (TryComp<MobStateComponent>(solutionEntityUid.Value, out var state))
                         {
-                            _adminLogger.Add(
-                                LogType.ReagentEffect,
-                                effect.LogImpact,
-                                $"Metabolism effect {effect.GetType().Name:effect}"
-                                + $" of reagent {proto.LocalizedName:reagent}"
-                                + $" applied on entity {actualEntity:entity}"
-                                + $" at {Transform(actualEntity).Coordinates:coordinates}"
-                            );
+                            if (!proto.WorksOnTheDead && _mobStateSystem.IsDead(solutionEntityUid.Value, state))
+                                continue;
                         }
 
-                        effect.Effect(args);
+                        var args = new EntityEffectReagentArgs(actualEntity, EntityManager, ent, solution, mostToRemove, proto, null, scale);
+
+                        // do all effects, if conditions apply
+                        foreach (var effect in entry.Effects)
+                        {
+                            if (!effect.ShouldApply(args, _random))
+                                continue;
+
+                            if (effect.ShouldLog)
+                            {
+                                _adminLogger.Add(
+                                    LogType.ReagentEffect,
+                                    effect.LogImpact,
+                                    $"Metabolism effect {effect.GetType().Name:effect}"
+                                    + $" of reagent {proto.LocalizedName:reagent}"
+                                    + $" applied on entity {actualEntity:entity}"
+                                    + $" at {Transform(actualEntity).Coordinates:coordinates}"
+                                );
+                            }
+
+                            effect.Effect(args);
+                        }
                     }
+                }
+
+                if (!matchedMetabolism && ent.Comp1.RemoveUnmatched)
+                {
+                    // Kritters: purge chemistry a configured physiology has no path to process.
+                    solution.RemoveReagent(reagent, FixedPoint2.New(1));
+                    continue;
                 }
 
                 // remove a certain amount of reagent
                 if (mostToRemove > FixedPoint2.Zero)
                 {
                     solution.RemoveReagent(reagent, mostToRemove);
+                    // Kritters: species physiology needs the actual consumed volume, independent of effect tick rates.
+                    RaiseLocalEvent(actualEntity, new ReagentMetabolizedEvent(proto, mostToRemove));
                     // Frontier: do not count cryogenics chems against the reagent limit (to buff cryo meds)
-                    if (!proto.Metabolisms.ContainsKey("Cryogenic"))
+                    if (!isCryogenic)
                         reagents++;
                     // End Frontier
                 }
@@ -238,6 +250,9 @@ namespace Content.Server.Body.Systems
             _solutionContainerSystem.UpdateChemicals(soln.Value);
         }
     }
+
+    /// <summary>Raised once for the quantity removed during a reagent's metabolism cycle.</summary>
+    public readonly record struct ReagentMetabolizedEvent(ReagentPrototype Reagent, FixedPoint2 Quantity);
 
     // TODO REFACTOR THIS
     // This will cause rates to slowly drift over time due to floating point errors.

@@ -652,6 +652,7 @@ public abstract partial class SharedNeedsSystem : EntitySystem
                 //     need.TickDebuffSlows(curTime);
                 // }
                 var decaySeconds = deltaSeconds;
+                // Kritters: an SSD Novakin Core enters dormancy instead of consuming Fuel at an active player's rate.
                 if (needType == NeedType.Fuel
                     && TryComp<NovakinPhysiologyComponent>(uid, out var physiology)
                     && IsPlayerSsdNovakin(uid))

@@ -205,6 +205,9 @@ namespace Content.Shared.Damage
             if (before.Cancelled)
                 return null;
 
+            // Kritters: allow physiology handlers to replace a damage specifier without mutating a reusable source.
+            damage = before.Damage;
+
             // Apply resistances
             if (!ignoreResistances)
             {

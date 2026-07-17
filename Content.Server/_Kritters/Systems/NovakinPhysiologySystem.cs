@@ -4,6 +4,7 @@ using Content.Server.Body.Systems;
 using Content.Server.Body.Components;
 using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
+using Content.Server.Speech.Components;
 using Content.Shared._CS.Needs;
 using Content.Shared._Kritters.Components;
 using Content.Shared._Kritters.Systems;
@@ -12,12 +13,15 @@ using Content.Shared.Atmos;
 using Content.Shared.Body.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Drunk;
+using Content.Shared.EntityEffects.Effects;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Inventory;
 using Content.Shared.Mind.Components;
 using Content.Shared.SSDIndicator;
+using Content.Shared.StatusEffect;
 using Content.Shared._Kritters.Overlays;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -31,6 +35,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     private const float DangerousCold = 323.15f;
     private const float DangerousHeat = 700f;
     private const float ShellFailureDamage = 100f;
+    private const string SlurredSpeechKey = "SlurredSpeech";
 
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private DamageableSystem _damageable = default!;
@@ -45,6 +50,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     [Dependency] private BarotraumaSystem _barotrauma = default!;
     [Dependency] private SharedNeedsSystem _needs = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private StatusEffectsSystem _statusEffects = default!;
 
     private float _accumulator;
 
@@ -53,7 +59,9 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         base.Initialize();
         SubscribeLocalEvent<NovakinPhysiologyComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovement);
         SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCryoPodInjectionEvent>(OnCryoPodInjection);
-        SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCoreFuelMetabolizedEvent>(OnFuelMetabolized);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCoreCoolingEvent>(OnCoreCooling);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, ReagentMetabolizedEvent>(OnReagentMetabolized);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, BeforeDamageChangedEvent>(OnBeforeDamageChanged);
     }
 
     public override void Update(float frameTime)
@@ -72,6 +80,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
             {
                 var step = Math.Min(remaining, 0.5f);
                 remaining -= step;
+                ApplyPendingReagentHeat(uid, physiology, temperature, step);
                 UpdateThermalRegulation(uid, physiology, needs);
                 CoolWhenFuelDepleted(uid, physiology, needs, temperature, step);
                 UpdateShellState(uid, physiology);
@@ -89,6 +98,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
                 // Dormancy reduces resource use, not the harm caused by an already-starved Core.
                 ApplyGasBloodloss(uid, physiology, step,
                     GetReserveDrainRate(uid, physiology, applySsdMultiplier: false));
+                UpdateHeatIntoxication(uid, physiology, temperature);
             }
             UpdateHeatSpeed(uid, physiology, temperature);
             UpdateColdSpeed(uid, physiology, temperature);
@@ -332,15 +342,85 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         Dirty(uid, physiology);
     }
 
-    private void OnFuelMetabolized(Entity<NovakinPhysiologyComponent> entity, ref NovakinCoreFuelMetabolizedEvent args)
+    private void OnCoreCooling(Entity<NovakinPhysiologyComponent> entity, ref NovakinCoreCoolingEvent args)
     {
-        if (args.Heat <= 0f || !TryComp<TemperatureComponent>(entity, out var temperature))
+        if (args.TemperatureDelta <= 0f || !TryComp<TemperatureComponent>(entity, out var temperature))
             return;
 
-        var updatedTemperature = temperature.CurrentTemperature + args.Heat;
-        if (!args.AllowOverheat)
-            updatedTemperature = Math.Min(updatedTemperature, DangerousHeat);
+        var updatedTemperature = Math.Max(temperature.CurrentTemperature - args.TemperatureDelta,
+            Math.Min(temperature.CurrentTemperature, DangerousCold));
         _temperature.ForceChangeTemperature(entity, updatedTemperature, temperature);
+    }
+
+    private void OnReagentMetabolized(Entity<NovakinPhysiologyComponent> entity,
+        ref ReagentMetabolizedEvent args)
+    {
+        if (!_mobState.IsAlive(entity)
+            || args.Reagent.ReactiveEffects?.Values.Any(entry =>
+                entry.Effects.Any(effect => effect is FlammableReaction)) != true)
+        {
+            return;
+        }
+
+        // Kritters: flammability, rather than alcohol metadata, determines Novakin Core heating.
+        var heatPerUnit = (entity.Comp.PeakIntoxicationTemperature - entity.Comp.FuelConsumptionBaselineTemperature)
+            / Math.Max(entity.Comp.FlammableUnitsToPeak, 1f);
+        entity.Comp.PendingReagentHeat += args.Quantity.Float() * heatPerUnit;
+    }
+
+    private void ApplyPendingReagentHeat(EntityUid uid, NovakinPhysiologyComponent physiology,
+        TemperatureComponent temperature, float elapsed)
+    {
+        if (physiology.PendingReagentHeat <= 0f)
+            return;
+
+        if (temperature.CurrentTemperature >= DangerousHeat)
+        {
+            physiology.PendingReagentHeat = 0f;
+            return;
+        }
+
+        var applied = Math.Min(physiology.PendingReagentHeat, physiology.ReagentHeatTransferPerSecond * elapsed);
+        applied = Math.Min(applied, DangerousHeat - temperature.CurrentTemperature);
+        physiology.PendingReagentHeat -= applied;
+        _temperature.ForceChangeTemperature(uid, temperature.CurrentTemperature + applied, temperature);
+    }
+
+    private void UpdateHeatIntoxication(EntityUid uid, NovakinPhysiologyComponent physiology,
+        TemperatureComponent temperature)
+    {
+        if (!_mobState.IsAlive(uid) || temperature.CurrentTemperature < physiology.IntoxicationStartTemperature)
+        {
+            _statusEffects.TryRemoveStatusEffect(uid, SharedDrunkSystem.DrunkKey);
+            _statusEffects.TryRemoveStatusEffect(uid, SlurredSpeechKey);
+            return;
+        }
+
+        var range = physiology.PeakIntoxicationTemperature - physiology.IntoxicationStartTemperature;
+        var progress = range > 0f
+            ? Math.Clamp((temperature.CurrentTemperature - physiology.IntoxicationStartTemperature) / range, 0f, 1f)
+            : 1f;
+        var seconds = MathHelper.Lerp(physiology.MinimumIntoxicationSeconds,
+            physiology.PeakIntoxicationSeconds, progress);
+        var duration = TimeSpan.FromSeconds(seconds);
+
+        // Kritters: Novakin drunkenness is a live view of Core heat, never accumulated reagent alcohol.
+        _statusEffects.TryAddStatusEffect<DrunkComponent>(uid, SharedDrunkSystem.DrunkKey, duration, true);
+        _statusEffects.TryAddStatusEffect<SlurredAccentComponent>(uid, SlurredSpeechKey, duration, true);
+        _statusEffects.TrySetTime(uid, SharedDrunkSystem.DrunkKey, duration);
+        _statusEffects.TrySetTime(uid, SlurredSpeechKey, duration);
+    }
+
+    private static void OnBeforeDamageChanged(Entity<NovakinPhysiologyComponent> entity,
+        ref BeforeDamageChangedEvent args)
+    {
+        if (!args.Damage.DamageDict.ContainsKey("Poison"))
+            return;
+
+        // Kritters: the Core burns out Poison regardless of whether its source bypasses normal resistances.
+        var filtered = new DamageSpecifier(args.Damage);
+        filtered.DamageDict.Remove("Poison");
+        args = args with { Damage = filtered };
     }
 
     private static bool IsThermallyUnsafe(TemperatureComponent temperature)

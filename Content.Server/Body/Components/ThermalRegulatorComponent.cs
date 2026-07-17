@@ -6,7 +6,8 @@ using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 namespace Content.Server.Body.Components;
 
 [RegisterComponent]
-[Access(typeof(ThermalRegulatorSystem), typeof(KrittersServerBloodTypeSystem), typeof(NovakinPhysiologySystem))] // Kritters
+// Kritters: blood state and Novakin Fuel availability dynamically alter native thermal regulation.
+[Access(typeof(ThermalRegulatorSystem), typeof(KrittersServerBloodTypeSystem), typeof(NovakinPhysiologySystem))]
 public sealed partial class ThermalRegulatorComponent : Component
 {
     /// <summary>

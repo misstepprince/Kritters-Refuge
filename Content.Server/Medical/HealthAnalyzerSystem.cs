@@ -259,6 +259,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
                 out bloodTypeColor); // Kritters
         }
 
+        // Kritters: expose the bloodless Novakin nitrogen reserve through the existing scanner payload.
         if (TryComp<NovakinPhysiologyComponent>(entity, out var physiology))
             nitrogenReserve = physiology.MaxReserve > 0f
                 ? Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve, 0f, 1f)
