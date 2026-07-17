@@ -2,17 +2,41 @@
 # Novakin
   <GuideEntityEmbed Entity="MobNovakin" Caption="Novakin" Scale="3.5"/>
 
-Novakin maintain a nitrogen reserve and a fuel-fed Core. Nitrogen always leaks into the local atmosphere; a full intact reserve lasts about thirty minutes. Nitrogen inhalers refill it; other gases do not.
+#Overview
 
-Below 50% reserve, nitrogen loss causes blood-loss and cold damage that worsens as the reserve falls. Once empty, this failure damage stops, but ordinary hazards still affect the inert shell. They have no bloodstream: organic food and alcohol are processed by the Core. Alcohol is an especially energetic fuel that heats the shell. Fuel keeps the core warm; an empty fuel reserve stops thermal regulation.
+This guidebook is WIP and currently purely functional, there is no lore embelishments yet.
 
-Temperatures below 323.15 K (50 C) or at or above 700 K make the shell brittle or molten. Both states cause escalating brute and cold/heat damage and rapidly leak nitrogen. A shell also fails once collective brute damage reaches 100.
+Novakin maintain a body shell, an N2 reserve, and a fuel-fed Core, they have night vision and naturally glow. A fully intact Novakin with full fuel and n2 will last about thirty minutes.
 
-Novakin are vulnerable to blunt, slash, piercing, and caustic damage; they are immune to shock, poison, and asphyxiation, and especially vulnerable to radiation, cellular, and blood-loss damage. Their glow grows with Core temperature, and their night vision enhances a 120 degree arc ahead of them with a small local fill.
+Below 25% N2 reserve, Novakin suffer blood-loss damage. They have no bloodstream: food and alcohol directly fuel the Core, medical reagents directly react with it. Fuel keeps the Core warm; an empty Core cannot regulate temperature.
+
+Alcohol can heat the core, but be careful because Novakin overheat beyond 700 K.
+
+Temperatures below 323 K or at and above 700 K damage the shell. The shell also fails at 100 brute damage. A breached shell leaks N2 quickly and takes Cold or Heat damage depending on what temperature it fails at; more remaining N2 makes this thermal damage worse.
+
+Empty shells still take slow thermal damage.
+
+Novakin are vulnerable to blunt, slash, piercing, and caustic damage; they are immune to shock, poison, and asphyxiation, and especially vulnerable to radiation, cellular, and blood-loss damage.
+
+Their glow grows with Core temperature, and their night vision works best at their standard body temperature of 373.15k, any hotter and it starts getting waashed out, any colder and it disappears.
 
 # Survival equipment
   <GuideEntityEmbed Entity="NovakinInhalerNitrogen" Caption="Nitrogen Novakin inhaler" Scale="2"/>
 
-# Core restart
-Dead Novakin cannot be defibrillated. Repair physical shell damage below 100 and total damage below 200, restore at least 50% nitrogen and 10% Core Fuel, then use a lit welder on the dormant Core. The restart takes three seconds and returns them to critical condition.
+Novakin Inhalers hold pure N2. Use one on a Novakin to transfer as much N2 as needed to fill their reserve; any excess stays in the inhaler. Refill an inhaler from a pure N2 tank. Large Novakin Inhalers hold more N2.
+
+Pressure Suits prolong the period it takes for a Novakin to refill and refuel. Novakin with broken shells can also have their critical state extended by them donning a pressure suit.
+
+# Treatment + Core restart
+
+For medical professionals, the health analyzer shows their N2 Reserve.
+
+They cannot be injected with syringes or hypos, you have to put them into cryotubes, yes I know this is contradictory but like I said, work in progress. All cryo chems work on them as far as I know.
+
+You must heal their brute damage to be below 100, otherwise the shell is still compromise and cannot hold gas. From there all damage of course needs to be below 200 for revival.
+
+Dead Novakin cannot be defibrillated, restore at least 50% nitrogen and 10% Core Fuel, then use a lit welder on the dormant Core. The restart takes three seconds and returns them to life.
+
+To ensure they heat up quickly enough to avoid taking further thermal damage, if they are cold that is, give them a shot of alcohol, ideally not more than 10u because they will heat up quick.
+
 </Document>

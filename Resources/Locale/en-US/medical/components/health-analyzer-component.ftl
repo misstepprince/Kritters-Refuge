@@ -9,6 +9,7 @@ health-analyzer-window-entity-critical-text = Critical
 
 health-analyzer-window-entity-temperature-text = Temperature:
 health-analyzer-window-entity-blood-level-text = Blood Level:
+health-analyzer-window-entity-nitrogen-reserve-text = N2 Reserve:
 # Kritters
 health-analyzer-window-entity-blood-type-text = Blood Type:
 health-analyzer-window-entity-status-text = Status:

@@ -20,6 +20,14 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField]
     public float ReserveDrainPerSecond = 100f / (30f * 60f);
 
+    /// <summary>Resource-decay multiplier for an SSD Novakin's dormant Core.</summary>
+    [DataField]
+    public float SsdReserveDrainMultiplier = 0.1f;
+
+    /// <summary>Fuel-decay multiplier for an SSD Novakin's dormant Core.</summary>
+    [DataField]
+    public float SsdFuelDecayMultiplier = 0.1f;
+
     /// <summary>An uncontained compromised shell vents a full reserve in 206 seconds.</summary>
     [DataField]
     public float ShellFailureReserveDrainPerSecond = 100f / 206f;
@@ -74,10 +82,10 @@ public sealed partial class NovakinPhysiologyComponent : Component
 
     /// <summary>Gas-powered thermal damage added while a compromised Core retains reserve.</summary>
     [DataField]
-    public float GasThermalDamagePerSecond = 0.6f;
+    public float GasThermalDamagePerSecond = 0.9f;
 
     [DataField]
-    public float GasThermalDamageExponent = 2f;
+    public float GasThermalDamageExponent = 1.17f;
 
     [DataField]
     public float FuelConsumptionBaselineTemperature = 373.15f;

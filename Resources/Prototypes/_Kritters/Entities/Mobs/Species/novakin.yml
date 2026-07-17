@@ -43,6 +43,11 @@
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: Novakin
+  # Vacuum is dangerous, but the shell gives roughly 25% longer before crit than an organic humanoid.
+  - type: Barotrauma
+    damage:
+      types:
+        Blunt: 0.48
   - type: DamageVisuals
     damageOverlayGroups:
       Brute:

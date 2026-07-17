@@ -8,10 +8,10 @@ namespace Content.Shared._Kritters.Components;
 public sealed partial class NovakinInhalerComponent : Component
 {
     /// <summary>
-    /// Native gas capacity of the inhaler. At 400 reserve per mole, this stores 50 reserve.
+    /// Native gas capacity of the inhaler, matching its normal filled tank equivalent.
     /// </summary>
     [DataField]
-    public float MaxMoles = 0.125f;
+    public float MaxMoles = 0.270782035f;
 
     /// <summary>
     /// Reserve restored by one mole of matching gas.
@@ -19,9 +19,4 @@ public sealed partial class NovakinInhalerComponent : Component
     [DataField]
     public float ReservePerMole = 400f;
 
-    /// <summary>
-    /// Maximum reserve restored by one use.
-    /// </summary>
-    [DataField]
-    public float TransferAmount = 10f;
 }

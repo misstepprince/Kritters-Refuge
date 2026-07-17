@@ -67,11 +67,6 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         var query = EntityQueryEnumerator<NovakinPhysiologyComponent, NeedsComponent, TemperatureComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var physiology, out var needs, out var temperature, out var transform))
         {
-            if (!TryComp<MobStateComponent>(uid, out var mobState))
-                continue;
-            if (IsPlayerSsd(uid))
-                continue;
-
             var remaining = elapsed;
             while (remaining > 0f)
             {
@@ -81,19 +76,19 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
                 CoolWhenFuelDepleted(uid, physiology, needs, temperature, step);
                 UpdateShellState(uid, physiology);
                 UpdateShellTemperatureTransfer(uid, physiology, temperature);
-                ApplyThermalShellDamage(uid, physiology, temperature, mobState, step);
+                ApplyThermalShellDamage(uid, physiology, temperature, step);
                 UpdateShellState(uid, physiology);
                 UpdateShellTemperatureTransfer(uid, physiology, temperature);
                 DrainFuelForHeat(uid, physiology, needs, temperature, step);
 
-                var lost = 0f;
-                if (!_mobState.IsDead(uid, mobState))
-                    lost = RemoveReserve((uid, physiology), GetReserveDrainRate(uid, physiology) * step);
+                var lost = RemoveReserve((uid, physiology), GetReserveDrainRate(uid, physiology) * step);
 
                 if (lost > 0f)
                     _atmosphere.GetTileMixture((uid, transform), excite: true)?.AdjustMoles(Gas.Nitrogen, lost * physiology.LeakedMolesPerReserve);
 
-                ApplyGasBloodloss(uid, physiology, mobState, step, lost / step);
+                // Dormancy reduces resource use, not the harm caused by an already-starved Core.
+                ApplyGasBloodloss(uid, physiology, step,
+                    GetReserveDrainRate(uid, physiology, applySsdMultiplier: false));
             }
             UpdateHeatSpeed(uid, physiology, temperature);
             UpdateColdSpeed(uid, physiology, temperature);
@@ -105,10 +100,9 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     }
 
     private void ApplyThermalShellDamage(EntityUid uid, NovakinPhysiologyComponent physiology,
-        TemperatureComponent temperature, MobStateComponent mobState, float elapsed)
+        TemperatureComponent temperature, float elapsed)
     {
-        if (_mobState.IsDead(uid, mobState) || !IsThermallyUnsafe(temperature)
-            || !TryComp<DamageableComponent>(uid, out var damageable))
+        if (!IsThermallyUnsafe(temperature) || !TryComp<DamageableComponent>(uid, out var damageable))
             return;
 
         var scale = GetThermalSeverity(physiology, temperature);
@@ -160,12 +154,9 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         temperature.AtmosTemperatureTransferEfficiency = physiology.BaseAtmosTemperatureTransferEfficiency * multiplier;
     }
 
-    private void ApplyGasBloodloss(EntityUid uid, NovakinPhysiologyComponent physiology, MobStateComponent mobState,
-        float elapsed, float actualDrainRate)
+    private void ApplyGasBloodloss(EntityUid uid, NovakinPhysiologyComponent physiology, float elapsed,
+        float actualDrainRate)
     {
-        if (_mobState.IsDead(uid, mobState))
-            return;
-
         var fraction = GetReserveFraction(physiology);
         if (fraction < physiology.BloodlossReserveThreshold)
         {
@@ -183,13 +174,16 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         }
     }
 
-    private float GetReserveDrainRate(EntityUid uid, NovakinPhysiologyComponent physiology)
+    private float GetReserveDrainRate(EntityUid uid, NovakinPhysiologyComponent physiology,
+        bool applySsdMultiplier = true)
     {
         var rate = GetUnprotectedReserveDrainRate(physiology);
         if (HasPressureSuit(uid))
             rate *= physiology.ShellShattered
                 ? physiology.PressureSuitShellFailureReserveDrainMultiplier
                 : physiology.PressureSuitReserveDrainMultiplier;
+        if (applySsdMultiplier && IsPlayerSsd(uid) && _mobState.IsAlive(uid))
+            rate *= physiology.SsdReserveDrainMultiplier;
         return rate;
     }
 
@@ -343,7 +337,10 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         if (args.Heat <= 0f || !TryComp<TemperatureComponent>(entity, out var temperature))
             return;
 
-        _temperature.ForceChangeTemperature(entity, Math.Min(temperature.CurrentTemperature + args.Heat, DangerousHeat), temperature);
+        var updatedTemperature = temperature.CurrentTemperature + args.Heat;
+        if (!args.AllowOverheat)
+            updatedTemperature = Math.Min(updatedTemperature, DangerousHeat);
+        _temperature.ForceChangeTemperature(entity, updatedTemperature, temperature);
     }
 
     private static bool IsThermallyUnsafe(TemperatureComponent temperature)
@@ -375,8 +372,9 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         var illumination = Math.Clamp((current - physiology.ColdSpeedMinimumTemperature)
             / (physiology.FuelConsumptionBaselineTemperature - physiology.ColdSpeedMinimumTemperature), 0f, 1f);
         var saturation = Math.Clamp((current - physiology.FuelConsumptionBaselineTemperature)
-            / (650f - physiology.FuelConsumptionBaselineTemperature), 0f, 1f);
-        var washout = Math.Clamp((current - 650f) / (DangerousHeat - 650f), 0f, 1f);
+            / (DangerousHeat - physiology.FuelConsumptionBaselineTemperature), 0f, 1f);
+        // Retain useful vision at dangerous temperatures instead of turning the viewport white.
+        var washout = saturation * 0.2125f;
         if (MathF.Abs(vision.Illumination - illumination) < 0.001f
             && MathF.Abs(vision.HeatSaturation - saturation) < 0.001f
             && MathF.Abs(vision.HeatWashout - washout) < 0.001f)

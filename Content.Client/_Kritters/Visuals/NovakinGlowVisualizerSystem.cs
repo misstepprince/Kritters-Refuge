@@ -1,6 +1,7 @@
 using Content.Shared._Kritters.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
+using Content.Shared.SSDIndicator;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -81,7 +82,16 @@ public sealed partial class NovakinGlowVisualizerSystem : EntitySystem
             UpdateGlowLayer(uid, sprite, layer, GetGlowKey(layer), intensity, layer == HumanoidVisualLayers.Eyes);
         }
 
+        UpdateEyesForSsd(uid, sprite);
+
         UpdateMarkingGlow(uid, sprite, intensity);
+    }
+
+    private void UpdateEyesForSsd(EntityUid uid, SpriteComponent sprite)
+    {
+        var eyesEnabled = !TryComp<SSDIndicatorComponent>(uid, out var ssd) || !ssd.IsSSD;
+        if (sprite.LayerMapTryGet(GetGlowKey(HumanoidVisualLayers.Eyes), out var glowIndex))
+            _sprites.LayerSetVisible((uid, sprite), glowIndex, eyesEnabled);
     }
 
     private void UpdateMarkingGlow(EntityUid uid, SpriteComponent sprite, float intensity)

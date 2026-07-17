@@ -14,6 +14,15 @@ void fragment()
     COLOR = zTextureSpec(SCREEN_TEXTURE, Pos);
     highp vec3 finalColor = COLOR.rgb;
 
+    highp vec3 blurredColor = (finalColor
+        + zTextureSpec(SCREEN_TEXTURE, Pos + vec2(2.0 * SCREEN_PIXEL_SIZE.x, 0.0)).rgb
+        + zTextureSpec(SCREEN_TEXTURE, Pos - vec2(2.0 * SCREEN_PIXEL_SIZE.x, 0.0)).rgb
+        + zTextureSpec(SCREEN_TEXTURE, Pos + vec2(0.0, 2.0 * SCREEN_PIXEL_SIZE.y)).rgb
+        + zTextureSpec(SCREEN_TEXTURE, Pos - vec2(0.0, 2.0 * SCREEN_PIXEL_SIZE.y)).rgb) / 5.0;
+    highp float edgeBlur = smoothstep(0.24, 0.7, distance(Pos, vec2(0.5)))
+        * smoothstep(0.65, 1.0, HeatSaturation) * HeatWashout * 3.0;
+    finalColor = mix(finalColor, blurredColor, edgeBlur);
+
     highp float brightness = dot(finalColor, vec3(0.299, 0.587, 0.114));
 
     highp float factor = smoothstep(0.0, NightVisionThreshold, brightness);
@@ -22,7 +31,7 @@ void fragment()
 
     highp vec3 nightColor = mix(finalColor, finalColor * blueTintColor, (1.0 - factor) * BlueTintIntensity);
     highp float nightBrightness = dot(nightColor, vec3(0.299, 0.587, 0.114));
-    nightColor = mix(vec3(nightBrightness), nightColor, 1.0 + HeatSaturation);
+    nightColor = mix(nightColor, vec3(nightBrightness), HeatSaturation * 0.85);
     nightColor = mix(nightColor, vec3(1.0), HeatWashout);
 
     COLOR.rgb = mix(COLOR.rgb, nightColor, Illumination);

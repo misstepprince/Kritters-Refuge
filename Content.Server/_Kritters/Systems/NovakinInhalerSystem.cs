@@ -87,8 +87,7 @@ public sealed partial class NovakinInhalerSystem : EntitySystem
             return true;
 
         var missingReserve = physiology.MaxReserve - physiology.CurrentReserve;
-        var reserve = Math.Min(inhaler.Comp.TransferAmount, missingReserve);
-        reserve = Math.Min(reserve, availableMoles * inhaler.Comp.ReservePerMole);
+        var reserve = Math.Min(missingReserve, availableMoles * inhaler.Comp.ReservePerMole);
         var accepted = _physiology.AddReserve((target, physiology), reserve);
         if (accepted <= 0f)
             return true;
@@ -154,10 +153,9 @@ public sealed partial class NovakinInhalerSystem : EntitySystem
         }
 
         var reserve = tank.Air.GetMoles(Gas.Nitrogen) * inhaler.Comp.ReservePerMole;
-        var uses = (int) MathF.Ceiling(reserve / inhaler.Comp.TransferAmount);
         args.PushMarkup(Loc.GetString("novakin-inhaler-examine",
             ("gas", "nitrogen"),
-            ("uses", uses)));
+            ("reserve", NovakinDisplayFormat.Number(reserve))));
     }
 
     private static bool ContainsOnly(GasMixture mixture, Gas expected)

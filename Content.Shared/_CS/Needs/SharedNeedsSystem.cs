@@ -646,15 +646,20 @@ public abstract partial class SharedNeedsSystem : EntitySystem
 
             foreach (var (needType, need) in component.Needs)
             {
-                if (needType == NeedType.Fuel && IsPlayerSsdNovakin(uid))
-                    continue;
-
                 // for (var i = 0; i < _decayIterations; i++)
                 // {
                 //     need.Decay(deltaSeconds, sleeping);
                 //     need.TickDebuffSlows(curTime);
                 // }
-                need.Decay(deltaSeconds, sleeping);
+                var decaySeconds = deltaSeconds;
+                if (needType == NeedType.Fuel
+                    && TryComp<NovakinPhysiologyComponent>(uid, out var physiology)
+                    && IsPlayerSsdNovakin(uid))
+                {
+                    decaySeconds *= physiology.SsdFuelDecayMultiplier;
+                }
+
+                need.Decay(decaySeconds, sleeping);
             }
             UpdateEverything(uid, component);
         }
@@ -663,6 +668,7 @@ public abstract partial class SharedNeedsSystem : EntitySystem
 
     private bool IsPlayerSsdNovakin(EntityUid uid)
         => HasComp<NovakinPhysiologyComponent>(uid)
+           && _mobState.IsAlive(uid)
            && TryComp<SSDIndicatorComponent>(uid, out var ssd) && ssd.IsSSD
            && TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind;
 

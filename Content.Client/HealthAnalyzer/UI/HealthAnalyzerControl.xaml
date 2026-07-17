@@ -40,6 +40,8 @@
             <Label Name="TemperatureLabel" />
             <Label Name="BloodLevelTitleLabel" Text="{Loc 'health-analyzer-window-entity-blood-level-text'}" />
             <Label Name="BloodLabel" />
+            <Label Name="NitrogenReserveTitleLabel" Text="{Loc 'health-analyzer-window-entity-nitrogen-reserve-text'}" />
+            <Label Name="NitrogenReserveLabel" />
             <!-- Kritters: show blood chemistry alongside blood volume. -->
             <Label Name="BloodTypeTitleLabel" Text="{Loc 'health-analyzer-window-entity-blood-type-text'}" />
             <Label Name="BloodTypeLabel" />

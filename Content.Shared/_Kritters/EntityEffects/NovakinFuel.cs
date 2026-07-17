@@ -18,6 +18,10 @@ public sealed partial class NovakinFuel : EntityEffect
     [DataField]
     public float Heat;
 
+    /// <summary>Whether this fuel can drive the Core beyond its normal 700 K limit.</summary>
+    [DataField]
+    public bool AllowOverheat;
+
     public override void Effect(EntityEffectBaseArgs args)
     {
         if (!args.EntityManager.TryGetComponent<NovakinPhysiologyComponent>(args.TargetEntity, out _))
@@ -27,7 +31,8 @@ public sealed partial class NovakinFuel : EntityEffect
             .TryModifyNeedLevel(args.TargetEntity, NeedType.Fuel, Fuel);
 
         if (Heat > 0f)
-            args.EntityManager.EventBus.RaiseLocalEvent(args.TargetEntity, new NovakinCoreFuelMetabolizedEvent(Heat));
+            args.EntityManager.EventBus.RaiseLocalEvent(args.TargetEntity,
+                new NovakinCoreFuelMetabolizedEvent(Heat, AllowOverheat));
     }
 
     protected override string? ReagentEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)

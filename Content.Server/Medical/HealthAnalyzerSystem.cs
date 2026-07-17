@@ -2,6 +2,7 @@ using Content.Server.Medical.Components;
 using Content.Server.PowerCell;
 using Content.Server.Temperature.Components;
 using Content.Shared._Kritters.BloodTypes;
+using Content.Shared._Kritters.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
@@ -238,6 +239,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             bodyTemperature = temp.CurrentTemperature;
 
         var bloodAmount = float.NaN;
+        var nitrogenReserve = float.NaN;
         var bleeding = false;
         var unrevivable = false;
         var unclonable = false; // Frontier
@@ -257,6 +259,11 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
                 out bloodTypeColor); // Kritters
         }
 
+        if (TryComp<NovakinPhysiologyComponent>(entity, out var physiology))
+            nitrogenReserve = physiology.MaxReserve > 0f
+                ? Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve, 0f, 1f)
+                : 0f;
+
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
             unrevivable = true;
 
@@ -271,6 +278,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             GetNetEntity(entity),
             bodyTemperature,
             bloodAmount,
+            nitrogenReserve,
             null,
             bleeding,
             unrevivable,

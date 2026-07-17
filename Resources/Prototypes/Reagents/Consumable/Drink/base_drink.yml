@@ -55,6 +55,7 @@
       - !type:NovakinFuel
         fuel: 16
         heat: 15
+        allowOverheat: true
     Drink:
       effects:
       - !type:SatiateThirst
