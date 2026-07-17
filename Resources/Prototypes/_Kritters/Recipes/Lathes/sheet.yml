@@ -17,7 +17,7 @@
 
 - type: latheRecipe
   id: SheetCobaltPlasteel30
-  result: SheetPlasteel30
+  result: SheetPlasteel
   completetime: 2
   materials:
     RawPlasma: 3000
