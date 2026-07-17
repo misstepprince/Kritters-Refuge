@@ -2,7 +2,6 @@ using Content.Server.Medical.Components;
 using Content.Server.PowerCell;
 using Content.Server.Temperature.Components;
 using Content.Shared._Kritters.BloodTypes;
-using Content.Shared._Kritters.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
@@ -19,7 +18,6 @@ using Content.Shared.Traits.Assorted;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Server._NF.Medical; // Frontier
 using Content.Server._NF.Traits.Assorted;
@@ -40,7 +38,6 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popupSystem = default!;
     [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
     [Dependency] private KrittersBloodTypeSystem _krittersBloodTypes = default!; // Kritters
-    [Dependency] private IPrototypeManager _prototypes = default!; // Kritters: resolve Novakin analyzer gas names.
 
     public override void Initialize()
     {

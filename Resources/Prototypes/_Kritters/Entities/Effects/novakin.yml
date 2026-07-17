@@ -1,7 +1,7 @@
 - type: entity
   id: EffectKrittersNightVision
   categories: [ HideSpawnMenu ]
-  name: night vision
+  name: Novakin night vision
   components:
   - type: PointLight
     color: "#D6E4FF"

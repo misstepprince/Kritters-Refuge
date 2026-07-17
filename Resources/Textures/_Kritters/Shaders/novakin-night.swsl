@@ -3,7 +3,9 @@ uniform sampler2D SCREEN_TEXTURE;
 uniform highp float NightVisionBoost;
 uniform highp float NightVisionThreshold;
 uniform highp float BlueTintIntensity;
-uniform highp float FacingAngle;
+uniform highp float Illumination;
+uniform highp float HeatSaturation;
+uniform highp float HeatWashout;
 
 const highp vec3 blueTintColor = vec3(0.35, 0.7, 1.0);
 
@@ -16,16 +18,12 @@ void fragment()
 
     highp float factor = smoothstep(0.0, NightVisionThreshold, brightness);
 
-    // Restrict enhancement to a 120 degree cone ahead of the attached player.
-    // Match PointLight's cone mask: its unrotated cone points upward, then
-    // rotates with the holder's transform (as a flashlight does).
-    highp vec2 viewDirection = vec2(sin(FacingAngle), -cos(FacingAngle));
-    highp vec2 fromCentre = Pos - vec2(0.5);
-    highp float inCone = dot(normalize(fromCentre + vec2(0.0001)), viewDirection) >= 0.5 ? 1.0 : 0.0;
+    finalColor = mix(finalColor * NightVisionBoost, finalColor, factor);
 
-    finalColor = mix(finalColor * NightVisionBoost, finalColor, max(factor, 1.0 - inCone));
+    highp vec3 nightColor = mix(finalColor, finalColor * blueTintColor, (1.0 - factor) * BlueTintIntensity);
+    highp float nightBrightness = dot(nightColor, vec3(0.299, 0.587, 0.114));
+    nightColor = mix(vec3(nightBrightness), nightColor, 1.0 + HeatSaturation);
+    nightColor = mix(nightColor, vec3(1.0), HeatWashout);
 
-    finalColor = mix(finalColor, finalColor * blueTintColor, (1.0 - factor) * BlueTintIntensity * inCone);
-
-    COLOR.rgb = finalColor;
+    COLOR.rgb = mix(COLOR.rgb, nightColor, Illumination);
 }

@@ -282,7 +282,8 @@ public sealed partial class TemperatureSystem : EntitySystem
 
             var diff = Math.Abs(temperature.CurrentTemperature - heatDamageThreshold);
             var tempDamage = c / (1 + a * Math.Pow(Math.E, -heatK * diff)) - y;
-            _damageable.TryChangeDamage(uid, temperature.HeatDamage * tempDamage, ignoreResistances: true, interruptsDoAfters: false);
+            _damageable.TryChangeDamage(uid, temperature.HeatDamage * tempDamage, ignoreResistances: true,
+                interruptsDoAfters: false, originFlag: DamageableSystem.DamageOriginFlag.Environmental);
         }
         else if (temperature.CurrentTemperature <= coldDamageThreshold)
         {
@@ -296,7 +297,8 @@ public sealed partial class TemperatureSystem : EntitySystem
             var coldDamageScaleThreshold = Math.Max(Math.Abs(coldDamageThreshold), Atmospherics.MinimumTemperatureDeltaToConsider);
             var tempDamage =
                 Math.Sqrt(diff * (Math.Pow(temperature.DamageCap.Double(), 2) / coldDamageScaleThreshold));
-            _damageable.TryChangeDamage(uid, temperature.ColdDamage * tempDamage, ignoreResistances: true, interruptsDoAfters: false);
+            _damageable.TryChangeDamage(uid, temperature.ColdDamage * tempDamage, ignoreResistances: true,
+                interruptsDoAfters: false, originFlag: DamageableSystem.DamageOriginFlag.Environmental);
         }
         else if (temperature.TakingDamage)
         {

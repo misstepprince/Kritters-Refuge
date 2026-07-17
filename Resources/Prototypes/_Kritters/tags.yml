@@ -31,21 +31,3 @@
 
 - type: Tag
   id: KrittersBloodMetabolismCold
-
-- type: Tag
-  id: KrittersBloodBaseNovakinNitrogen
-
-- type: Tag
-  id: KrittersBloodBaseNovakinOxygen
-
-- type: Tag
-  id: KrittersBloodBaseNovakinNitrousOxide
-
-- type: Tag
-  id: KrittersBloodBaseNovakinAmmonia
-
-- type: Tag
-  id: KrittersBloodBaseNovakinCarbonDioxide
-
-- type: Tag
-  id: KrittersBloodBaseNovakinWaterVapor

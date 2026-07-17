@@ -2,14 +2,17 @@
 # Novakin
   <GuideEntityEmbed Entity="MobNovakin" Caption="Novakin" Scale="3.5"/>
 
-Novakin maintain a nitrogen reserve and a fuel-fed core. Nitrogen always leaks into the local atmosphere; a full intact reserve lasts ten minutes. Nitrogen inhalers refill it; other gases do not.
+Novakin maintain a nitrogen reserve and a fuel-fed Core. Nitrogen always leaks into the local atmosphere; a full intact reserve lasts about thirty minutes. Nitrogen inhalers refill it; other gases do not.
 
-Below 50% reserve, nitrogen loss causes ordinary blood-loss damage that worsens as the reserve falls. They have no bloodstream: drink medicine normally, while injected medicine only works through a cryotube, which delivers it to the Core for digestion. Fuel keeps the core warm; an empty fuel reserve cools rapidly.
+Below 50% reserve, nitrogen loss causes blood-loss and cold damage that worsens as the reserve falls. Once empty, this failure damage stops, but ordinary hazards still affect the inert shell. They have no bloodstream: organic food and alcohol are processed by the Core. Alcohol is an especially energetic fuel that heats the shell. Fuel keeps the core warm; an empty fuel reserve stops thermal regulation.
 
-Temperatures below 323.15 K (50 C) or above 700 K damage the shell until medical critical. This cannot kill directly, but a shattered shell leaks its full reserve in 30 seconds until the Novakin is stable and back in a safe temperature. In vacuum, space harm begins after a 60-second grace period and resets after returning to pressure.
+Temperatures below 323.15 K (50 C) or at or above 700 K make the shell brittle or molten. Both states cause escalating brute and cold/heat damage and rapidly leak nitrogen. A shell also fails once collective brute damage reaches 100.
 
-Novakin are 15% more vulnerable to blunt, slash, and piercing damage. Their glowing eyes are always visible, and their night vision only enhances the 120 degree arc ahead of them.
+Novakin are vulnerable to blunt, slash, piercing, and caustic damage; they are immune to shock, poison, and asphyxiation, and especially vulnerable to radiation, cellular, and blood-loss damage. Their glow grows with Core temperature, and their night vision enhances a 120 degree arc ahead of them with a small local fill.
 
 # Survival equipment
   <GuideEntityEmbed Entity="NovakinInhalerNitrogen" Caption="Nitrogen Novakin inhaler" Scale="2"/>
+
+# Core restart
+Dead Novakin cannot be defibrillated. Repair physical shell damage below 100 and total damage below 200, restore at least 50% nitrogen and 10% Core Fuel, then use a lit welder on the dormant Core. The restart takes three seconds and returns them to critical condition.
 </Document>
