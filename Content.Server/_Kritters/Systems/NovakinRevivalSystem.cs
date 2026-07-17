@@ -109,11 +109,6 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
             physical, damageable.TotalDamage.Float(), reservePercent, fuelPercent);
     }
 
-    private bool HasShellRepair(EntityUid uid)
-        => TryComp<DamageableComponent>(uid, out var damageable)
-           && damageable.TotalDamage.Float() < 200f
-           && GetBruteDamage(damageable) < 100f;
-
     private static float GetBruteDamage(DamageableComponent damageable)
         => damageable.Damage.DamageDict.GetValueOrDefault("Blunt").Float()
            + damageable.Damage.DamageDict.GetValueOrDefault("Slash").Float()

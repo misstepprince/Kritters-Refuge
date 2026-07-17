@@ -6,6 +6,7 @@ using Content.Server.Body.Systems;
 using Content.Server._Kritters.Systems;
 using Content.Server.Temperature.Components;
 using Content.Shared._Kritters.Components;
+using Content.Shared._Kritters.Overlays;
 using Content.Shared._Kritters.Systems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
@@ -186,7 +187,7 @@ public sealed class NovakinFoundationTest
     }
 
     [Test]
-    public async Task CriticalTemperatureShattersShell()
+    public async Task CriticalTemperatureStressesShellBeforeFailure()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -200,39 +201,47 @@ public sealed class NovakinFoundationTest
             var temperature = entities.GetComponent<TemperatureComponent>(novakin);
 
             temperature.CurrentTemperature = 1000f;
-            physiologySystem.Update(30f);
+            physiologySystem.Update(5f);
 
-            Assert.That(entities.GetComponent<NovakinPhysiologyComponent>(novakin).ShellShattered, Is.True);
+            var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            var damage = entities.GetComponent<DamageableComponent>(novakin);
+            Assert.Multiple(() =>
+            {
+                Assert.That(physiology.ShellShattered, Is.False);
+                Assert.That(GetDamage(damage, "Blunt"), Is.GreaterThan(0f));
+                Assert.That(GetDamage(damage, "Heat"), Is.EqualTo(0f));
+            });
         });
 
         await pair.CleanReturnAsync();
     }
 
     [Test]
-    public async Task DepletedReserveDoesNotPreventThermalShellDamage()
+    public async Task CompromisedShellTakesMinimalThermalDamageAtEmptyReserve()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
         var entities = server.ResolveDependency<IEntityManager>();
+        var damageable = entities.System<DamageableSystem>();
         var physiologySystem = entities.System<NovakinPhysiologySystem>();
         var map = await pair.CreateTestMap();
 
         await server.WaitAssertion(() =>
         {
             var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
-            var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
             var temperature = entities.GetComponent<TemperatureComponent>(novakin);
             temperature.CurrentTemperature = 1000f;
-            physiology.CurrentReserve = 1f;
+            entities.GetComponent<NovakinPhysiologyComponent>(novakin).CurrentReserve = 0f;
+            damageable.TryChangeDamage(novakin, new DamageSpecifier { DamageDict = { ["Blunt"] = 100f } });
 
-            physiologySystem.Update(1f);
-            var damageable = entities.GetComponent<DamageableComponent>(novakin);
-            Assert.That(damageable.TotalDamage.Float(), Is.GreaterThan(0f));
-
-            physiology.CurrentReserve = 0f;
-            var damageAtDepletion = damageable.TotalDamage;
-            physiologySystem.Update(5f);
-            Assert.That(damageable.TotalDamage, Is.GreaterThan(damageAtDepletion));
+            physiologySystem.Update(0.5f);
+            var damage = entities.GetComponent<DamageableComponent>(novakin);
+            Assert.Multiple(() =>
+            {
+                Assert.That(entities.GetComponent<NovakinPhysiologyComponent>(novakin).ShellShattered, Is.True);
+                Assert.That(GetDamage(damage, "Heat"), Is.GreaterThan(0f));
+                Assert.That(GetDamage(damage, "Blunt"), Is.GreaterThanOrEqualTo(100f));
+            });
         });
 
         await pair.CleanReturnAsync();
@@ -288,4 +297,113 @@ public sealed class NovakinFoundationTest
 
         await pair.CleanReturnAsync();
     }
+
+    [Test]
+    public async Task PressureSuitContainsCompromisedShell()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var physiologySystem = entities.System<NovakinPhysiologySystem>();
+        var inventory = entities.System<InventorySystem>();
+        var damageable = entities.System<DamageableSystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var unprotected = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var protectedNovakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.One, map.MapId));
+            var suit = entities.SpawnEntity("ClothingOuterHardsuitEVA", new MapCoordinates(Vector2.One, map.MapId));
+            Assert.That(inventory.TryEquip(protectedNovakin, suit, "outerClothing", force: true), Is.True);
+            damageable.TryChangeDamage(unprotected, new DamageSpecifier { DamageDict = { ["Blunt"] = 100f } });
+            damageable.TryChangeDamage(protectedNovakin, new DamageSpecifier { DamageDict = { ["Blunt"] = 100f } });
+
+            physiologySystem.Update(0.5f);
+
+            var unprotectedLost = 100f - entities.GetComponent<NovakinPhysiologyComponent>(unprotected).CurrentReserve;
+            var protectedLost = 100f - entities.GetComponent<NovakinPhysiologyComponent>(protectedNovakin).CurrentReserve;
+            Assert.Multiple(() =>
+            {
+                Assert.That(unprotectedLost, Is.EqualTo(100f / 206f).Within(0.001f));
+                Assert.That(protectedLost, Is.EqualTo(0.125f).Within(0.001f));
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task LowReserveBloodlossStartsAtTwentyFivePercentWithoutColdDamage()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var physiologySystem = entities.System<NovakinPhysiologySystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            physiology.CurrentReserve = 12f;
+
+            physiologySystem.Update(0.5f);
+
+            var damage = entities.GetComponent<DamageableComponent>(novakin);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetDamage(damage, "Bloodloss"), Is.GreaterThan(0f));
+                Assert.That(GetDamage(damage, "Cold"), Is.EqualTo(0f));
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ColdSpeedAndNightVisionFollowCoreTemperature()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var physiologySystem = entities.System<NovakinPhysiologySystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var temperature = entities.GetComponent<TemperatureComponent>(novakin);
+            var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            var vision = entities.GetComponent<KrittersNightVisionComponent>(novakin);
+
+            temperature.CurrentTemperature = 323.15f;
+            physiologySystem.Update(0.5f);
+            Assert.Multiple(() =>
+            {
+                Assert.That(physiology.ColdSpeedMultiplier, Is.EqualTo(0.95f).Within(0.001f));
+                Assert.That(vision.Illumination, Is.EqualTo(0.5f).Within(0.001f));
+            });
+
+            temperature.CurrentTemperature = 273.15f;
+            physiologySystem.Update(0.5f);
+            Assert.Multiple(() =>
+            {
+                Assert.That(physiology.ColdSpeedMultiplier, Is.EqualTo(0.75f).Within(0.001f));
+                Assert.That(vision.Illumination, Is.EqualTo(0f).Within(0.001f));
+            });
+
+            temperature.CurrentTemperature = 650f;
+            physiologySystem.Update(0.5f);
+            Assert.Multiple(() =>
+            {
+                Assert.That(vision.HeatSaturation, Is.EqualTo(1f).Within(0.001f));
+                Assert.That(vision.HeatWashout, Is.EqualTo(0f).Within(0.001f));
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    private static float GetDamage(DamageableComponent damageable, string damageType)
+        => damageable.Damage.DamageDict.TryGetValue(damageType, out var damage) ? damage.Float() : 0f;
 }

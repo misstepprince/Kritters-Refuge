@@ -16,6 +16,9 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Inventory;
+using Content.Shared.Mind.Components;
+using Content.Shared.SSDIndicator;
+using Content.Shared._Kritters.Overlays;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Server.GameObjects;
@@ -66,6 +69,8 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         {
             if (!TryComp<MobStateComponent>(uid, out var mobState))
                 continue;
+            if (IsPlayerSsd(uid))
+                continue;
 
             var remaining = elapsed;
             while (remaining > 0f)
@@ -74,22 +79,26 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
                 remaining -= step;
                 UpdateThermalRegulation(uid, physiology, needs);
                 CoolWhenFuelDepleted(uid, physiology, needs, temperature, step);
-                UpdateShellState(uid, physiology, temperature);
+                UpdateShellState(uid, physiology);
+                UpdateShellTemperatureTransfer(uid, physiology, temperature);
                 ApplyThermalShellDamage(uid, physiology, temperature, mobState, step);
-                UpdateShellState(uid, physiology, temperature);
+                UpdateShellState(uid, physiology);
+                UpdateShellTemperatureTransfer(uid, physiology, temperature);
                 DrainFuelForHeat(uid, physiology, needs, temperature, step);
 
                 var lost = 0f;
                 if (!_mobState.IsDead(uid, mobState))
-                    lost = RemoveReserve((uid, physiology), GetReserveDrainRate(uid, physiology, temperature) * step);
+                    lost = RemoveReserve((uid, physiology), GetReserveDrainRate(uid, physiology) * step);
 
                 if (lost > 0f)
                     _atmosphere.GetTileMixture((uid, transform), excite: true)?.AdjustMoles(Gas.Nitrogen, lost * physiology.LeakedMolesPerReserve);
 
-                ApplyGasBloodloss(uid, physiology, mobState, step);
+                ApplyGasBloodloss(uid, physiology, mobState, step, lost / step);
             }
             UpdateHeatSpeed(uid, physiology, temperature);
+            UpdateColdSpeed(uid, physiology, temperature);
             UpdateGlow(uid, physiology, temperature);
+            UpdateNightVision(uid, physiology, temperature);
             UpdateThermalWarning(uid, physiology, temperature);
             UpdateReserveAlert(uid, physiology);
         }
@@ -102,24 +111,31 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
             || !TryComp<DamageableComponent>(uid, out var damageable))
             return;
 
-        var excess = temperature.CurrentTemperature < DangerousCold
-            ? DangerousCold - temperature.CurrentTemperature
-            : temperature.CurrentTemperature - DangerousHeat;
-        var scale = 1f + excess / Math.Max(physiology.ThermalDamageScaleRange, 1f);
-        var damage = Math.Min(physiology.ThermalShellDamagePerSecond * scale, physiology.MaximumThermalShellDamagePerSecond) * elapsed;
-        var type = temperature.CurrentTemperature < DangerousCold ? "Cold" : "Heat";
-        _damageable.TryChangeDamage(uid, new DamageSpecifier
+        var scale = GetThermalSeverity(physiology, temperature);
+        if (!physiology.ShellShattered)
         {
-            DamageDict = { ["Blunt"] = damage, [type] = damage },
-        }, interruptsDoAfters: false, originFlag: DamageableSystem.DamageOriginFlag.Environmental);
+            var stress = Math.Min(physiology.ThermalStressDamagePerSecond * scale,
+                physiology.MaximumThermalStressDamagePerSecond) * elapsed;
+            _damageable.TryChangeDamage(uid, new DamageSpecifier { DamageDict = { ["Blunt"] = stress } },
+                interruptsDoAfters: false, originFlag: DamageableSystem.DamageOriginFlag.Environmental);
+            return;
+        }
+
+        var reserveFraction = GetReserveFraction(physiology);
+        var gasAmplification = physiology.GasThermalDamagePerSecond
+            * MathF.Pow(reserveFraction, physiology.GasThermalDamageExponent);
+        var damage = (physiology.CompromisedShellThermalDamagePerSecond + gasAmplification) * scale * elapsed;
+        var type = temperature.CurrentTemperature < DangerousCold ? "Cold" : "Heat";
+        _damageable.TryChangeDamage(uid, new DamageSpecifier { DamageDict = { [type] = damage } },
+            interruptsDoAfters: false, originFlag: DamageableSystem.DamageOriginFlag.Environmental);
     }
 
-    private void UpdateShellState(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
+    private void UpdateShellState(EntityUid uid, NovakinPhysiologyComponent physiology)
     {
         if (!TryComp<DamageableComponent>(uid, out var damageable))
             return;
 
-        var shattered = IsThermallyUnsafe(temperature) || GetBruteDamage(damageable) >= ShellFailureDamage;
+        var shattered = GetBruteDamage(damageable) >= ShellFailureDamage;
         if (physiology.ShellShattered == shattered)
             return;
 
@@ -129,17 +145,35 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         Dirty(uid, physiology);
     }
 
-    private void ApplyGasBloodloss(EntityUid uid, NovakinPhysiologyComponent physiology, MobStateComponent mobState, float elapsed)
+    private void UpdateShellTemperatureTransfer(EntityUid uid, NovakinPhysiologyComponent physiology,
+        TemperatureComponent temperature)
+    {
+        if (physiology.BaseAtmosTemperatureTransferEfficiency < 0f)
+            physiology.BaseAtmosTemperatureTransferEfficiency = temperature.AtmosTemperatureTransferEfficiency;
+
+        var multiplier = physiology.ShellShattered
+            ? physiology.ShellFailureTemperatureTransferMultiplier
+            : 1f;
+        if (physiology.ShellShattered && HasPressureSuit(uid))
+            multiplier *= physiology.PressureSuitShellFailureTemperatureTransferMultiplier;
+
+        temperature.AtmosTemperatureTransferEfficiency = physiology.BaseAtmosTemperatureTransferEfficiency * multiplier;
+    }
+
+    private void ApplyGasBloodloss(EntityUid uid, NovakinPhysiologyComponent physiology, MobStateComponent mobState,
+        float elapsed, float actualDrainRate)
     {
         if (_mobState.IsDead(uid, mobState))
             return;
 
-        var fraction = physiology.MaxReserve <= 0f ? 0f : Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve, 0f, 1f);
-        // Mirror the shared bloodstream's damage/recovery curves, substituting nitrogen percentage.
+        var fraction = GetReserveFraction(physiology);
         if (fraction < physiology.BloodlossReserveThreshold)
         {
             var severity = 1f - fraction / physiology.BloodlossReserveThreshold;
-            _damageable.TryChangeDamage(uid, physiology.BloodlossDamage * (severity * elapsed),
+            var drainScale = fraction <= 0f
+                ? 1f
+                : actualDrainRate / GetUnprotectedReserveDrainRate(physiology);
+            _damageable.TryChangeDamage(uid, physiology.BloodlossDamage * (severity * drainScale * elapsed),
                 interruptsDoAfters: false);
         }
         else
@@ -149,18 +183,20 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         }
     }
 
-    private float GetReserveDrainRate(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
+    private float GetReserveDrainRate(EntityUid uid, NovakinPhysiologyComponent physiology)
     {
-        if (physiology.ShellShattered)
-            return physiology.ShellFailureReserveDrainPerSecond;
-
-        var rate = physiology.ReserveDrainPerSecond * GetHeatResourceMultiplier(physiology, temperature);
-        if (IsThermallyUnsafe(temperature))
-            rate *= physiology.ThermalLeakMultiplier;
+        var rate = GetUnprotectedReserveDrainRate(physiology);
         if (HasPressureSuit(uid))
-            rate *= physiology.PressureSuitReserveDrainMultiplier;
+            rate *= physiology.ShellShattered
+                ? physiology.PressureSuitShellFailureReserveDrainMultiplier
+                : physiology.PressureSuitReserveDrainMultiplier;
         return rate;
     }
+
+    private static float GetUnprotectedReserveDrainRate(NovakinPhysiologyComponent physiology)
+        => physiology.ShellShattered
+            ? physiology.ShellFailureReserveDrainPerSecond
+            : physiology.ReserveDrainPerSecond;
 
     private bool HasPressureSuit(EntityUid uid)
         => _inventory.TryGetSlotEntity(uid, "outerClothing", out var outer)
@@ -235,6 +271,36 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         _movement.RefreshMovementSpeedModifiers(uid);
     }
 
+    private void UpdateColdSpeed(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
+    {
+        var current = temperature.CurrentTemperature;
+        float multiplier;
+        if (current >= physiology.ColdSpeedStartTemperature)
+        {
+            multiplier = 1f;
+        }
+        else if (current >= physiology.ColdSpeedDangerTemperature)
+        {
+            var progress = (physiology.ColdSpeedStartTemperature - current)
+                / Math.Max(physiology.ColdSpeedStartTemperature - physiology.ColdSpeedDangerTemperature, 1f);
+            multiplier = MathHelper.Lerp(1f, physiology.ColdSpeedAtDangerTemperature, progress);
+        }
+        else
+        {
+            var progress = (physiology.ColdSpeedDangerTemperature - current)
+                / Math.Max(physiology.ColdSpeedDangerTemperature - physiology.ColdSpeedMinimumTemperature, 1f);
+            multiplier = MathHelper.Lerp(physiology.ColdSpeedAtDangerTemperature,
+                physiology.MinimumColdSpeedMultiplier, Math.Clamp(progress, 0f, 1f));
+        }
+
+        if (MathF.Abs(physiology.ColdSpeedMultiplier - multiplier) < 0.001f)
+            return;
+
+        physiology.ColdSpeedMultiplier = multiplier;
+        Dirty(uid, physiology);
+        _movement.RefreshMovementSpeedModifiers(uid);
+    }
+
     private void UpdateGlow(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
     {
         var range = DangerousHeat - DangerousCold;
@@ -254,6 +320,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         ref RefreshMovementSpeedModifiersEvent args)
     {
         var multiplier = entity.Comp.HeatSpeedMultiplier * entity.Comp.ReserveSpeedMultiplier;
+        multiplier *= entity.Comp.ColdSpeedMultiplier;
         args.ModifySpeed(multiplier, multiplier);
     }
 
@@ -282,9 +349,48 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     private static bool IsThermallyUnsafe(TemperatureComponent temperature)
         => temperature.CurrentTemperature < DangerousCold || temperature.CurrentTemperature >= DangerousHeat;
 
+    private static float GetThermalSeverity(NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
+    {
+        var excess = temperature.CurrentTemperature < DangerousCold
+            ? DangerousCold - temperature.CurrentTemperature
+            : temperature.CurrentTemperature - DangerousHeat;
+        return 1f + Math.Clamp(excess / Math.Max(physiology.ThermalDamageScaleRange, 1f), 0f, 1f);
+    }
+
+    private static float GetReserveFraction(NovakinPhysiologyComponent physiology)
+        => physiology.MaxReserve <= 0f
+            ? 0f
+            : Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve, 0f, 1f);
+
+    private bool IsPlayerSsd(EntityUid uid)
+        => TryComp<SSDIndicatorComponent>(uid, out var ssd) && ssd.IsSSD
+           && TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind;
+
+    private void UpdateNightVision(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
+    {
+        if (!TryComp<KrittersNightVisionComponent>(uid, out var vision))
+            return;
+
+        var current = temperature.CurrentTemperature;
+        var illumination = Math.Clamp((current - physiology.ColdSpeedMinimumTemperature)
+            / (physiology.FuelConsumptionBaselineTemperature - physiology.ColdSpeedMinimumTemperature), 0f, 1f);
+        var saturation = Math.Clamp((current - physiology.FuelConsumptionBaselineTemperature)
+            / (650f - physiology.FuelConsumptionBaselineTemperature), 0f, 1f);
+        var washout = Math.Clamp((current - 650f) / (DangerousHeat - 650f), 0f, 1f);
+        if (MathF.Abs(vision.Illumination - illumination) < 0.001f
+            && MathF.Abs(vision.HeatSaturation - saturation) < 0.001f
+            && MathF.Abs(vision.HeatWashout - washout) < 0.001f)
+            return;
+
+        vision.Illumination = illumination;
+        vision.HeatSaturation = saturation;
+        vision.HeatWashout = washout;
+        Dirty(uid, vision);
+    }
+
     private void UpdateReserveAlert(EntityUid uid, NovakinPhysiologyComponent physiology)
     {
-        var fraction = physiology.MaxReserve <= 0f ? 0f : physiology.CurrentReserve / physiology.MaxReserve;
+        var fraction = GetReserveFraction(physiology);
         var speed = fraction < physiology.BloodlossReserveThreshold
             ? MathHelper.Lerp(physiology.LowReserveMinimumSpeedMultiplier, 1f, fraction / physiology.BloodlossReserveThreshold)
             : 1f;

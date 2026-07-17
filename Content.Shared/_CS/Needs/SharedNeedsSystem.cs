@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._CS.RolePlayIncentiveShared;
+using Content.Shared._Kritters.Components;
 using Content.Shared.Alert;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Examine;
@@ -643,8 +644,11 @@ public abstract partial class SharedNeedsSystem : EntitySystem
                 continue;
             var sleeping = IsAsleeping(uid);
 
-            foreach (var need in component.Needs.Values)
+            foreach (var (needType, need) in component.Needs)
             {
+                if (needType == NeedType.Fuel && IsPlayerSsdNovakin(uid))
+                    continue;
+
                 // for (var i = 0; i < _decayIterations; i++)
                 // {
                 //     need.Decay(deltaSeconds, sleeping);
@@ -656,6 +660,11 @@ public abstract partial class SharedNeedsSystem : EntitySystem
         }
         // RerollDecayIterations();
     }
+
+    private bool IsPlayerSsdNovakin(EntityUid uid)
+        => HasComp<NovakinPhysiologyComponent>(uid)
+           && TryComp<SSDIndicatorComponent>(uid, out var ssd) && ssd.IsSSD
+           && TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind;
 
     private void UpdateEverything(EntityUid uid, NeedsComponent component)
     {

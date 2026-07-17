@@ -20,14 +20,22 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField]
     public float ReserveDrainPerSecond = 100f / (30f * 60f);
 
+    /// <summary>An uncontained compromised shell vents a full reserve in 206 seconds.</summary>
     [DataField]
-    public float ShellFailureReserveDrainPerSecond = 100f / 60f;
-
-    [DataField]
-    public float ThermalLeakMultiplier = 4f;
+    public float ShellFailureReserveDrainPerSecond = 100f / 206f;
 
     [DataField]
     public float PressureSuitReserveDrainMultiplier = 0.5f;
+
+    /// <summary>Pressure suits act as temporary containment for a compromised shell.</summary>
+    [DataField]
+    public float PressureSuitShellFailureReserveDrainMultiplier = 0.125f / (100f / 206f);
+
+    [DataField]
+    public float ShellFailureTemperatureTransferMultiplier = 4f;
+
+    [DataField]
+    public float PressureSuitShellFailureTemperatureTransferMultiplier = 0.25f;
 
     [DataField]
     public float MaximumHeatResourceDrainMultiplier = 1.5f;
@@ -35,12 +43,12 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField]
     public float LowReserveMinimumSpeedMultiplier = 0.75f;
 
-    /// <summary>Nitrogen loss starts causing blood-loss symptoms below half reserve.</summary>
+    /// <summary>Nitrogen loss starts causing blood-loss symptoms below one quarter reserve.</summary>
     [DataField]
-    public float BloodlossReserveThreshold = 0.5f;
+    public float BloodlossReserveThreshold = 0.25f;
 
     [DataField]
-    public DamageSpecifier BloodlossDamage = new() { DamageDict = { ["Bloodloss"] = 0.25f, ["Cold"] = 0.25f } };
+    public DamageSpecifier BloodlossDamage = new() { DamageDict = { ["Bloodloss"] = 0.25f } };
 
     [DataField]
     public DamageSpecifier BloodlossHealDamage = new() { DamageDict = { ["Bloodloss"] = -1f } };
@@ -52,13 +60,24 @@ public sealed partial class NovakinPhysiologyComponent : Component
     public float FuelDepletedCoolingPerSecond = 4f;
 
     [DataField]
-    public float ThermalShellDamagePerSecond = 0.25f;
+    public float ThermalStressDamagePerSecond = 0.25f;
 
     [DataField]
     public float ThermalDamageScaleRange = 50f;
 
     [DataField]
-    public float MaximumThermalShellDamagePerSecond = 1f;
+    public float MaximumThermalStressDamagePerSecond = 0.5f;
+
+    /// <summary>Persistent environmental damage after a shell has failed.</summary>
+    [DataField]
+    public float CompromisedShellThermalDamagePerSecond = 0.1f;
+
+    /// <summary>Gas-powered thermal damage added while a compromised Core retains reserve.</summary>
+    [DataField]
+    public float GasThermalDamagePerSecond = 0.6f;
+
+    [DataField]
+    public float GasThermalDamageExponent = 2f;
 
     [DataField]
     public float FuelConsumptionBaselineTemperature = 373.15f;
@@ -70,8 +89,26 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField]
     public float MaximumHeatSpeedTemperature = 650f;
 
+    [DataField]
+    public float ColdSpeedStartTemperature = 350f;
+
+    [DataField]
+    public float ColdSpeedDangerTemperature = 323.15f;
+
+    [DataField]
+    public float ColdSpeedMinimumTemperature = 273.15f;
+
+    [DataField]
+    public float ColdSpeedAtDangerTemperature = 0.95f;
+
+    [DataField]
+    public float MinimumColdSpeedMultiplier = 0.75f;
+
     [DataField, AutoNetworkedField]
     public float HeatSpeedMultiplier = 1f;
+
+    [DataField, AutoNetworkedField]
+    public float ColdSpeedMultiplier = 1f;
 
     [DataField, AutoNetworkedField]
     public float ReserveSpeedMultiplier = 1f;
@@ -89,6 +126,7 @@ public sealed partial class NovakinPhysiologyComponent : Component
     public float BaseImplicitHeatRegulation = -1f;
     public float BaseSweatHeatRegulation = -1f;
     public float BaseShiveringHeatRegulation = -1f;
+    public float BaseAtmosTemperatureTransferEfficiency = -1f;
 
     /// <summary>True while collective Brute damage has broken the shell.</summary>
     [DataField, AutoNetworkedField]

@@ -16,6 +16,9 @@ public sealed partial class KrittersNightVisionOverlay : Robust.Client.Graphics.
     [Dependency] private IPlayerManager _playerManager = default!;
 
     private readonly ShaderInstance _shader;
+    private float _illumination = 1f;
+    private float _heatSaturation;
+    private float _heatWashout;
 
     public override bool RequestScreenTexture => true;
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
@@ -28,6 +31,13 @@ public sealed partial class KrittersNightVisionOverlay : Robust.Client.Graphics.
         // Keep this above ordinary world overlays without reserving a shared enum
         // for a single Novakin-specific effect.
         ZIndex = 10001;
+    }
+
+    public void SetVisualState(float illumination, float heatSaturation, float heatWashout)
+    {
+        _illumination = illumination;
+        _heatSaturation = heatSaturation;
+        _heatWashout = heatWashout;
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
@@ -46,6 +56,9 @@ public sealed partial class KrittersNightVisionOverlay : Robust.Client.Graphics.
             return;
 
         _shader.SetParameter("SCREEN_TEXTURE", ScreenTexture);
+        _shader.SetParameter("Illumination", _illumination);
+        _shader.SetParameter("HeatSaturation", _heatSaturation);
+        _shader.SetParameter("HeatWashout", _heatWashout);
 
         var handle = args.WorldHandle;
         handle.UseShader(_shader);

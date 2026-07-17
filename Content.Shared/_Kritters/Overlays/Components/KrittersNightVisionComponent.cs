@@ -12,14 +12,18 @@ public sealed partial class KrittersNightVisionComponent : Component
     [DataField, AutoNetworkedField]
     public bool Active = true;
 
+    [DataField, AutoNetworkedField]
+    public float Illumination = 1f;
+
+    [DataField, AutoNetworkedField]
+    public float HeatSaturation;
+
+    [DataField, AutoNetworkedField]
+    public float HeatWashout;
+
     [DataField]
     public EntProtoId EffectPrototype = "EffectKrittersNightVision";
 
-    /// <summary>
-    /// True when night vision was granted by equipped clothing rather than being
-    /// an innate component of the wearer.
-    /// </summary>
-    public bool Clothes;
 }
 
 /// <summary>
