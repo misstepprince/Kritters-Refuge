@@ -43,7 +43,7 @@
     Glass: 700
     Plasma: 300
     Gold: 200
-    Silver: 300
+    Cobalt: 300
 
 - type: latheRecipe
   id: PowerCellMicroreactor
@@ -55,6 +55,7 @@
     Steel: 500
     Glass: 400
     Uranium: 200
+    Cobalt: 200
     Gold: 100
 
 - type: latheRecipe
