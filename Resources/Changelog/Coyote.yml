@@ -2862,3 +2862,19 @@ Entries:
   id: 326
   time: '2026-07-17T19:13:13.0000000+00:00'
   url: https://github.com/Dizztrikt/Kritters-Refuge/pull/43
+- author: Virnazush
+  changes:
+    - type: Add
+      message: Added Space Janny cleanup administration tools.
+    - type: Tweak
+      message: >-
+        Improved Novakin physiology, visual effects, and revival behavior.
+        People can now reliably play as them.
+    - type: Fix
+      message: >-
+        Fixed RCD tile previews, storage dragging, upgraded gyroscope power,
+        material reclaimer audio, character color saving, kiss failure feedback,
+        and IPC recharging issues.
+  id: 327
+  time: '2026-07-18T00:59:52.0000000+00:00'
+  url: https://github.com/Dizztrikt/Kritters-Refuge/pull/42
