@@ -103,7 +103,9 @@ public sealed partial class NovakinGlowVisualizerSystem : EntitySystem
             foreach (var marking in markings)
             {
                 if (!_prototypes.TryIndex(marking.MarkingId, out MarkingPrototype? prototype)
-                    || prototype.BodyPart is not (HumanoidVisualLayers.HeadTop or HumanoidVisualLayers.Tail))
+                    || prototype.BodyPart is not (HumanoidVisualLayers.Hair
+                        or HumanoidVisualLayers.HeadTop
+                        or HumanoidVisualLayers.Tail))
                     continue;
 
                 foreach (var markingSprite in prototype.Sprites)

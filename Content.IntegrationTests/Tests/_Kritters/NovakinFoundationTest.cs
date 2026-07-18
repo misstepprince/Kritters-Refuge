@@ -6,6 +6,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Medical;
 using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
+using Content.Server._CS.Needs;
 using Content.Server._Kritters.Systems;
 using Content.Server.Temperature.Components;
 using Content.Shared._CS.Needs;
@@ -933,7 +934,7 @@ public sealed class NovakinFoundationTest
     }
 
     [Test]
-    public async Task SixtyUnitsOfFlammableReagentQueuePeakCoreHeatGradually()
+    public async Task FlammableReagentHeatScalesToOneHundredEightyUnits()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -948,11 +949,20 @@ public sealed class NovakinFoundationTest
             var temperature = entities.GetComponent<TemperatureComponent>(novakin);
             var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
             temperature.CurrentTemperature = physiology.FuelConsumptionBaselineTemperature;
+            var peakHeat = 700f - physiology.FuelConsumptionBaselineTemperature;
 
             entities.EventBus.RaiseLocalEvent(novakin,
                 new ReagentMetabolizedEvent(prototypes.Index<ReagentPrototype>("Moonshine"), FixedPoint2.New(60)));
             Assert.That(physiology.PendingReagentHeat,
-                Is.EqualTo(700f - physiology.FuelConsumptionBaselineTemperature).Within(0.001f));
+                Is.EqualTo(peakHeat / 3f).Within(0.001f));
+
+            entities.EventBus.RaiseLocalEvent(novakin,
+                new ReagentMetabolizedEvent(prototypes.Index<ReagentPrototype>("Moonshine"), FixedPoint2.New(120)));
+            Assert.Multiple(() =>
+            {
+                Assert.That(physiology.FlammableUnitsToPeak, Is.EqualTo(180f));
+                Assert.That(physiology.PendingReagentHeat, Is.EqualTo(peakHeat).Within(0.001f));
+            });
 
             physiologySystem.Update(0.5f);
             Assert.Multiple(() =>
@@ -961,6 +971,91 @@ public sealed class NovakinFoundationTest
                     Is.GreaterThan(physiology.FuelConsumptionBaselineTemperature).And.LessThan(380f));
                 Assert.That(physiology.PendingReagentHeat, Is.GreaterThan(300f));
             });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task FlammableReagentHeatCanExceedDangerThreshold()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var prototypes = server.ResolveDependency<IPrototypeManager>();
+        var physiologySystem = entities.System<NovakinPhysiologySystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var temperature = entities.GetComponent<TemperatureComponent>(novakin);
+            temperature.CurrentTemperature = 699f;
+
+            entities.EventBus.RaiseLocalEvent(novakin,
+                new ReagentMetabolizedEvent(prototypes.Index<ReagentPrototype>("Moonshine"), FixedPoint2.New(1)));
+            physiologySystem.Update(0.5f);
+
+            Assert.That(temperature.CurrentTemperature, Is.GreaterThan(700f));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task NovakinNeedsShowFuelAndNitrogenReserve()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var needSystem = entities.System<NeedSystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var needs = entities.GetComponent<NeedsComponent>(novakin);
+            var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            physiology.CurrentReserve = 37f;
+
+            Assert.That(needs.Needs.Keys, Is.EquivalentTo(new[] { NeedType.Fuel }));
+            Assert.That(needs.VisibleNeeds[NeedType.Fuel], Is.EqualTo(NeedExamineVisibility.Owner));
+
+            var text = needSystem.GetExamineText(novakin, novakin, needs.Needs[NeedType.Fuel], "Novakin",
+                showNumbers: false, showExtendedInfo: true);
+            Assert.Multiple(() =>
+            {
+                Assert.That(text, Does.Contain("Core Fuel"));
+                Assert.That(text, Does.Contain("Nitrogen reserve"));
+                Assert.That(text, Does.Contain("37%"));
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task StandardSpeciesKeepHungerAndThirstNeeds()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var species = new[] { "MobHuman", "MobDwarf", "MobVox" };
+            for (var i = 0; i < species.Length; i++)
+            {
+                var mob = entities.SpawnEntity(species[i], new MapCoordinates(new Vector2(i, 0), map.MapId));
+                var needs = entities.GetComponent<NeedsComponent>(mob);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(needs.Needs.ContainsKey(NeedType.Hunger), Is.True, species[i]);
+                    Assert.That(needs.Needs.ContainsKey(NeedType.Thirst), Is.True, species[i]);
+                    Assert.That(needs.Needs.ContainsKey(NeedType.Fuel), Is.False, species[i]);
+                });
+            }
         });
 
         await pair.CleanReturnAsync();

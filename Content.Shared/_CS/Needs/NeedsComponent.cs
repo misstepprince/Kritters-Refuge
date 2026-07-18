@@ -57,6 +57,8 @@ public sealed partial class NeedsComponent : Component
     {
         { NeedType.Hunger, NeedExamineVisibility.Owner },
         { NeedType.Thirst, NeedExamineVisibility.Owner },
+        // Kritters: Fuel follows the same owner-only readout as ordinary biological needs.
+        { NeedType.Fuel, NeedExamineVisibility.Owner },
     };
 
     /// <summary>
@@ -138,4 +140,3 @@ public enum NeedExamineVisibility : byte
     /// </summary>
     Owner = 2,
 }
-

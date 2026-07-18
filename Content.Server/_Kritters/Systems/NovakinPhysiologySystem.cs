@@ -62,6 +62,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCoreCoolingEvent>(OnCoreCooling);
         SubscribeLocalEvent<NovakinPhysiologyComponent, ReagentMetabolizedEvent>(OnReagentMetabolized);
         SubscribeLocalEvent<NovakinPhysiologyComponent, BeforeDamageChangedEvent>(OnBeforeDamageChanged);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, NeedExamineInfoEvent>(OnNeedExamineInfo);
     }
 
     public override void Update(float frameTime)
@@ -352,6 +353,19 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         _temperature.ForceChangeTemperature(entity, updatedTemperature, temperature);
     }
 
+    private void OnNeedExamineInfo(Entity<NovakinPhysiologyComponent> entity, ref NeedExamineInfoEvent args)
+    {
+        if (args.Need.NeedType != NeedType.Fuel)
+            return;
+
+        // Kritters: Fuel and shell nitrogen are the Core's paired survival resources.
+        var reserve = entity.Comp.MaxReserve > 0f
+            ? Math.Clamp(entity.Comp.CurrentReserve / entity.Comp.MaxReserve, 0f, 1f)
+            : 0f;
+        args.AdditionalInfoLines.Add(Loc.GetString("examinable-need-novakin-nitrogen-reserve",
+            ("percent", (int) MathF.Round(reserve * 100f))));
+    }
+
     private void OnReagentMetabolized(Entity<NovakinPhysiologyComponent> entity,
         ref ReagentMetabolizedEvent args)
     {
@@ -374,14 +388,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         if (physiology.PendingReagentHeat <= 0f)
             return;
 
-        if (temperature.CurrentTemperature >= DangerousHeat)
-        {
-            physiology.PendingReagentHeat = 0f;
-            return;
-        }
-
         var applied = Math.Min(physiology.PendingReagentHeat, physiology.ReagentHeatTransferPerSecond * elapsed);
-        applied = Math.Min(applied, DangerousHeat - temperature.CurrentTemperature);
         physiology.PendingReagentHeat -= applied;
         _temperature.ForceChangeTemperature(uid, temperature.CurrentTemperature + applied, temperature);
     }

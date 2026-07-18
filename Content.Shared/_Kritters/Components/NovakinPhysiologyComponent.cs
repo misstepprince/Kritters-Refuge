@@ -69,7 +69,7 @@ public sealed partial class NovakinPhysiologyComponent : Component
 
     /// <summary>Flammable volume that generates enough heat to move the baseline Core to peak temperature.</summary>
     [DataField]
-    public float FlammableUnitsToPeak = 60f;
+    public float FlammableUnitsToPeak = 180f;
 
     /// <summary>Maximum queued reagent heat applied each second.</summary>
     [DataField]

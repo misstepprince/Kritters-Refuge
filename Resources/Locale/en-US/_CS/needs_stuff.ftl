@@ -62,6 +62,35 @@ examinable-need-thirst-timeleft-critical        = {CAPITALIZE($creature)} needs 
 examinable-need-thirst-timeleft-tillcritical = {CAPITALIZE($creature)} will dehydrate in about...
 examinable-need-thirst-timeleft-tillcritical-self = You will dehydrate in about...
 
+# Fuel
+examinable-need-fuel-extrasatisfied = {CAPITALIZE(SUBJECT($entity))}'s core looks fully fueled.
+examinable-need-fuel-satisfied = {CAPITALIZE(SUBJECT($entity))}'s core looks fueled.
+examinable-need-fuel-low = {CAPITALIZE(SUBJECT($entity))}'s core fuel is running low.
+examinable-need-fuel-low-meme = {CAPITALIZE(SUBJECT($entity))}'s core is running on fumes.
+examinable-need-fuel-critical = {CAPITALIZE(SUBJECT($entity))}'s core is almost out of fuel!
+examinable-need-fuel-unused = {CAPITALIZE(SUBJECT($entity))} does not appear to require fuel.
+
+examinable-need-fuel-extrasatisfied-self = Your core is fully fueled.
+examinable-need-fuel-satisfied-self = Your core has sufficient fuel.
+examinable-need-fuel-low-self = Your core fuel is running low.
+examinable-need-fuel-low-self-meme = Your core is running on fumes.
+examinable-need-fuel-critical-self = Your core is almost out of fuel!
+examinable-need-fuel-numberized = You'd rate {CAPITALIZE(SUBJECT($entity))}'s core fuel as {$current}/{$max}.
+examinable-need-fuel-numberized-self = You'd rate your core fuel as {$current}/{$max}.
+
+examinable-need-fuel-timeleft-extrasatisfied-self = Your core will remain fully fueled for around...
+examinable-need-fuel-timeleft-satisfied-self = Your core has sufficient fuel for around...
+examinable-need-fuel-timeleft-low-self = Your core can sustain this low fuel level for around...
+examinable-need-fuel-timeleft-critical-self = {CAPITALIZE($creature)} needs fuel badly!
+
+examinable-need-fuel-timeleft-extrasatisfied = {CAPITALIZE(SUBJECT($entity))}'s core will remain fully fueled for around...
+examinable-need-fuel-timeleft-satisfied = {CAPITALIZE(SUBJECT($entity))}'s core has sufficient fuel for around...
+examinable-need-fuel-timeleft-low = {CAPITALIZE(SUBJECT($entity))}'s core can sustain this low fuel level for around...
+examinable-need-fuel-timeleft-critical = {CAPITALIZE($creature)} needs fuel badly!
+
+examinable-need-fuel-timeleft-tillcritical = {CAPITALIZE($creature)} will run out of fuel in about...
+examinable-need-fuel-timeleft-tillcritical-self = Your core will run out of fuel in about...
+
 # Buffs and Debuffs
 examinable-need-effect-header = [bold][underline]Effects:[/underline][/bold]
 examinable-need-effect-buff = [color=green]{$amount}[/color] {$kind}
