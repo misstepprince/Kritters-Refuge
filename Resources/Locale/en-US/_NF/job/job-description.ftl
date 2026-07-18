@@ -9,6 +9,7 @@ job-description-ertmailcarrier = Nothing stops the mail.
 job-description-guard = Keep track of prisoners and make sure they have their basic needs.
 job-description-mail-carrier = Deliver mail. Avoid dogs.
 job-description-mercenary = Use your quick draw and sharp wits to earn your pay. Go adventuring for sport, or track and hunt down bounties.
+job-mercenary-pilot = Interview prospective mercenaries and assess their fitness for a pilot role.
 job-description-pilot = Pilot spaceships from point A to B, outmaneuver pirates and dodge asteroids. You are a leaf on the solar wind, let others marvel at how you soar.
 job-description-nf-pirate = Be free, cause trouble, make life exciting for yourself and others! Just dont bring that trouble back to the Den!
 job-description-nf-pirate-captain = Lead a crew of ne'er-do-wells across the open space and plunder with honor, obeying the code.

@@ -111,9 +111,6 @@
     tags:
     - Sheet
   - type: NFFuel # Frontier
-  # Kritters: material can fuel a Novakin core.
-  - type: NovakinFuelMaterial
-    fuel: 5
 
 - type: entity
   parent: SheetPlasma
@@ -250,9 +247,6 @@
         canReact: false
   - type: UraniumMaterials # Frontier
   - type: NFFuel # Frontier
-  # Kritters: material can fuel a Novakin core.
-  - type: NovakinFuelMaterial
-    fuel: 6
 
 - type: entity
   parent: SheetUranium

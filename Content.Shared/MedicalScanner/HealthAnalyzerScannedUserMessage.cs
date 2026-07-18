@@ -25,6 +25,8 @@ public struct HealthAnalyzerUiState
     public readonly NetEntity? TargetEntity;
     public float Temperature;
     public float BloodLevel;
+    // Kritters: NaN means the scanned entity does not expose Novakin nitrogen physiology.
+    public float NitrogenReserve;
     public bool? ScanMode;
     public bool? Bleeding;
     public bool? Unrevivable;
@@ -36,11 +38,12 @@ public struct HealthAnalyzerUiState
 
     public HealthAnalyzerUiState() {}
 
-    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? unclonable, bool printable = false, string? bloodTypeName = null, Color bloodTypeColor = default, bool hasBloodTypeColor = false) // Frontier: added unclonable, printable
+    public HealthAnalyzerUiState(NetEntity? targetEntity, float temperature, float bloodLevel, float nitrogenReserve, bool? scanMode, bool? bleeding, bool? unrevivable, bool? unclonable, bool printable = false, string? bloodTypeName = null, Color bloodTypeColor = default, bool hasBloodTypeColor = false) // Frontier: added unclonable, printable
     {
         TargetEntity = targetEntity;
         Temperature = temperature;
         BloodLevel = bloodLevel;
+        NitrogenReserve = nitrogenReserve;
         ScanMode = scanMode;
         Bleeding = bleeding;
         Unrevivable = unrevivable;

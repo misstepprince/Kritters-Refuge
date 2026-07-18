@@ -11,12 +11,15 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IOverlayManager _overlayMan = default!;
+    [Dependency] private TransformSystem _transform = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private FlashImmunitySystem _flashImmunity = default!;
+    [Dependency] private PointLightSystem _lights = default!;
 
     private KrittersNightVisionOverlay _overlay = default!;
     [ViewVariables]
-    private EntityUid? _effect = null;
+    private bool _active;
+    private EntityUid? _effect;
     private const string ModernKrittersNightVisionShaderPrototype = "ModernKrittersNightVisionShader";
 
     public override void Initialize()
@@ -58,26 +61,49 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
     private void OnVisionShutdown(Entity<KrittersNightVisionComponent> ent, ref ComponentShutdown args)
         => AttemptRemoveVision(ent.Owner);
 
-    private void AttemptAddVision(EntityUid uid)
-    {
-        if (_player.LocalSession?.AttachedEntity != uid) return;
-
-        //if they currently have flash immunity, dont add
-        if (_flashImmunity.HasFlashImmunityVisionBlockers(uid)) return;
-
-        //only add if its active
-        if (!TryComp<KrittersNightVisionComponent>(uid, out var nightVision) || !nightVision.Active) return;
-
-        //only add if effect isnt already used
-        if (_effect != null) return;
-
-        _overlayMan.AddOverlay(_overlay);
-    }
-
     public override void FrameUpdate(float frameTime)
     {
-        if (_player.LocalSession?.AttachedEntity is { } uid)
-            _overlay.SetFacing((float) Transform(uid).WorldRotation.Theta);
+        if (_player.LocalSession?.AttachedEntity is not { } uid
+            || !TryComp<KrittersNightVisionComponent>(uid, out var vision))
+            return;
+
+        if (CanDisplayVision(uid, vision))
+        {
+            AttemptAddVision(uid);
+            UpdateVisualState(vision);
+        }
+        else
+        {
+            AttemptRemoveVision(uid);
+        }
+    }
+
+    private void AttemptAddVision(EntityUid uid)
+    {
+        if (_player.LocalSession?.AttachedEntity != uid
+            || !TryComp<KrittersNightVisionComponent>(uid, out var nightVision)
+            || !CanDisplayVision(uid, nightVision)
+            || _effect != null)
+            return;
+
+        _overlayMan.AddOverlay(_overlay);
+        _effect = SpawnAttachedTo(nightVision.EffectPrototype, Transform(uid).Coordinates);
+        _transform.SetParent(_effect.Value, uid);
+        _active = true;
+        UpdateVisualState(nightVision);
+    }
+
+    private bool CanDisplayVision(EntityUid uid, KrittersNightVisionComponent vision)
+        => vision.Active && vision.Illumination > 0.001f && !_flashImmunity.HasFlashImmunityVisionBlockers(uid);
+
+    private void UpdateVisualState(KrittersNightVisionComponent vision)
+    {
+        _overlay.SetVisualState(vision.Illumination, vision.HeatSaturation, vision.HeatWashout);
+        if (_effect is not { } effect || !TryComp<PointLightComponent>(effect, out var light))
+            return;
+
+        _lights.SetRadius(effect, MathHelper.Lerp(5f, 20f, vision.Illumination), light);
+        _lights.SetEnergy(effect, MathHelper.Lerp(0.15f, 0.8f, vision.Illumination), light);
     }
 
     /// <summary>
@@ -87,11 +113,14 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
     /// <param name="force">Use if you need to forcefully remove the overlay no matter what. Only should be used with events that ONLY the local player can fire, like attach/detach</param>
     private void AttemptRemoveVision(EntityUid uid, bool force = false)
     {
-        //ENSURE this is the local player
         if (_player.LocalSession?.AttachedEntity != uid && !force) return;
+
+        if (!_active)
+            return;
 
         _overlayMan.RemoveOverlay(_overlay);
         Del(_effect);
         _effect = null;
+        _active = false;
     }
 }

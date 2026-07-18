@@ -7,6 +7,7 @@
     Gauze: 6 # Frontier
     ChemistryBottleEpinephrine: 6 # Frontier: 3<6
     Syringe: 6 # Frontier: 3<6
+    NovakinInhaler: 6
     BoxFolderMedicalDoctor: 1 #Frontier
     MedTekCartridge: 1 # Frontier
   contrabandInventory:

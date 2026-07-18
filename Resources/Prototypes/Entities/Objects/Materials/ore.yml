@@ -165,9 +165,6 @@
     - Ore
     - OrePlasma
   - type: NFFuel # Frontier
-  # Kritters: material can fuel a Novakin core.
-  - type: NovakinFuelMaterial
-    fuel: 5
 
 - type: entity
   parent: PlasmaOre
@@ -284,9 +281,6 @@
     - Ore
     - OreUranium
   - type: NFFuel # Frontier
-  # Kritters: material can fuel a Novakin core.
-  - type: NovakinFuelMaterial
-    fuel: 6
 
 - type: entity
   parent: UraniumOre
@@ -334,9 +328,6 @@
     - Ore
     - OreBananium
   - type: NFFuel # Frontier
-  # Kritters: material can fuel a Novakin core.
-  - type: NovakinFuelMaterial
-    fuel: 7
 
 - type: entity
   parent: BananiumOre
@@ -378,9 +369,6 @@
       Coal: 100
   - type: Item
     heldPrefix: coal
-  # Kritters: material can fuel a Novakin core.
-  - type: NovakinFuelMaterial
-    fuel: 3
 
 - type: entity
   parent: Coal

@@ -51,9 +51,6 @@
   metabolisms:
     Drink:
       effects:
-      # Kritters: raises the Novakin core temperature.
-      - !type:NovakinHeat
-        temperatureDelta: 1
       - !type:SatiateThirst
         factor: 2
       - !type:AdjustReagent

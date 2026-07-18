@@ -34,3 +34,9 @@ public sealed class NovakinCryoPodInjectionEvent(Solution solution) : EntityEven
 {
     public Solution Solution { get; } = solution;
 }
+
+/// <summary>Requests server-authoritative cooling without crossing the Core's cold danger threshold.</summary>
+public sealed class NovakinCoreCoolingEvent(float temperatureDelta) : EntityEventArgs
+{
+    public float TemperatureDelta { get; } = temperatureDelta;
+}

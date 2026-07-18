@@ -71,3 +71,5 @@ flavor-complex-syndicate-eggnog = like eggnog, and war profiteering
 flavor-complex-ginandpussy = like wet pussy, with extra gin
 flavor-complex-pussytonic = like pussy, but with tonic
 flavor-complex-superheavycream = really really creamy
+flavor-complex-nikkonectar = like sweet nectar
+flavor-complex-star = like stardust

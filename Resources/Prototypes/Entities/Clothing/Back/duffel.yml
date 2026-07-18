@@ -118,10 +118,8 @@
     - type: Sprite
       sprite: Clothing/Back/Duffels/mime.rsi
     - type: Storage # Wizden#37444
-      storageOpenSound:
-        collection: null
-      storageInsertSound:
-        collection: null
+      storageOpenSound: null
+      storageInsertSound: null
 
 - type: entity
   parent: NFClothingDuffel # Frontier: ClothingBackpackDuffelNFClothingDuffel

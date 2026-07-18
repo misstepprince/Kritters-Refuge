@@ -20,15 +20,23 @@
   - type: SolutionContainerManager
     solutions:
       stomach:
-        maxVol: 50
+        maxVol: 75
   - type: Stomach
+    # Kritters: the Core burns ingested fuel immediately instead of holding it for organic digestion.
+    digestionDelay: 0
   - type: Metabolizer
     maxReagents: 3
     metabolizerTypes: [Human]
+    removeEmpty: true
+    removeUnmatched: true
     groups:
     - id: Fuel
     - id: Food
     - id: Drink
+      # Kritters: 3u/s lets a rapid 180u binge burn through the Core in roughly one minute.
+      rateModifier: 6
+    - id: Alcohol
+      skipEffects: true
     - id: Medicine
     - id: Cryogenic
     - id: Poison

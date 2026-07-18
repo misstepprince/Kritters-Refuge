@@ -84,6 +84,7 @@ public sealed partial class NeedSystem : SharedNeedsSystem
         bool showExtendedInfo)
     {
         var stringOut = string.Empty;
+        var needType = need.NeedType.ToString().ToLowerInvariant();
         var isSelf = examiner == examinee;
         var header = Loc.GetString(
             "examinable-need-header",
@@ -94,7 +95,7 @@ public sealed partial class NeedSystem : SharedNeedsSystem
                    && IoCManager.Resolve<IRobustRandom>().Prob(0.05f);
         if (!showExtendedInfo)
         {
-            var locStr = $"examinable-need-{need.NeedType.ToString().ToLower()}-{need.GetCurrentThreshold().ToString().ToLower()}";
+            var locStr = $"examinable-need-{needType}-{need.GetCurrentThreshold().ToString().ToLowerInvariant()}";
             if (meme)
                 locStr += "-meme";
             if (isSelf)
@@ -109,7 +110,7 @@ public sealed partial class NeedSystem : SharedNeedsSystem
         }
 
         // self examine, far more detailed!
-        var locStrSelf = $"examinable-need-{need.NeedType.ToString().ToLower()}-{need.GetCurrentThreshold().ToString().ToLower()}-self";
+        var locStrSelf = $"examinable-need-{needType}-{need.GetCurrentThreshold().ToString().ToLowerInvariant()}-self";
         if (meme)
             locStrSelf += "-meme";
         var textOutSelf = Loc.GetString(locStrSelf);
@@ -120,14 +121,14 @@ public sealed partial class NeedSystem : SharedNeedsSystem
             if (isSelf)
             {
                 textOutNumbers = Loc.GetString(
-                    "examinable-need-hunger-numberized-self",
+                    $"examinable-need-{needType}-numberized-self",
                     ("current", (int) need.CurrentValue),
                     ("max", (int) need.MaxValue));
             }
             else
             {
                 textOutNumbers = Loc.GetString(
-                    "examinable-need-hunger-numberized",
+                    $"examinable-need-{needType}-numberized",
                     ("entity", Identity.Entity(examinee, IoCManager.Resolve<IEntityManager>())),
                     ("current", (int) need.CurrentValue),
                     ("max", (int) need.MaxValue));
@@ -143,7 +144,7 @@ public sealed partial class NeedSystem : SharedNeedsSystem
             // we need the entity's species, if we can get it
             // for meme reasons (Wizard needs food badly)
             needChungus = Loc.GetString(
-                $"examinable-need-{need.NeedType.ToString().ToLower()}-timeleft-critical",
+                $"examinable-need-{needType}-timeleft-critical",
                 ("creature", species));
             stringOut += needChungus + "\n";
         }
@@ -154,12 +155,12 @@ public sealed partial class NeedSystem : SharedNeedsSystem
             if (isSelf)
             {
                 needChungus = Loc.GetString(
-                    $"examinable-need-{need.NeedType.ToString().ToLower()}-timeleft-{need.GetCurrentThreshold().ToString().ToLower()}-self");
+                    $"examinable-need-{needType}-timeleft-{need.GetCurrentThreshold().ToString().ToLowerInvariant()}-self");
             }
             else
             {
                 needChungus = Loc.GetString(
-                    $"examinable-need-{need.NeedType.ToString().ToLower()}-timeleft-{need.GetCurrentThreshold().ToString().ToLower()}",
+                    $"examinable-need-{needType}-timeleft-{need.GetCurrentThreshold().ToString().ToLowerInvariant()}",
                     ("entity", Identity.Entity(examinee, IoCManager.Resolve<IEntityManager>())));
             }
 

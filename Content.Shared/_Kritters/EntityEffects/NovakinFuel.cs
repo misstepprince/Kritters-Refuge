@@ -19,8 +19,10 @@ public sealed partial class NovakinFuel : EntityEffect
         if (!args.EntityManager.TryGetComponent<NovakinPhysiologyComponent>(args.TargetEntity, out _))
             return;
 
-        args.EntityManager.System<SharedNeedsSystem>()
-            .TryModifyNeedLevel(args.TargetEntity, NeedType.Fuel, Fuel);
+        var amount = args is EntityEffectReagentArgs reagentArgs
+            ? Fuel * reagentArgs.Quantity.Float()
+            : Fuel;
+        args.EntityManager.System<SharedNeedsSystem>().TryModifyNeedLevel(args.TargetEntity, NeedType.Fuel, amount);
     }
 
     protected override string? ReagentEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)

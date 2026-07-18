@@ -165,7 +165,9 @@ namespace Content.Shared.Damage
         public enum DamageOriginFlag
         {
             Explosion, // flag set by ExplosionSystem.Processing
-            Barotrauma // flag set by BarotraumaSystem
+            Barotrauma, // flag set by BarotraumaSystem
+            /// <summary>Damage produced by the world rather than an actor or item.</summary>
+            Environmental
         }
 
         /// <summary>
@@ -202,6 +204,9 @@ namespace Content.Shared.Damage
 
             if (before.Cancelled)
                 return null;
+
+            // Kritters: allow physiology handlers to replace a damage specifier without mutating a reusable source.
+            damage = before.Damage;
 
             // Apply resistances
             if (!ignoreResistances)
@@ -341,7 +346,8 @@ namespace Content.Shared.Damage
                 damage.DamageDict.Add(typeId, damageValue);
             }
 
-            TryChangeDamage(uid, damage, interruptsDoAfters: false, origin: args.Origin);
+            TryChangeDamage(uid, damage, interruptsDoAfters: false, origin: args.Origin,
+                originFlag: DamageOriginFlag.Environmental);
         }
 
         private void OnRejuvenate(EntityUid uid, DamageableComponent component, RejuvenateEvent args)

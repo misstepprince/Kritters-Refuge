@@ -19,7 +19,6 @@ using Content.Shared.Traits.Assorted;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Server._NF.Medical; // Frontier
 using Content.Server._NF.Traits.Assorted;
@@ -40,7 +39,6 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popupSystem = default!;
     [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
     [Dependency] private KrittersBloodTypeSystem _krittersBloodTypes = default!; // Kritters
-    [Dependency] private IPrototypeManager _prototypes = default!; // Kritters: resolve Novakin analyzer gas names.
 
     public override void Initialize()
     {
@@ -241,6 +239,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             bodyTemperature = temp.CurrentTemperature;
 
         var bloodAmount = float.NaN;
+        var nitrogenReserve = float.NaN;
         var bleeding = false;
         var unrevivable = false;
         var unclonable = false; // Frontier
@@ -260,6 +259,12 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
                 out bloodTypeColor); // Kritters
         }
 
+        // Kritters: expose the bloodless Novakin nitrogen reserve through the existing scanner payload.
+        if (TryComp<NovakinPhysiologyComponent>(entity, out var physiology))
+            nitrogenReserve = physiology.MaxReserve > 0f
+                ? Math.Clamp(physiology.CurrentReserve / physiology.MaxReserve, 0f, 1f)
+                : 0f;
+
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
             unrevivable = true;
 
@@ -274,6 +279,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             GetNetEntity(entity),
             bodyTemperature,
             bloodAmount,
+            nitrogenReserve,
             null,
             bleeding,
             unrevivable,

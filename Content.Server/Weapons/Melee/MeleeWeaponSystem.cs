@@ -85,6 +85,11 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
     protected override void DoDamageEffect(List<EntityUid> targets, EntityUid? user, TransformComponent targetXform)
     {
+        targets.RemoveAll(target => !EntityManager.EntityExists(target));
+
+        if (targets.Count == 0 || !EntityManager.EntityExists(targetXform.Owner))
+            return;
+
         var filter = Filter.Pvs(targetXform.Coordinates, entityMan: EntityManager).RemoveWhereAttachedEntity(o => o == user);
         _color.RaiseEffect(Color.Red, targets, filter);
     }

@@ -1,5 +1,17 @@
 # _CS Start
 # region Security
+uplink-security-marine-bronze-name = TSF Bronze Tactical Suit
+uplink-security-marine-bronze-desc = A surplus marine hardsuit, issued for patrol duty. This bronze variant has cadet rank markings.
+
+uplink-security-marine-silver-name = TSF Silver Tactical Suit
+uplink-security-marine-silver-desc = A surplus marine hardsuit, issued for patrol duty. This silver variant has officer rank markings.
+
+uplink-security-marine-gold-name = TSF Gold Tactical Suit
+uplink-security-marine-gold-desc = A surplus marine hardsuit, issued for patrol duty. This gold variant has supervisor rank markings.
+
+uplink-security-marine-medic-name = TSF Corpsman Tactical Suit
+uplink-security-marine-medic-desc = A surplus marine hardsuit, issued for patrol duty. This brighter variant has brigmedic rank markings.
+
 uplink-security-hardsuit-name = Bronze Patrol Suit
 uplink-security-hardsuit-desc = The standard-issue NFSD space proof suit for patrol duty. This bronze variant has cadet rank markings.
 
@@ -101,6 +113,12 @@ uplink-security-magazinepistol-desc = A box containing 4 filled .35 pistol (over
 
 uplink-security-magazinepistol-rubber-name = .35 Pistol Rubber Magazines
 uplink-security-magazinepistol-rubber-desc = A box containing 4 filled .35 pistol (rubber) pistol magazines.
+
+uplink-security-magazinepistol-40-name = .40 Pistol +P Magazines
+uplink-security-magazinepistol-40-desc = A box containing 4 filled .40 pistol (overpressure) pistol magazines.
+
+uplink-security-magazinepistol-rubber-40-name = .40 Pistol Rubber Magazines
+uplink-security-magazinepistol-rubber-40-desc = A box containing 4 filled .40 pistol (rubber) pistol magazines.
 
 uplink-security-20riflemagazine-name = .20 Rifle +P Magazines
 uplink-security-20riflemagazine-desc = A box containing 4 filled .20 rifle (overpressure) magazines.
@@ -367,6 +385,9 @@ uplink-pistol-magazine-cobra-desc = A loaded magazine for Cobra .45 pistol.
 
 uplink-speedloader-magnum-non-ap-name = .45 Pistol Speed Loader
 uplink-speedloader-magnum-non-ap-desc = A .45 pistol speed loader with 6 .45 pistol caliber rounds.
+
+uplink-security-chort-name = MG-60 "Chort" MAMG Circuit Board
+uplink-security-chort-desc = A machine printed circuit board for an MG-60 "Chort" Magnetically Assisted Machine Gun. It prints ammo on the fly.
 
 uplink-syndicate-segway-name = Syndicate Segway
 uplink-syndicate-segway-desc = Move around in style without dirtying your blood red boots.

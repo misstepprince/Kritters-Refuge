@@ -95,27 +95,21 @@ public sealed partial class BatteryDrinkerSystem : EntitySystem
 
         var source = args.Target.Value;
         var drinker = uid;
-        var sourceBattery = Comp<BatteryComponent>(source);
-
-        _silicon.TryGetSiliconBattery(drinker, out var drinkerBatteryComponent);
-
-        if (!TryComp(uid, out PowerCellSlotComponent? batterySlot))
+        if (!TryComp(source, out BatteryComponent? sourceBattery)
+            || !_silicon.TryGetSiliconBattery(drinker, out var drinkerBatteryComponent)
+            || !TryComp(uid, out PowerCellSlotComponent? batterySlot)
+            || !_container.TryGetContainer(uid, batterySlot.CellSlotId, out var container)
+            || container.ContainedEntities.Count == 0)
             return;
 
-        var container = _container.GetContainer(uid, batterySlot.CellSlotId);
         var drinkerBattery = container.ContainedEntities.First();
 
         TryComp<BatteryDrinkerSourceComponent>(source, out var sourceComp);
 
-        DebugTools.AssertNotNull(drinkerBattery);
-
-        if (drinkerBattery == null)
-            return;
-
         var amountToDrink = drinkerComp.DrinkMultiplier * 1000;
 
         amountToDrink = MathF.Min(amountToDrink, sourceBattery.CurrentCharge);
-        amountToDrink = MathF.Min(amountToDrink, drinkerBatteryComponent!.MaxCharge - drinkerBatteryComponent.CurrentCharge);
+        amountToDrink = MathF.Min(amountToDrink, drinkerBatteryComponent.MaxCharge - drinkerBatteryComponent.CurrentCharge);
 
         if (sourceComp != null && sourceComp.MaxAmount > 0)
             amountToDrink = MathF.Min(amountToDrink, (float) sourceComp.MaxAmount);

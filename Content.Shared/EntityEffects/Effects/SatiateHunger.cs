@@ -24,9 +24,30 @@ public sealed partial class SatiateHunger : EntityEffect
     public override void Effect(EntityEffectBaseArgs args)
     {
         var uid = args.TargetEntity;
-        if (args.EntityManager.TryGetComponent(uid, out NeedsComponent? needy))
-            args.EntityManager.System<SharedNeedsSystem>().ModifyHunger(uid, NutritionFactor, needy);
+        if (!args.EntityManager.TryGetComponent(uid, out NeedsComponent? needy))
+            return;
+
+        var needs = args.EntityManager.System<SharedNeedsSystem>();
+        // Kritters: positive food powers Fuel-based physiology unless the reagent defines a tuned Fuel effect.
+        if (needs.ModifyHunger(uid, NutritionFactor, needy)
+            || NutritionFactor <= 0f
+            || !float.IsFinite(NutritionFactor)
+            || HasExplicitFuelMetabolism(args))
+        {
+            return;
+        }
+
+        needs.TryModifyNeedLevel(uid, NeedType.Fuel, NutritionFactor * GetMetabolismScale(args), needy);
     }
+
+    private static bool HasExplicitFuelMetabolism(EntityEffectBaseArgs args)
+    {
+        return args is EntityEffectReagentArgs { Reagent: { } reagent }
+            && reagent.Metabolisms?.ContainsKey("Fuel") == true;
+    }
+
+    private static float GetMetabolismScale(EntityEffectBaseArgs args)
+        => args is EntityEffectReagentArgs reagentArgs ? reagentArgs.Scale.Float() : 1f;
 
     protected override string? ReagentEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
         => Loc.GetString("reagent-effect-guidebook-satiate-hunger", ("chance", Probability), ("relative", NutritionFactor / DefaultNutritionFactor));

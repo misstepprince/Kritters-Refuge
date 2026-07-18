@@ -5,27 +5,28 @@
   color: Orange
   maxValue: 150
   minValue: 0
-  minutesFromMaxToMin: 45
+  # Kritters: Fuel lasts three hours, but heat can increase consumption by up to 50 percent.
+  minutesFromMaxToMin: 180
   startingMinutesWorthOfDecay: 0
   secondsPerUpdate: 1
   alertCategory: Hunger
-  extraSatisfiedMinutesFromFull: 45
-  extraSatisfiedSpeedMult: 1
-  extraSatisfiedMultRPI: 1
+  extraSatisfiedMinutesFromFull: 0
+  extraSatisfiedSpeedMult: 1.05
+  extraSatisfiedMultRPI: 1.25
   extraSatisfiedAlert: null
   extraSatisfiedIcon: null
-  satisfiedMinutesFromFull: 180
+  satisfiedMinutesFromFull: 108
   satisfiedSpeedMult: 1
   satisfiedMultRPI: 1
   satisfiedAlert: null
   satisfiedIcon: null
-  lowMinutesFromFull: 240
-  lowSpeedMult: 1
-  lowMultRPI: 1
-  lowAlert: null
-  lowIcon: null
-  criticalMinutesFromFull: 300
-  criticalSpeedMult: 1
-  criticalMultRPI: 1
-  criticalAlert: null
-  criticalIcon: null
+  lowMinutesFromFull: 144
+  lowSpeedMult: 0.85
+  lowMultRPI: 0.75
+  lowAlert: Peckish
+  lowIcon: HungerIconPeckish
+  criticalMinutesFromFull: 180
+  criticalSpeedMult: 0.75
+  criticalMultRPI: 0.5
+  criticalAlert: Starving
+  criticalIcon: HungerIconStarving

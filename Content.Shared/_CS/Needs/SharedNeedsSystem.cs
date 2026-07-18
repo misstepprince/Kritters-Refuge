@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._CS.RolePlayIncentiveShared;
+using Content.Shared._Kritters.Components;
 using Content.Shared.Alert;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Examine;
@@ -643,19 +644,34 @@ public abstract partial class SharedNeedsSystem : EntitySystem
                 continue;
             var sleeping = IsAsleeping(uid);
 
-            foreach (var need in component.Needs.Values)
+            foreach (var (needType, need) in component.Needs)
             {
                 // for (var i = 0; i < _decayIterations; i++)
                 // {
                 //     need.Decay(deltaSeconds, sleeping);
                 //     need.TickDebuffSlows(curTime);
                 // }
-                need.Decay(deltaSeconds, sleeping);
+                var decaySeconds = deltaSeconds;
+                // Kritters: an SSD Novakin Core enters dormancy instead of consuming Fuel at an active player's rate.
+                if (needType == NeedType.Fuel
+                    && TryComp<NovakinPhysiologyComponent>(uid, out var physiology)
+                    && IsPlayerSsdNovakin(uid))
+                {
+                    decaySeconds *= physiology.SsdFuelDecayMultiplier;
+                }
+
+                need.Decay(decaySeconds, sleeping);
             }
             UpdateEverything(uid, component);
         }
         // RerollDecayIterations();
     }
+
+    private bool IsPlayerSsdNovakin(EntityUid uid)
+        => HasComp<NovakinPhysiologyComponent>(uid)
+           && _mobState.IsAlive(uid)
+           && TryComp<SSDIndicatorComponent>(uid, out var ssd) && ssd.IsSSD
+           && TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind;
 
     private void UpdateEverything(EntityUid uid, NeedsComponent component)
     {

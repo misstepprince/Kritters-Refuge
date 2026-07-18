@@ -22,15 +22,11 @@ public sealed partial class ShowHungerIconsSystem : EquipmentHudSystem<ShowHunge
         if (!IsActive)
             return;
 
-        if (_needs.TryGetHungerStatusIconPrototype(
-                uid,
-                out var iconPrototype,
-                component))
-            ev.StatusIcons.Add(iconPrototype);
-        if (_needs.TryGetThirstStatusIconPrototype(
-                uid,
-                out var thirstIconPrototype,
-                component))
-            ev.StatusIcons.Add(thirstIconPrototype);
+        // Kritters: Species-specific needs use their configured icons without bespoke overlays.
+        foreach (var needType in component.Needs.Keys)
+        {
+            if (_needs.TryGetStatusIconPrototype(uid, needType, component, out var iconPrototype))
+                ev.StatusIcons.Add(iconPrototype);
+        }
     }
 }

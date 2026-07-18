@@ -248,7 +248,7 @@ namespace Content.Server.Atmos.EntitySystems
                     // Deal damage and ignore resistances. Resistance to pressure damage should be done via pressure protection gear.
                     _damageableSystem.TryChangeDamage(uid, barotrauma.Damage * Atmospherics.LowPressureDamage, true, false,
                     // Mono: DamageOriginFlag arg to stop armor plate system mitigation
-                    originFlag: DamageableSystem.DamageOriginFlag.Barotrauma);
+                    originFlag: DamageableSystem.DamageOriginFlag.Environmental);
 
                     if (!barotrauma.TakingDamage)
                     {
@@ -265,7 +265,7 @@ namespace Content.Server.Atmos.EntitySystems
                     // Deal damage and ignore resistances. Resistance to pressure damage should be done via pressure protection gear.
                     _damageableSystem.TryChangeDamage(uid, barotrauma.Damage * damageScale,
                     // Mono: DamageOriginFlag arg
-                    originFlag: DamageableSystem.DamageOriginFlag.Barotrauma);
+                    originFlag: DamageableSystem.DamageOriginFlag.Environmental);
 
                     if (!barotrauma.TakingDamage)
                     {

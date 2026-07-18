@@ -122,6 +122,7 @@ public abstract partial class SharedCryoPodSystem: EntitySystem
     {
         var patient = entity.Comp.BodyContainer.ContainedEntity;
 
+        // Kritters: bloodless Novakins receive filtered cryogenic medicine through their Core instead.
         if (patient == null
             || !_solutionContainerQuery.TryComp(entity, out var podSolutionManager)
             || !_solutionContainer.TryGetSolution(
@@ -155,6 +156,7 @@ public abstract partial class SharedCryoPodSystem: EntitySystem
             }
             else
             {
+                // Kritters: preserve the normal cryopod dose while delegating its destination to Novakin physiology.
                 EntityManager.EventBus.RaiseLocalEvent(patient.Value, new NovakinCryoPodInjectionEvent(solutionToInject));
             }
         }

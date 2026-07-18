@@ -41,9 +41,17 @@ public sealed partial class TestPair : IAsyncDisposable
         await ResetModifiedPreferences();
         await Server.RemoveAllDummySessions();
 
-        if (TestMap != null)
+        if (_testMaps.Count > 0)
         {
-            await Server.WaitPost(() => Server.EntMan.DeleteEntity(TestMap.MapUid));
+            await Server.WaitPost(() =>
+            {
+                foreach (var map in _testMaps)
+                {
+                    if (Server.EntMan.EntityExists(map.MapUid))
+                        Server.EntMan.DeleteEntity(map.MapUid);
+                }
+            });
+            _testMaps.Clear();
             TestMap = null;
         }
 
