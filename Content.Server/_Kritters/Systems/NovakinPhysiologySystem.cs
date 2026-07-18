@@ -100,6 +100,8 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
                 ApplyGasBloodloss(uid, physiology, step,
                     GetReserveDrainRate(uid, physiology, applySsdMultiplier: false));
                 UpdateHeatIntoxication(uid, physiology, temperature);
+                physiology.FlammableRegulationSuppressionRemaining = Math.Max(0f,
+                    physiology.FlammableRegulationSuppressionRemaining - step);
             }
             UpdateHeatSpeed(uid, physiology, temperature);
             UpdateColdSpeed(uid, physiology, temperature);
@@ -249,10 +251,12 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
             physiology.BaseShiveringHeatRegulation = regulator.ShiveringHeatRegulation;
         }
 
-        var fueled = fuel.CurrentValue > fuel.MinValue;
-        regulator.ImplicitHeatRegulation = fueled ? physiology.BaseImplicitHeatRegulation : 0f;
-        regulator.SweatHeatRegulation = fueled ? physiology.BaseSweatHeatRegulation : 0f;
-        regulator.ShiveringHeatRegulation = fueled ? physiology.BaseShiveringHeatRegulation : 0f;
+        // Kritters: an active flammable Core reaction briefly overpowers ordinary temperature regulation.
+        var canRegulate = fuel.CurrentValue > fuel.MinValue
+            && physiology.FlammableRegulationSuppressionRemaining <= 0f;
+        regulator.ImplicitHeatRegulation = canRegulate ? physiology.BaseImplicitHeatRegulation : 0f;
+        regulator.SweatHeatRegulation = canRegulate ? physiology.BaseSweatHeatRegulation : 0f;
+        regulator.ShiveringHeatRegulation = canRegulate ? physiology.BaseShiveringHeatRegulation : 0f;
     }
 
     private void CoolWhenFuelDepleted(EntityUid uid, NovakinPhysiologyComponent physiology, NeedsComponent needs, TemperatureComponent temperature, float elapsed)
@@ -377,9 +381,12 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         }
 
         // Kritters: flammability, rather than alcohol metadata, determines Novakin Core heating.
-        var heatPerUnit = (entity.Comp.PeakIntoxicationTemperature - entity.Comp.FuelConsumptionBaselineTemperature)
-            / Math.Max(entity.Comp.FlammableUnitsToPeak, 1f);
+        var heatPerUnit = (DangerousHeat - entity.Comp.FuelConsumptionBaselineTemperature)
+            / Math.Max(entity.Comp.FlammableUnitsToDangerousHeat, 1f);
         entity.Comp.PendingReagentHeat += args.Quantity.Float() * heatPerUnit;
+        entity.Comp.FlammableRegulationSuppressionRemaining = Math.Max(
+            entity.Comp.FlammableRegulationSuppressionRemaining,
+            entity.Comp.FlammableRegulationSuppressionSeconds);
     }
 
     private void ApplyPendingReagentHeat(EntityUid uid, NovakinPhysiologyComponent physiology,

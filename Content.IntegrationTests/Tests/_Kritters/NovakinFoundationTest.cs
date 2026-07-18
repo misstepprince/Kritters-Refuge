@@ -40,6 +40,7 @@ using Content.Shared.Tag;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Kritters;
 
@@ -56,6 +57,22 @@ public sealed class NovakinFoundationTest
   metabolisms:
     Gas:
       effects: []
+
+- type: reagent
+  id: NovakinFlammableTestReagent
+  name: reagent-name-nothing
+  desc: reagent-desc-nothing
+  physicalDesc: reagent-physical-desc-nothing
+  group: Drinks
+  metabolisms:
+    Drink:
+      metabolismRate: 0.5
+      effects: []
+  reactiveEffects:
+    Flammable:
+      methods: [ Touch ]
+      effects:
+      - !type:FlammableReaction
 ";
 
     [Test]
@@ -306,25 +323,30 @@ public sealed class NovakinFoundationTest
             var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
             var temperature = entities.GetComponent<TemperatureComponent>(novakin);
 
-            temperature.CurrentTemperature = 499.9f;
+            temperature.CurrentTemperature = 449.9f;
             physiologySystem.Update(0.5f);
             Assert.That(entities.HasComponent<DrunkComponent>(novakin), Is.False);
 
-            temperature.CurrentTemperature = 500f;
+            temperature.CurrentTemperature = 450f;
             physiologySystem.Update(0.5f);
             Assert.That(entities.HasComponent<DrunkComponent>(novakin), Is.True);
 
-            temperature.CurrentTemperature = 700f;
+            temperature.CurrentTemperature = 650f;
             physiologySystem.Update(0.5f);
             Assert.That(statuses.TryGetTime(novakin, SharedDrunkSystem.DrunkKey, out var peak), Is.True);
             Assert.That((peak!.Value.Item2 - peak.Value.Item1).TotalSeconds, Is.EqualTo(260d).Within(0.01d));
 
+            temperature.CurrentTemperature = 700f;
+            physiologySystem.Update(0.5f);
+            Assert.That(statuses.TryGetTime(novakin, SharedDrunkSystem.DrunkKey, out var danger), Is.True);
+            Assert.That((danger!.Value.Item2 - danger.Value.Item1).TotalSeconds, Is.EqualTo(260d).Within(0.01d));
+
             temperature.CurrentTemperature = 600f;
             physiologySystem.Update(0.5f);
             Assert.That(statuses.TryGetTime(novakin, SharedDrunkSystem.DrunkKey, out var cooling), Is.True);
-            Assert.That((cooling!.Value.Item2 - cooling.Value.Item1).TotalSeconds, Is.EqualTo(155d).Within(0.01d));
+            Assert.That((cooling!.Value.Item2 - cooling.Value.Item1).TotalSeconds, Is.EqualTo(207.5d).Within(0.01d));
 
-            temperature.CurrentTemperature = 499.9f;
+            temperature.CurrentTemperature = 449.9f;
             physiologySystem.Update(0.5f);
             Assert.That(entities.HasComponent<DrunkComponent>(novakin), Is.False);
         });
@@ -347,13 +369,13 @@ public sealed class NovakinFoundationTest
         await server.WaitAssertion(() =>
         {
             novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
-            entities.GetComponent<TemperatureComponent>(novakin).CurrentTemperature = 501f;
+            entities.GetComponent<TemperatureComponent>(novakin).CurrentTemperature = 451f;
             physiologySystem.Update(0.5f);
             Assert.That(entities.HasComponent<DrunkComponent>(novakin), Is.True);
 
             Assert.That(solutions.TryGetSolution(novakin, BloodstreamComponent.DefaultChemicalsSolutionName,
                 out var chemicals, out _), Is.True);
-            Assert.That(solutions.TryAddReagent(chemicals!.Value, "Water", FixedPoint2.New(1)), Is.True);
+            Assert.That(solutions.TryAddReagent(chemicals!.Value, "Water", FixedPoint2.New(3)), Is.True);
         });
 
         await pair.RunTicksSync(120);
@@ -361,7 +383,7 @@ public sealed class NovakinFoundationTest
         {
             Assert.Multiple(() =>
             {
-                Assert.That(entities.GetComponent<TemperatureComponent>(novakin).CurrentTemperature, Is.LessThan(500f));
+                Assert.That(entities.GetComponent<TemperatureComponent>(novakin).CurrentTemperature, Is.LessThan(450f));
                 Assert.That(entities.HasComponent<DrunkComponent>(novakin), Is.False);
                 Assert.That(statuses.HasStatusEffect(novakin, "SlurredSpeech"), Is.False);
             });
@@ -934,7 +956,7 @@ public sealed class NovakinFoundationTest
     }
 
     [Test]
-    public async Task FlammableReagentHeatScalesToOneHundredEightyUnits()
+    public async Task FlammableReagentHeatScalesToDangerAtOneHundredEightyUnits()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -960,7 +982,7 @@ public sealed class NovakinFoundationTest
                 new ReagentMetabolizedEvent(prototypes.Index<ReagentPrototype>("Moonshine"), FixedPoint2.New(120)));
             Assert.Multiple(() =>
             {
-                Assert.That(physiology.FlammableUnitsToPeak, Is.EqualTo(180f));
+                Assert.That(physiology.FlammableUnitsToDangerousHeat, Is.EqualTo(180f));
                 Assert.That(physiology.PendingReagentHeat, Is.EqualTo(peakHeat).Within(0.001f));
             });
 
@@ -971,6 +993,102 @@ public sealed class NovakinFoundationTest
                     Is.GreaterThan(physiology.FuelConsumptionBaselineTemperature).And.LessThan(380f));
                 Assert.That(physiology.PendingReagentHeat, Is.GreaterThan(300f));
             });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task RapidFlammableBingeReachesDangerWhileSpacedDrinksStaySober()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var timing = server.ResolveDependency<IGameTiming>();
+        var body = entities.System<BodySystem>();
+        var solutions = entities.System<SharedSolutionContainerSystem>();
+        var stomachSystem = entities.System<StomachSystem>();
+        var map = await pair.CreateTestMap();
+        EntityUid bingeNovakin = default;
+        EntityUid bingeCore = default;
+        EntityUid casualNovakin = default;
+        EntityUid casualCore = default;
+        var bingePeak = 0f;
+        var completedBingePeak = 0f;
+
+        await server.WaitAssertion(() =>
+        {
+            bingeNovakin = entities.SpawnEntity("MobNovakin", map.GridCoords);
+            casualNovakin = entities.SpawnEntity("MobNovakin", map.GridCoords);
+            // Kritters: isolate Core regulation from the test map's vacuum-only atmosphere.
+            entities.GetComponent<TemperatureComponent>(bingeNovakin).AtmosTemperatureTransferEfficiency = 0f;
+            entities.GetComponent<TemperatureComponent>(casualNovakin).AtmosTemperatureTransferEfficiency = 0f;
+            entities.RemoveComponent<BarotraumaComponent>(bingeNovakin);
+            entities.RemoveComponent<BarotraumaComponent>(casualNovakin);
+            bingeCore = body.GetBodyOrgans(bingeNovakin)
+                .Single(organ => entities.HasComponent<StomachComponent>(organ.Id)).Id;
+            casualCore = body.GetBodyOrgans(casualNovakin)
+                .Single(organ => entities.HasComponent<StomachComponent>(organ.Id)).Id;
+
+            var stomach = entities.GetComponent<StomachComponent>(bingeCore);
+            var metabolizer = entities.GetComponent<MetabolizerComponent>(bingeCore);
+            var drink = metabolizer.MetabolismGroups!.Single(group => group.Id == "Drink");
+            Assert.That(solutions.TryGetSolution(bingeCore, StomachSystem.DefaultSolutionName,
+                out _, out var coreSolution), Is.True);
+            Assert.Multiple(() =>
+            {
+                Assert.That(coreSolution!.MaxVolume, Is.EqualTo(FixedPoint2.New(75)));
+                Assert.That(stomach.DigestionDelay, Is.EqualTo(TimeSpan.Zero));
+                Assert.That(drink.MetabolismRateModifier, Is.EqualTo(FixedPoint2.New(6)));
+            });
+
+            Assert.That(stomachSystem.TryTransferSolution(casualCore,
+                new Solution("NovakinFlammableTestReagent", FixedPoint2.New(30))), Is.True);
+        });
+
+        for (var glass = 0; glass < 6; glass++)
+        {
+            await server.WaitAssertion(() =>
+            {
+                Assert.That(stomachSystem.TryTransferSolution(bingeCore,
+                    new Solution("NovakinFlammableTestReagent", FixedPoint2.New(30))), Is.True);
+            });
+            await pair.RunTicksSync(timing.TickRate * 6);
+        }
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(stomachSystem.TryTransferSolution(casualCore,
+                new Solution("NovakinFlammableTestReagent", FixedPoint2.New(30))), Is.True);
+        });
+        await pair.RunTicksSync(timing.TickRate * 25);
+
+        await server.WaitAssertion(() =>
+        {
+            var bingeTemperature = entities.GetComponent<TemperatureComponent>(bingeNovakin).CurrentTemperature;
+            var casualTemperature = entities.GetComponent<TemperatureComponent>(casualNovakin).CurrentTemperature;
+            bingePeak = bingeTemperature;
+            Assert.Multiple(() =>
+            {
+                Assert.That(bingeTemperature, Is.InRange(690f, 705f));
+                Assert.That(entities.HasComponent<DrunkComponent>(bingeNovakin), Is.True);
+                Assert.That(casualTemperature, Is.LessThan(450f));
+                Assert.That(entities.HasComponent<DrunkComponent>(casualNovakin), Is.False);
+            });
+        });
+
+        await pair.RunTicksSync(timing.TickRate * 3);
+        await server.WaitAssertion(() =>
+        {
+            completedBingePeak = entities.GetComponent<TemperatureComponent>(bingeNovakin).CurrentTemperature;
+            Assert.That(completedBingePeak, Is.GreaterThanOrEqualTo(bingePeak));
+        });
+
+        await pair.RunTicksSync(timing.TickRate * 3);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entities.GetComponent<TemperatureComponent>(bingeNovakin).CurrentTemperature,
+                Is.LessThan(completedBingePeak));
         });
 
         await pair.CleanReturnAsync();
