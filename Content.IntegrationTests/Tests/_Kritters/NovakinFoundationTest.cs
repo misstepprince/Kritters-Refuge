@@ -8,9 +8,11 @@ using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server._CS.Needs;
 using Content.Server._Kritters.Systems;
+using Content.Server.Medical.Components;
 using Content.Server.Temperature.Components;
 using Content.Shared._CS.Needs;
 using Content.Shared._Kritters.Components;
+using Content.Shared._Kritters.EntityEffects;
 using Content.Shared._Kritters.Overlays;
 using Content.Shared._Kritters.Systems;
 using Content.Shared.Atmos;
@@ -23,8 +25,10 @@ using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
+using Content.Shared.EntityEffects;
 using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
+using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.DoAfter;
 using Content.Shared.Drunk;
@@ -37,8 +41,10 @@ using Content.Shared.SSDIndicator;
 using Content.Shared.StatusEffect;
 using Content.Shared.Stacks;
 using Content.Shared.Tag;
+using Content.Shared.Traits.Assorted;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -95,10 +101,15 @@ public sealed class NovakinFoundationTest
 
             var core = body.GetBodyOrgans(novakin).Single(organ => entities.HasComponent<StomachComponent>(organ.Id)).Id;
             var stomach = entities.GetComponent<StomachComponent>(core);
-            entities.EventBus.RaiseLocalEvent(novakin,
-                new NovakinCryoPodInjectionEvent(new Solution("Bicaridine", FixedPoint2.New(1))));
+            var injection = new NovakinCryoPodInjectionEvent(new Solution("Bicaridine", FixedPoint2.New(1)));
+            entities.EventBus.RaiseLocalEvent(novakin, injection);
 
-            Assert.That(stomach.ReagentDeltas.Select(delta => delta.ReagentQuantity.Reagent.Prototype), Does.Contain("Bicaridine"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(injection.Accepted, Is.True);
+                Assert.That(stomach.ReagentDeltas.Select(delta => delta.ReagentQuantity.Reagent.Prototype),
+                    Does.Contain("Bicaridine"));
+            });
         });
 
         await pair.CleanReturnAsync();
@@ -481,12 +492,45 @@ public sealed class NovakinFoundationTest
                 Assert.That(physiology.CurrentReserve, Is.EqualTo(physiology.MaxReserve));
                 Assert.That(entities.HasComponent<AtmosExposedComponent>(novakin), Is.True);
                 Assert.That(entities.HasComponent<TemperatureComponent>(novakin), Is.True);
+                Assert.That(entities.HasComponent<MovedByPressureComponent>(novakin), Is.True);
+                Assert.That(entities.HasComponent<FlammableComponent>(novakin), Is.True);
             });
 
             Assert.That(entities.GetComponent<TagComponent>(novakin).Tags, Does.Contain("DoorBumpOpener"));
 
             Assert.That(physiology.ReserveDrainPerSecond * 60f * 30f,
                 Is.EqualTo(physiology.MaxReserve).Within(0.01f));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ReagentFuelScalesWithMetabolizedQuantity()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var needs = entities.GetComponent<NeedsComponent>(novakin);
+            var fuel = needs.Needs[NeedType.Fuel];
+            fuel.CurrentValue = 0f;
+
+            new NovakinFuel { Fuel = 8f }.Effect(new EntityEffectReagentArgs(
+                novakin,
+                entities,
+                null,
+                null,
+                FixedPoint2.New(0.25f),
+                null,
+                null,
+                FixedPoint2.New(0.25f)));
+
+            Assert.That(fuel.CurrentValue, Is.EqualTo(2f).Within(0.001f));
         });
 
         await pair.CleanReturnAsync();

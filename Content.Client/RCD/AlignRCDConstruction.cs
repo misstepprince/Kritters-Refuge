@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Client.Gameplay;
+using Content.Client.Hands.Systems;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Maps;
 using Content.Shared.RCD;
@@ -24,6 +24,7 @@ public sealed partial class AlignRCDConstruction : PlacementMode
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private SharedMapSystem _mapManager = default!;
     private readonly SharedMapSystem _mapSystem;
+    private readonly HandsSystem _handsSystem;
     private readonly RCDSystem _rcdSystem;
     private readonly SharedTransformSystem _transformSystem;
     [Dependency] private IPlayerManager _playerManager = default!;
@@ -45,6 +46,7 @@ public sealed partial class AlignRCDConstruction : PlacementMode
     {
         IoCManager.InjectDependencies(this);
         _mapSystem = _entityManager.System<SharedMapSystem>();
+        _handsSystem = _entityManager.System<HandsSystem>();
         _rcdSystem = _entityManager.System<RCDSystem>();
         _sprite = _entityManager.System<SpriteSystem>();
         _transformSystem = _entityManager.System<SharedTransformSystem>();
@@ -84,8 +86,8 @@ public sealed partial class AlignRCDConstruction : PlacementMode
     private void UpdateRcdTilePlacementPreview()
     {
         var player = _playerManager.LocalSession?.AttachedEntity;
-        if (!_entityManager.TryGetComponent<HandsComponent>(player, out var hands)
-            || hands.ActiveHand?.HeldEntity is not { } held
+        if (player == null
+            || !_handsSystem.TryGetActiveItem(player.Value, out var held)
             || !_entityManager.TryGetComponent<RCDComponent>(held, out var rcd))
             return;
 
@@ -133,10 +135,8 @@ public sealed partial class AlignRCDConstruction : PlacementMode
         }
 
         // Determine if player is carrying an RCD in their active hand
-        if (!_entityManager.TryGetComponent<HandsComponent>(player, out var hands))
+        if (player == null || !_handsSystem.TryGetActiveItem(player.Value, out var heldEntity))
             return false;
-
-        var heldEntity = hands.ActiveHand?.HeldEntity;
 
         if (!_entityManager.TryGetComponent<RCDComponent>(heldEntity, out var rcd))
             return false;

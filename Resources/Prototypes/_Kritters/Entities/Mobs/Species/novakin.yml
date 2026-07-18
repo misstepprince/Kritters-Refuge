@@ -1,7 +1,10 @@
 - type: entity
   save: false
   name: Urist McNova
-  parent: BaseMobSpecies
+  parent:
+  - MobAtmosExposed
+  - MobFlammable
+  - BaseMobSpecies
   id: BaseMobNovakin
   abstract: true
   components:

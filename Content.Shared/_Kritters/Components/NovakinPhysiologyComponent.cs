@@ -172,3 +172,7 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField, AutoNetworkedField]
     public bool ShellShattered;
 }
+
+/// <summary>Marks pressure immunity owned exclusively by Novakin vacuum grace.</summary>
+[RegisterComponent]
+public sealed partial class NovakinPressureImmunityComponent : Component;

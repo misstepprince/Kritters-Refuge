@@ -1,8 +1,8 @@
 - type: entity
   parent: ClothingUniformSkirtBase
   id: CoolCoyoteClothes
-  name: Cool Coyote Jumpskirt
-  description: A cute jumpskirt that will be the template for ALL Coyote Bayou uniforms! at least in this file
+  name: Kritters Refuge jumpskirt
+  description: A cute jumpskirt used as the template for Kritters Refuge uniforms.
   abstract: true
   components:
   - type: Sprite
@@ -3366,4 +3366,3 @@
     clothingVisuals:
       jumpsuit:
       - state: gearharness
-

@@ -1,1 +1,1 @@
-changelog-tab-title-Coyote = Coyote Sector
+changelog-tab-title-Coyote = Kritters Refuge

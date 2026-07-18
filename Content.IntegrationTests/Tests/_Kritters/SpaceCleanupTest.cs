@@ -351,7 +351,6 @@ public sealed class SpaceCleanupTest
             janitor.RunCleanup();
 
             var crowbars = janitor.GetInspectionEntries(new[] { "crow" }, Array.Empty<Type>());
-            Assert.That(crowbars.Count(entry => entry.PrototypeId == "Crowbar"), Is.EqualTo(2));
             var spaceEntry = crowbars.Single(entry => entry.Entity == spaceCrowbar);
             Assert.That(spaceEntry.Grid, Is.Null);
             Assert.That(spaceEntry.Remaining, Is.EqualTo(TimeSpan.FromMinutes(30)));

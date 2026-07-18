@@ -12,10 +12,6 @@
             "directions": 4
         },
         {
-            "name": "full-nomarkings",
-            "directions": 4
-        },
-        {
             "name": "head_m",
             "directions": 4
         },
@@ -65,10 +61,6 @@
         },
         {
             "name": "eyes",
-            "directions": 4
-        },
-        {
-            "name": "overlay_husk",
             "directions": 4
         }
     ]

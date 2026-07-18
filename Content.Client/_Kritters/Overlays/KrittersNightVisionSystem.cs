@@ -1,8 +1,10 @@
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Content.Shared._DV.CCVars;
 using Content.Shared._Kritters.Overlays;
 
 namespace Content.Client._Kritters.Overlays;
@@ -15,6 +17,7 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private FlashImmunitySystem _flashImmunity = default!;
     [Dependency] private PointLightSystem _lights = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private KrittersNightVisionOverlay _overlay = default!;
     [ViewVariables]
@@ -33,6 +36,7 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
         SubscribeLocalEvent<KrittersNightVisionComponent, LocalPlayerDetachedEvent>(OnPlayerDetached);
 
         SubscribeLocalEvent<KrittersNightVisionComponent, FlashImmunityCheckEvent>(OnFlashImmunityChanged);
+        Subs.CVar(_cfg, DCCVars.NoVisionFilters, OnNoVisionFiltersChanged);
 
         _overlay = new(_prototypeManager.Index<ShaderPrototype>(ModernKrittersNightVisionShaderPrototype));
     }
@@ -94,7 +98,10 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
     }
 
     private bool CanDisplayVision(EntityUid uid, KrittersNightVisionComponent vision)
-        => vision.Active && vision.Illumination > 0.001f && !_flashImmunity.HasFlashImmunityVisionBlockers(uid);
+        => vision.Active
+            && vision.Illumination > 0.001f
+            && !_flashImmunity.HasFlashImmunityVisionBlockers(uid)
+            && !_cfg.GetCVar(DCCVars.NoVisionFilters);
 
     private void UpdateVisualState(KrittersNightVisionComponent vision)
     {
@@ -122,5 +129,16 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
         Del(_effect);
         _effect = null;
         _active = false;
+    }
+
+    private void OnNoVisionFiltersChanged(bool enabled)
+    {
+        if (_player.LocalSession?.AttachedEntity is { } uid)
+        {
+            if (enabled)
+                AttemptRemoveVision(uid);
+            else
+                AttemptAddVision(uid);
+        }
     }
 }

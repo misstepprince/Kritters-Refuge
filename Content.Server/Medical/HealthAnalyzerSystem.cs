@@ -13,6 +13,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.MedicalScanner;
+using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Traits.Assorted;
@@ -212,8 +213,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             || !HasComp<DamageableComponent>(target))
             return;
 
-        var uiState = GetHealthAnalyzerUiState(healthAnalyzer, target);
-        uiState.ScanMode = scanMode;
+        var uiState = GetHealthAnalyzerUiState(healthAnalyzer, target, scanMode);
 
         _uiSystem.ServerSendUiMessage(
             healthAnalyzer,
@@ -227,10 +227,10 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     /// </summary>
     /// <param name="target">The entity being scanned</param>
     /// <returns></returns>
-    public HealthAnalyzerUiState GetHealthAnalyzerUiState(EntityUid healthAnalyzer, EntityUid? target)
+    public HealthAnalyzerUiState GetHealthAnalyzerUiState(EntityUid healthAnalyzer, EntityUid? target, bool? scanMode = null)
     {
         if (!target.HasValue || !HasComp<DamageableComponent>(target))
-            return new HealthAnalyzerUiState();
+            return new HealthAnalyzerUiState(null, float.NaN, float.NaN, float.NaN, scanMode, null, null, null, null);
 
         var entity = target.Value;
         var bodyTemperature = float.NaN;
@@ -274,13 +274,17 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         // End Frontier: add unclonable
 
         var printable = HasComp<HealthAnalyzerPrinterComponent>(healthAnalyzer); // Frontier
+        MobState? mobState = TryComp<MobStateComponent>(entity, out var mobStateComponent)
+            ? mobStateComponent.CurrentState
+            : null;
 
-        var state = new HealthAnalyzerUiState(
+        return new HealthAnalyzerUiState(
             GetNetEntity(entity),
             bodyTemperature,
             bloodAmount,
             nitrogenReserve,
-            null,
+            scanMode,
+            mobState,
             bleeding,
             unrevivable,
             unclonable, // Frontier
@@ -289,9 +293,5 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             bloodTypeColor, // Kritters
             hasBloodTypeColor // Kritters
         );
-
-        _uiSystem.ServerSendUiMessage(healthAnalyzer, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(state));
-
-        return state;
     }
 }

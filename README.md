@@ -1,5 +1,5 @@
 <div class="header" align="center">
-<img alt="Coyote Sector" height="308" src="Resources/Textures/_Kritters/Logo/logo.png?raw=true" />
+<img alt="Kritters Refuge" height="308" src="Resources/Textures/_Kritters/Logo/logo.png?raw=true" />
 </div>
 
 Kritters Refuge is a fork of Coyote Sector which is itself a fork of [Frontier Station](https://github.com/new-frontiers-14/frontier-station-14), which itself is a fork of [Space Station 14](https://github.com/space-wizards/space-station-14) that runs on [Robust Toolbox](https://github.com/space-wizards/RobustToolbox) engine written in C#.

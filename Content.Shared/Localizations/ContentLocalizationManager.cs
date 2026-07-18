@@ -49,6 +49,7 @@ namespace Content.Shared.Localizations
              */
             var cultureEn = new CultureInfo("en-US");
 
+            _loc.SetFallbackCluture(cultureEn);
             _loc.AddFunction(cultureEn, "MAKEPLURAL", FormatMakePlural);
             _loc.AddFunction(cultureEn, "MANY", FormatMany);
             _loc.AddFunction(cultureEn, "NUMBER-WORDS", FormatNumberWords); // Floof

@@ -5,5 +5,3 @@ chat-emote-name-purr = purr
 
 chat-emote-msg-marr = marrs.
 chat-emote-msg-wurble = wurbles.
-chat-emote-msg-growl = growls.
-chat-emote-msg-purr = purrs.

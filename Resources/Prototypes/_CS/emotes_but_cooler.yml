@@ -31,7 +31,7 @@
 
 - type: emote
   id: VulpScream
-  name: VulpScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Vulp
   icon: Interface/Actions/scream.png
@@ -62,7 +62,7 @@
 
 - type: emote
   id: RodentiaScream
-  name: RodentiaScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Rodentia
   icon: Interface/Actions/scream.png
@@ -93,7 +93,7 @@
 
 - type: emote
   id: GoblinScream
-  name: GoblinScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Goblin
   icon: Interface/Actions/scream.png
@@ -124,7 +124,7 @@
 
 - type: emote
   id: ShelegScream
-  name: ShelegScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Sheleg
   icon: Interface/Actions/scream.png
@@ -155,7 +155,7 @@
 
 - type: emote
   id: MaleScream
-  name: MaleScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Male
   icon: Interface/Actions/scream.png
@@ -186,7 +186,7 @@
 
 - type: emote
   id: FemaleScream
-  name: FemaleScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Female
   icon: Interface/Actions/scream.png
@@ -217,7 +217,7 @@
 
 - type: emote
   id: FelinidScream
-  name: FelinidScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Felinid
   icon: Interface/Actions/scream.png
@@ -248,7 +248,7 @@
 
 - type: emote
   id: LizardScream
-  name: LizardScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Lizard
   icon: Interface/Actions/scream.png
@@ -279,7 +279,7 @@
 
 - type: emote
   id: VoxScream
-  name: VoxScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Vox
   icon: Interface/Actions/scream.png
@@ -310,7 +310,7 @@
 
 - type: emote
   id: DionaScream
-  name: DionaScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Diona
   icon: Interface/Actions/scream.png
@@ -341,7 +341,7 @@
 
 - type: emote
   id: MothScream
-  name: MothScream
+  name: chat-emote-name-scream
 #  showInWheel: false
   category: Moth
   icon: Interface/Actions/scream.png
@@ -378,7 +378,7 @@
 
 - type: emote
   id: MaleLaugh
-  name: MaleLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Male
   icon: Interface/Emotes/laugh.png
@@ -409,7 +409,7 @@
 
 - type: emote
   id: FemaleLaugh
-  name: FemaleLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Female
   icon: Interface/Emotes/laugh.png
@@ -440,7 +440,7 @@
 
 - type: emote
   id: LizardLaugh
-  name: LizardLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Lizard
   icon: Interface/Emotes/laugh.png
@@ -471,7 +471,7 @@
 
 - type: emote
   id: VoxLaugh
-  name: VoxLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Vox
   icon: Interface/Emotes/laugh.png
@@ -502,7 +502,7 @@
 
 - type: emote
   id: DionaLaugh
-  name: DionaLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Diona
   icon: Interface/Emotes/laugh.png
@@ -533,7 +533,7 @@
 
 - type: emote
   id: MothLaugh
-  name: MothLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Moth
   icon: Interface/Emotes/laugh.png
@@ -564,7 +564,7 @@
 
 - type: emote
   id: SyndieborgLaugh
-  name: SyndieborgLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Borg
   icon: Interface/Emotes/laugh.png
@@ -626,7 +626,7 @@
 
 - type: emote
   id: GoblinLaugh
-  name: GoblinLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Goblin
   icon: Interface/Emotes/laugh.png
@@ -657,7 +657,7 @@
 
 - type: emote
   id: ShelegLaugh
-  name: ShelegLaugh
+  name: chat-emote-name-laugh
 #  showInWheel: false
   category: Sheleg
   icon: Interface/Emotes/laugh.png
@@ -694,7 +694,7 @@
 
 - type: emote
   id: FelinidHiss
-  name: FelinidHiss
+  name: chat-emote-name-hiss
 #  showInWheel: false
   category: Felinid
   icon: Interface/Actions/scream.png
@@ -744,7 +744,7 @@
 
 - type: emote
   id: GoblinHiss
-  name: GoblinHiss
+  name: chat-emote-name-hiss
 #  showInWheel: false
   category: Goblin
   icon: Interface/Actions/scream.png
@@ -769,7 +769,7 @@
 
 - type: emote
   id: ShelegHiss
-  name: ShelegHiss
+  name: chat-emote-name-hiss
 #  showInWheel: false
   category: Sheleg
   icon: Interface/Actions/scream.png
@@ -800,7 +800,7 @@
 
 - type: emote
   id: MaleSigh
-  name: MaleSigh
+  name: chat-emote-name-sigh
 #  showInWheel: false
   category: Male
   icon: Interface/Emotes/sigh.png
@@ -819,7 +819,7 @@
 
 - type: emote
   id: FemaleSigh
-  name: FemaleSigh
+  name: chat-emote-name-sigh
 #  showInWheel: false
   category: Female
   icon: Interface/Emotes/sigh.png
@@ -838,7 +838,7 @@
 
 - type: emote
   id: ShelegSigh
-  name: ShelegSigh
+  name: chat-emote-name-sigh
 #  showInWheel: false
   category: Sheleg
   icon: Interface/Emotes/sigh.png
@@ -863,7 +863,7 @@
 
 - type: emote
   id: MaleCrying
-  name: MaleCrying
+  name: chat-emote-name-crying
 #  showInWheel: false
   category: Male
   icon: Interface/Emotes/cry.png
@@ -886,7 +886,7 @@
 
 - type: emote
   id: FemaleCrying
-  name: FemaleCrying
+  name: chat-emote-name-crying
 #  showInWheel: false
   category: Female
   icon: Interface/Emotes/cry.png
@@ -932,7 +932,7 @@
 
 - type: emote
   id: GoblinCrying
-  name: GoblinCrying
+  name: chat-emote-name-crying
 #  showInWheel: false
   category: Goblin
   icon: Interface/Emotes/cry.png
@@ -955,7 +955,7 @@
 
 - type: emote
   id: ShelegCrying
-  name: ShelegCrying
+  name: chat-emote-name-crying
 #  showInWheel: false
   category: Sheleg
   icon: Interface/Emotes/cry.png
@@ -984,7 +984,7 @@
 
 - type: emote
   id: MaleGasp
-  name: MaleGasp
+  name: chat-emote-name-gasp
 #  showInWheel: false
   category: Male
   # whitelist:
@@ -999,7 +999,7 @@
 
 - type: emote
   id: FemaleGasp
-  name: FemaleGasp
+  name: chat-emote-name-gasp
 #  showInWheel: false
   category: Female
   # whitelist:
@@ -1014,7 +1014,7 @@
 
 - type: emote
   id: GoblinGasp
-  name: GoblinGasp
+  name: chat-emote-name-gasp
 #  showInWheel: false
   category: Goblin
   # whitelist:
@@ -1035,7 +1035,7 @@
 
 - type: emote
   id: RodentiaSqueak
-  name: RodentiaSqueak
+  name: chat-emote-name-squeak
   # showInWheel: false
   category: Rodentia
   icon: Interface/Emotes/squeak.png
@@ -1051,7 +1051,7 @@
 
 - type: emote
   id: MothSqueak
-  name: MothSqueak
+  name: chat-emote-name-squeak
   #  showInWheel: false
   category: Moth
   icon: Interface/Emotes/squeak.png
@@ -1077,7 +1077,7 @@
 
 - type: emote
   id: VulpGrowl
-  name: VulpGrowl
+  name: chat-emote-name-growl
 #  showInWheel: false
   category: Vulp
   whitelist:
@@ -1095,7 +1095,7 @@
 
 - type: emote
   id: FelinidGrowl
-  name: FelinidGrowl
+  name: chat-emote-name-growl
 #  showInWheel: false
   category: Felinid
   whitelist:
@@ -1128,7 +1128,6 @@
   - avalicaws
   - avalicawing
   - avalicawed
-
 
 
 

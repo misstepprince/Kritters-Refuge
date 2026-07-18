@@ -200,6 +200,9 @@ public sealed partial class EmotesUIController : UIController, IOnStateChanged<G
             if (!CanHasUseEmote(emote, player.Value))
                 continue;
 
+            if (!Loc.TryGetString(emote.Name, out var emoteName))
+                continue;
+
             if (!emotesByCategory.TryGetValue(emote.Category, out var list))
             {
                 list = new List<RadialMenuOption>();
@@ -209,7 +212,7 @@ public sealed partial class EmotesUIController : UIController, IOnStateChanged<G
             var actionOption = new RadialMenuActionOption<EmotePrototype>(HandleRadialButtonClick, emote)
             {
                 Sprite = emote.Icon,
-                ToolTip = Loc.GetString(emote.Name)
+                ToolTip = emoteName
             };
             list.Add(actionOption);
         }

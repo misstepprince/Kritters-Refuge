@@ -10,7 +10,6 @@ using Content.Server.NodeContainer.Nodes;
 using Content.Server.Temperature.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Atmos;
-using Content.Shared.UserInterface;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
@@ -24,8 +23,6 @@ using Content.Shared.Emag.Systems;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Medical.Cryogenics;
-using Content.Shared.MedicalScanner;
-using Content.Shared.Power;
 using Content.Shared.Verbs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
@@ -43,7 +40,6 @@ public sealed partial class CryoPodSystem : SharedCryoPodSystem
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
     [Dependency] private SharedDoAfterSystem _doAfterSystem = default!;
-    [Dependency] private UserInterfaceSystem _uiSystem = default!;
     [Dependency] private SharedToolSystem _toolSystem = default!;
     [Dependency] private IGameTiming _gameTiming = default!;
     [Dependency] private MetaDataSystem _metaDataSystem = default!;
@@ -87,8 +83,7 @@ public sealed partial class CryoPodSystem : SharedCryoPodSystem
         var gasMix = _gasAnalyzerSystem.GenerateGasMixEntry("Cryo pod", air.Air);
         var (beakerCapacity, beaker) = GetBeakerInfo(entity);
         var injecting = GetInjectingReagents(entity);
-        var health = _healthAnalyzerSystem.GetHealthAnalyzerUiState(entity, patient);
-        health.ScanMode = true;
+        var health = _healthAnalyzerSystem.GetHealthAnalyzerUiState(entity, patient, true);
 
         UI.ServerSendUiMessage(
             entity.Owner,
@@ -119,26 +114,6 @@ public sealed partial class CryoPodSystem : SharedCryoPodSystem
                 }
             }
         }
-    }
-
-    private void OnPowerChanged(Entity<CryoPodComponent> entity, ref PowerChangedEvent args)
-    {
-        // Needed to avoid adding/removing components on a deleted entity
-        if (Terminating(entity))
-        {
-            return;
-        }
-
-        if (args.Powered)
-        {
-            EnsureComp<ActiveCryoPodComponent>(entity);
-        }
-        else
-        {
-            RemComp<ActiveCryoPodComponent>(entity);
-            _uiSystem.CloseUi(entity.Owner, HealthAnalyzerUiKey.Key);
-        }
-        UpdateAppearance(entity.Owner, entity.Comp);
     }
 
     private void OnCryoPodUpdateAtmosphere(Entity<CryoPodComponent> entity, ref AtmosDeviceUpdateEvent args)

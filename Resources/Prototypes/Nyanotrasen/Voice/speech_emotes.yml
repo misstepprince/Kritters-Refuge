@@ -2,7 +2,7 @@
 - type: emote
   id: Hiss
   category: Felinid
-  name: Hiss
+  name: chat-emote-name-hiss
   icon: Interface/Actions/scream.png
   available: false
   showInWheel: false # Coyote
@@ -27,7 +27,7 @@
 - type: emote
   id: Meow
   category: Felinid
-  name: Meow
+  name: chat-emote-name-meow
   icon: Interface/Actions/scream.png
   available: false
   whitelist:
@@ -69,7 +69,7 @@
 - type: emote
   id: Mew
   category: Felinid
-  name: Mew
+  name: chat-emote-name-mew
   icon: Interface/Actions/scream.png
   available: false
   whitelist:
@@ -88,7 +88,7 @@
 - type: emote
   id: Growl
   category: Felinid
-  name: Growl
+  name: chat-emote-name-growl
   icon: Interface/Actions/scream.png
   available: false
   showInWheel: false # Coyote
@@ -108,7 +108,7 @@
 - type: emote
   id: Purr
   category: Felinid
-  name: Purr
+  name: chat-emote-name-purr
   icon: Interface/Actions/scream.png
   available: false
   whitelist:

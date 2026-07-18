@@ -335,11 +335,13 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
         // Coyote: Ensure component on container if there is aphrodisiacs on the solution
         if (_helper.CheckForAphrodisiacs(PrototypeManager, solution)
         && TryComp<ContainedSolutionComponent>(soln.Owner, out var containedSolution)
-        && !HasComp<MindContainerComponent>(containedSolution.Container) // Filter out (most) mobs
-        && TryComp<TagComponent>(containedSolution.Container, out var tagComp)
+        && TryGetEntity(containedSolution.NetContainer, out var container)
+        && container is { } containerUid
+        && !HasComp<MindContainerComponent>(containerUid) // Filter out (most) mobs
+        && TryComp<TagComponent>(containerUid, out var tagComp)
         && !_tag.HasTag(tagComp, _helper.HideTag))
         {
-            var lacedComp = EnsureComp<AphroLacedVisibilityComponent>(containedSolution.Container);
+            var lacedComp = EnsureComp<AphroLacedVisibilityComponent>(containerUid);
             lacedComp.Laced = true;
             lacedComp.Solution = solution.Name ?? "";
         }

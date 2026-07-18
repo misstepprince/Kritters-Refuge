@@ -57,7 +57,6 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<NovakinPhysiologyComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovement);
         SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCryoPodInjectionEvent>(OnCryoPodInjection);
         SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCoreCoolingEvent>(OnCoreCooling);
         SubscribeLocalEvent<NovakinPhysiologyComponent, ReagentMetabolizedEvent>(OnReagentMetabolized);
@@ -232,7 +231,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         {
             if (HasComp<StomachComponent>(organ.Id))
             {
-                _stomach.TryTransferSolution(organ.Id, args.Solution);
+                args.Accepted = _stomach.TryTransferSolution(organ.Id, args.Solution);
                 return;
             }
         }
@@ -323,14 +322,6 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         }
         _lights.SetRadius(uid, MathHelper.Lerp(0.5f, 3f, progress));
         _lights.SetEnergy(uid, MathHelper.Lerp(0.35f, 1.5f, progress));
-    }
-
-    private static void OnRefreshMovement(Entity<NovakinPhysiologyComponent> entity,
-        ref RefreshMovementSpeedModifiersEvent args)
-    {
-        var multiplier = entity.Comp.HeatSpeedMultiplier * entity.Comp.ReserveSpeedMultiplier;
-        multiplier *= entity.Comp.ColdSpeedMultiplier;
-        args.ModifySpeed(multiplier, multiplier);
     }
 
     private void UpdateThermalWarning(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)

@@ -4,4 +4,8 @@ namespace Content.Shared._Kritters.Components;
 [RegisterComponent]
 public sealed partial class NovakinDormantCoreComponent : Component
 {
+    /// <summary>
+    /// Whether the Novakin revival lifecycle added the entity's unrevivable marker.
+    /// </summary>
+    public bool OwnsUnrevivable;
 }

@@ -11,6 +11,7 @@ namespace Content.Shared.Clothing.Components;
 /// </summary>
 [RegisterComponent]
 [NetworkedComponent]
+[AutoGenerateComponentState]
 [Access(typeof(AdvancedCollarSystem))]
 public sealed partial class AdvancedCollarComponent : Component
 {
@@ -25,6 +26,12 @@ public sealed partial class AdvancedCollarComponent : Component
     /// </summary>
     [DataField]
     public int MaxModules = 3;
+
+    /// <summary>
+    /// Components created by installed modules, stored by their canonical registration name.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public HashSet<string> ModuleOwnedComponents = new();
 
     /// <summary>
     /// Sound played when a module is extracted.
