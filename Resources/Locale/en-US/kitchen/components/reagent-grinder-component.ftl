@@ -18,3 +18,4 @@ grinder-menu-chamber-content-box-button = Eject Contents
 grinder-menu-beaker-content-box-label = Beaker
 grinder-menu-beaker-content-box-button = Eject Beaker
 grinder-menu-beaker-content-box-is-empty = Empty
+grinder-menu-beaker-content = {$quantity} {$reagent}

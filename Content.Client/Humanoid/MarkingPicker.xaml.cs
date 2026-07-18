@@ -282,7 +282,7 @@ public sealed partial class MarkingPicker : Control
                     || GetMarkingName(m)
                         .ToLower()
                         .Contains(filter.ToLower())))
-            .OrderBy(p => Loc.GetString(GetMarkingName(p)));
+            .OrderBy(GetMarkingName);
 
         foreach (var marking in sortedMarkings)
         {

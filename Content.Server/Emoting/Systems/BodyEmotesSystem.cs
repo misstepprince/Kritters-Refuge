@@ -31,11 +31,11 @@ public sealed partial class BodyEmotesSystem : EntitySystem
             return;
 
         var cat = args.Emote.Category;
-        if (cat.HasFlag(EmoteCategory.Hands))
+        if (cat == EmoteCategory.Hands)
         {
             args.Handled = TryEmoteHands(uid, args.Emote, component);
         }
-        else if (cat.HasFlag(EmoteCategory.Lizard))
+        else if (cat == EmoteCategory.Lizard)
         {
             args.Handled = TryEmoteLizard(uid, args.Emote, component);
         }

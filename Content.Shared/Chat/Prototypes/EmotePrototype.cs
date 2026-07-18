@@ -105,3 +105,22 @@ public enum EmoteCategory : ushort
     General = ushort.MaxValue,
     Sex = 3
 }
+
+public static class EmoteCategoryExtensions
+{
+    public static bool UsesVocalSounds(this EmoteCategory category) => category is
+        EmoteCategory.Vocal
+        or EmoteCategory.Harpy
+        or EmoteCategory.Goblin
+        or EmoteCategory.Vulp
+        or EmoteCategory.Rodentia
+        or EmoteCategory.Diona
+        or EmoteCategory.Sheleg
+        or EmoteCategory.Male
+        or EmoteCategory.Female
+        or EmoteCategory.Avali
+        or EmoteCategory.Vox
+        or EmoteCategory.Moth
+        or EmoteCategory.Borg
+        or EmoteCategory.Felinid;
+}

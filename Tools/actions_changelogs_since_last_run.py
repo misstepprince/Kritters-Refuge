@@ -23,7 +23,8 @@ GITHUB_API_URL = os.environ.get("GITHUB_API_URL", "https://api.github.com")
 DISCORD_SPLIT_LIMIT = 2000
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 
-CHANGELOG_FILE = "Resources/Changelog/Coyote.yml" # Coyote: Frontier.yml<Coyote.yml
+CHANGELOG_FILE = "Resources/Changelog/Kritters.yml"
+LEGACY_CHANGELOG_FILE = "Resources/Changelog/Coyote.yml"
 
 TYPES_TO_EMOJI = {"Fix": "🐛", "Add": "🆕", "Remove": "❌", "Tweak": "⚒️"}
 
@@ -124,8 +125,20 @@ def get_last_changelog() -> str:
         last_changelog_stream = get_last_changelog_by_sha(
             session, last_sha, github_repository
         )
+    except requests.exceptions.HTTPError as e:
+        if e.response is not None and e.response.status_code == 404:
+            print(f"Kritters changelog not found at {last_sha}; using legacy Coyote changelog baseline")
+            try:
+                return get_last_changelog_by_sha(
+                    session, last_sha, github_repository, LEGACY_CHANGELOG_FILE
+                )
+            except requests.exceptions.RequestException as legacy_error:
+                print(f"Failed to fetch legacy changelog at {last_sha}: {legacy_error}; using empty baseline")
+                return "Entries: []\n"
+
+        print(f"Failed to fetch changelog at {last_sha}: {e}; using empty baseline")
+        return "Entries: []\n"
     except requests.exceptions.RequestException as e:
-        # If the previous file can't be fetched (404, etc.), fall back to the empty baseline
         print(f"Failed to fetch changelog at {last_sha}: {e}; using empty baseline")
         return "Entries: []\n"
 
@@ -133,7 +146,10 @@ def get_last_changelog() -> str:
 
 
 def get_last_changelog_by_sha(
-    sess: requests.Session, sha: str, github_repository: str
+    sess: requests.Session,
+    sha: str,
+    github_repository: str,
+    changelog_file: str = CHANGELOG_FILE,
 ) -> str:
     """
     Use GitHub API to get the previous version of the changelog YAML (Actions builds are fetched with a shallow clone)
@@ -144,7 +160,7 @@ def get_last_changelog_by_sha(
     headers = {"Accept": "application/vnd.github.raw"}
 
     resp = sess.get(
-        f"{GITHUB_API_URL}/repos/{github_repository}/contents/{CHANGELOG_FILE}",
+        f"{GITHUB_API_URL}/repos/{github_repository}/contents/{changelog_file}",
         headers=headers,
         params=params,
     )

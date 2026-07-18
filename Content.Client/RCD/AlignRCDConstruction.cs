@@ -10,6 +10,7 @@ using Content.Shared.RCD;
 using Content.Shared.RCD.Components;
 using Content.Shared.RCD.Systems;
 using Robust.Client.Placement;
+using Robust.Client.Placement.Modes;
 using Robust.Client.Player;
 using Robust.Client.State;
 using Robust.Shared.Map;
@@ -19,10 +20,9 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.RCD;
 
-public sealed partial class AlignRCDConstruction : PlacementMode
+public sealed partial class AlignRCDConstruction : SnapgridCenter
 {
     [Dependency] private IEntityManager _entityManager = default!;
-    [Dependency] private SharedMapSystem _mapManager = default!;
     private readonly SharedMapSystem _mapSystem;
     private readonly HandsSystem _handsSystem;
     private readonly RCDSystem _rcdSystem;
@@ -38,6 +38,9 @@ public sealed partial class AlignRCDConstruction : PlacementMode
     private EntityCoordinates _unalignedMouseCoords = default;
     private readonly SpriteSystem _sprite;
     private string? _lastRcdTilePreviewId;
+
+    public override bool HasLineMode => false;
+    public override bool HasGridMode => false;
 
     /// <summary>
     /// This placement mode is not on the engine because it is content specific (i.e., for the RCD)
@@ -59,6 +62,9 @@ public sealed partial class AlignRCDConstruction : PlacementMode
         _unalignedMouseCoords = ScreenToCursorGrid(mouseScreen);
         MouseCoords = _unalignedMouseCoords.AlignWithClosestGridTile(SearchBoxSize, _entityManager);
 
+        Grid = null;
+        SnapSize = 1f;
+
         var gridId = _transformSystem.GetGrid(MouseCoords);
 
         if (!_entityManager.TryGetComponent<MapGridComponent>(gridId, out var mapGrid))
@@ -67,6 +73,8 @@ public sealed partial class AlignRCDConstruction : PlacementMode
         CurrentTile = _mapSystem.GetTileRef(gridId.Value, mapGrid, MouseCoords);
 
         float tileSize = mapGrid.TileSize;
+        Grid = mapGrid;
+        SnapSize = tileSize;
         GridDistancing = tileSize;
 
         if (pManager.CurrentPermission!.IsTile)

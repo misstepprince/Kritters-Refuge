@@ -59,7 +59,7 @@ public sealed partial class PumpControl : BoxContainer
 
         foreach (var value in Enum.GetValues<VentPumpDirection>())
         {
-            _pumpDirection.AddItem(Loc.GetString($"{value}"), (int) value);
+            _pumpDirection.AddItem(GetPumpDirectionName(value), (int) value);
         }
 
         _pumpDirection.SelectId((int) _data.PumpDirection);
@@ -72,7 +72,7 @@ public sealed partial class PumpControl : BoxContainer
 
         foreach (var value in Enum.GetValues<VentPressureBound>())
         {
-            _pressureCheck.AddItem(Loc.GetString($"{value}"), (int) value);
+            _pressureCheck.AddItem(GetPressureBoundName(value), (int) value);
         }
 
         _pressureCheck.SelectId((int) _data.PressureChecks);
@@ -106,4 +106,20 @@ public sealed partial class PumpControl : BoxContainer
         _data.InternalPressureBound = data.InternalPressureBound;
         _internalBound.Value = _data.InternalPressureBound;
     }
+
+    private static string GetPumpDirectionName(VentPumpDirection direction) => direction switch
+    {
+        VentPumpDirection.Siphoning => Loc.GetString("air-alarm-ui-vent-direction-siphoning"),
+        VentPumpDirection.Releasing => Loc.GetString("air-alarm-ui-vent-direction-releasing"),
+        _ => direction.ToString()
+    };
+
+    private static string GetPressureBoundName(VentPressureBound bound) => bound switch
+    {
+        VentPressureBound.NoBound => Loc.GetString("air-alarm-ui-vent-pressure-bound-none"),
+        VentPressureBound.InternalBound => Loc.GetString("air-alarm-ui-vent-pressure-bound-internal"),
+        VentPressureBound.ExternalBound => Loc.GetString("air-alarm-ui-vent-pressure-bound-external"),
+        VentPressureBound.Both => Loc.GetString("air-alarm-ui-vent-pressure-bound-both"),
+        _ => bound.ToString()
+    };
 }

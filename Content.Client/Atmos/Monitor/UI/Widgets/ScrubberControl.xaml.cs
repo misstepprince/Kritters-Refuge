@@ -62,7 +62,7 @@ public sealed partial class ScrubberControl : BoxContainer
 
         foreach (var value in Enum.GetValues<ScrubberPumpDirection>())
         {
-            _pumpDirection.AddItem(Loc.GetString($"{value}"), (int) value);
+            _pumpDirection.AddItem(GetPumpDirectionName(value), (int) value);
         }
 
         _pumpDirection.SelectId((int) _data.PumpDirection);
@@ -168,4 +168,11 @@ public sealed partial class ScrubberControl : BoxContainer
             _gasLimitControls[gas].Value = limitSet ? gasLimit : 0;
         }
     }
+
+    private static string GetPumpDirectionName(ScrubberPumpDirection direction) => direction switch
+    {
+        ScrubberPumpDirection.Siphoning => Loc.GetString("air-alarm-ui-scrubber-direction-siphoning"),
+        ScrubberPumpDirection.Scrubbing => Loc.GetString("air-alarm-ui-scrubber-direction-scrubbing"),
+        _ => direction.ToString()
+    };
 }
