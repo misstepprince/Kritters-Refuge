@@ -25,6 +25,7 @@ using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Chat.Prototypes;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
@@ -42,11 +43,13 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Mind.Components;
 using Content.Shared.SSDIndicator;
+using Content.Shared.Speech;
 using Content.Shared.StatusEffect;
 using Content.Shared.Stacks;
 using Content.Shared.Tag;
 using Content.Shared.Traits.Assorted;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Audio;
 using Robust.Client.Graphics;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
@@ -326,6 +329,35 @@ public sealed class NovakinFoundationTest
     }
 
     [Test]
+    public async Task FuelDepletedCoolingStopsAtAbsoluteZero()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var physiologySystem = entities.System<NovakinPhysiologySystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var physiology = entities.GetComponent<NovakinPhysiologyComponent>(novakin);
+            var temperature = entities.GetComponent<TemperatureComponent>(novakin);
+            var fuel = entities.GetComponent<NeedsComponent>(novakin).Needs[NeedType.Fuel];
+            DisableEnvironmentalExchange(physiology);
+            fuel.CurrentValue = fuel.MinValue;
+            temperature.CurrentTemperature = 1f;
+
+            physiologySystem.Update(0.5f);
+            Assert.That(temperature.CurrentTemperature, Is.Zero);
+
+            physiologySystem.Update(0.5f);
+            Assert.That(temperature.CurrentTemperature, Is.Zero);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task HeatIntoxicationTracksCoreTemperature()
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -507,6 +539,49 @@ public sealed class NovakinFoundationTest
 
             Assert.That(physiology.ReserveDrainPerSecond * 60f * 30f,
                 Is.EqualTo(physiology.MaxReserve).Within(0.01f));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task NovakinEmotesUseDedicatedRadialCategoryAndSounds()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var prototypes = server.ResolveDependency<IPrototypeManager>();
+        var map = await pair.CreateTestMap();
+        var radialEmotes = new[] { "Marr", "Wurble", "NovakinHiss", "NovakinGrowl", "NovakinPurr" };
+        var soundEmotes = radialEmotes.Concat(new[] { "Hiss", "Growl", "Purr" }).ToArray();
+
+        await server.WaitAssertion(() =>
+        {
+            var novakin = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var speech = entities.GetComponent<SpeechComponent>(novakin);
+
+            Assert.That(speech.AllowedEmotes, Is.EquivalentTo(radialEmotes));
+            foreach (var id in radialEmotes)
+            {
+                var emote = prototypes.Index<EmotePrototype>(id);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(emote.Category, Is.EqualTo(EmoteCategory.Novakin));
+                    Assert.That(emote.ShowInWheel, Is.True);
+                });
+            }
+
+            foreach (var id in new[] { "MaleNovakin", "FemaleNovakin" })
+            {
+                var sounds = prototypes.Index<EmoteSoundsPrototype>(id);
+                Assert.That(sounds.Sounds.Keys, Is.SupersetOf(soundEmotes));
+                foreach (var hiss in new[] { "Hiss", "NovakinHiss" })
+                {
+                    Assert.That(sounds.Sounds[hiss], Is.TypeOf<SoundCollectionSpecifier>());
+                    Assert.That(((SoundCollectionSpecifier) sounds.Sounds[hiss]).Collection,
+                        Is.EqualTo("ShelegHiss"));
+                }
+            }
         });
 
         await pair.CleanReturnAsync();

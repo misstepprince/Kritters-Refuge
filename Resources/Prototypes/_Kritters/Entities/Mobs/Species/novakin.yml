@@ -32,7 +32,7 @@
   - type: Speech
     speechVerb: Novakin
     speechSounds: Novakin
-    allowedEmotes: [Marr, Wurble, Hiss, Growl, Purr]
+    allowedEmotes: [Marr, Wurble, NovakinHiss, NovakinGrowl, NovakinPurr]
   - type: Vocal
     sounds:
       Male: MaleNovakin

@@ -28,13 +28,13 @@ public sealed partial class WeatherData
     /// <summary>
     /// When the weather started if relevant.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))] //TODO: Remove Custom serializer
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))] //TODO: Remove Custom serializer
     public TimeSpan StartTime = TimeSpan.Zero;
 
     /// <summary>
     /// When the applied weather will end.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))] //TODO: Remove Custom serializer
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))] //TODO: Remove Custom serializer
     public TimeSpan? EndTime;
 
     [ViewVariables]

@@ -48,7 +48,7 @@ public sealed partial class CardboardBoxComponent : Component
     /// <summary>
     /// Time at which the sound effect can next be played.
     /// </summary>
-    [DataField("effectCooldown", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField("effectCooldown", customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan EffectCooldown;
 
     /// <summary>

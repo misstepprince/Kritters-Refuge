@@ -6,7 +6,7 @@ namespace Content.Shared.Damage.Components;
 [NetworkedComponent, RegisterComponent]
 public sealed partial class DamagedByContactComponent : Component
 {
-    [DataField("nextSecond", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField("nextSecond", customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan NextSecond = TimeSpan.Zero;
 
     [ViewVariables]

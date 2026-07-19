@@ -34,10 +34,16 @@
     Wurble:
       path: /Audio/_Kritters/Voice/Novakin/wurble.ogg
     Hiss:
-      collection: FelionoidHisses
+      collection: ShelegHiss
+    NovakinHiss:
+      collection: ShelegHiss
     Purr:
       collection: FelionoidPurrs
+    NovakinPurr:
+      collection: FelionoidPurrs
     Growl:
+      collection: FelionoidGrowls
+    NovakinGrowl:
       collection: FelionoidGrowls
 
 - type: emoteSounds
@@ -76,8 +82,14 @@
     Wurble:
       path: /Audio/_Kritters/Voice/Novakin/wurble.ogg
     Hiss:
-      collection: FelionoidHisses
+      collection: ShelegHiss
+    NovakinHiss:
+      collection: ShelegHiss
     Purr:
       collection: FelionoidPurrs
+    NovakinPurr:
+      collection: FelionoidPurrs
     Growl:
+      collection: FelionoidGrowls
+    NovakinGrowl:
       collection: FelionoidGrowls

@@ -77,7 +77,7 @@ public sealed partial class EventHorizonComponent : Component
     /// <summary>
     /// The next time at which this consumed everything it overlapped with.
     /// </summary>
-    [ViewVariables(VVAccess.ReadOnly), DataField("nextConsumeWaveTime", customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [ViewVariables(VVAccess.ReadOnly), DataField("nextConsumeWaveTime", customTypeSerializer:typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextConsumeWaveTime;
 

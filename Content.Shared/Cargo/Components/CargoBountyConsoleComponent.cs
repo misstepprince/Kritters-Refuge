@@ -18,7 +18,7 @@ public sealed partial class CargoBountyConsoleComponent : Component
     /// <summary>
     /// The time at which the console will be able to print a label again.
     /// </summary>
-    [DataField("nextPrintTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField("nextPrintTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan NextPrintTime = TimeSpan.Zero;
 
     /// <summary>
@@ -48,7 +48,7 @@ public sealed partial class CargoBountyConsoleComponent : Component
     /// <summary>
     /// The time at which the console will be able to make the denial sound again.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextDenySoundTime = TimeSpan.Zero;
 
     /// <summary>

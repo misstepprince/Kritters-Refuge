@@ -40,7 +40,7 @@ public sealed partial class ParacusiaComponent : Component
     [AutoNetworkedField]
     public SoundSpecifier Sounds = default!;
 
-    [DataField("timeBetweenIncidents", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField("timeBetweenIncidents", customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan NextIncidentTime;
 
     public EntityUid? Stream;

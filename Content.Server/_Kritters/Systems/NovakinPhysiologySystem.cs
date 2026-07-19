@@ -362,7 +362,9 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     private void CoolWhenFuelDepleted(EntityUid uid, NovakinPhysiologyComponent physiology, NeedsComponent needs, TemperatureComponent temperature, float elapsed)
     {
         if (needs.Needs.TryGetValue(NeedType.Fuel, out var fuel) && fuel.CurrentValue <= fuel.MinValue)
-            _temperature.ForceChangeTemperature(uid, temperature.CurrentTemperature - physiology.FuelDepletedCoolingPerSecond * elapsed, temperature);
+            _temperature.ForceChangeTemperature(uid,
+                Math.Max(0f, temperature.CurrentTemperature - physiology.FuelDepletedCoolingPerSecond * elapsed),
+                temperature);
     }
 
     private void UpdateHeatSpeed(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)

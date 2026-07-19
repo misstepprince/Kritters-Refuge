@@ -56,7 +56,7 @@ namespace Content.Shared.VendingMachines
         /// <summary>
         /// The time when the next charge will be added
         /// </summary>
-        [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+        [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
         public TimeSpan EjectNextChargeTime;
         // End Frontier: random ejection
 
@@ -164,7 +164,7 @@ namespace Content.Shared.VendingMachines
         /// <summary>
         ///     While disabled by EMP it randomly ejects items
         /// </summary>
-        [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+        [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
         public TimeSpan NextEmpEject = TimeSpan.Zero;
 
         #region Client Visuals

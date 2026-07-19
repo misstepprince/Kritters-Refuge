@@ -30,7 +30,7 @@ public sealed partial class EntitySpawnPowerConsumerComponent : Component
     /// The next time this power plant is selling accumulated power.
     /// Should not be changedduring runtime, will cause errors in deposit amounts.
     ///</summary>
-    [DataField(serverOnly: true, customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(serverOnly: true, customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextSpawnCheck;
 
     ///<summary>

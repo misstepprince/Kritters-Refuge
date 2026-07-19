@@ -30,7 +30,7 @@ public sealed partial class TapeRecorderComponent : Component
     [DataField]
     public float RewindSpeed = 3f;
 
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan CooldownEndTime = TimeSpan.Zero;
 
     /// <summary>

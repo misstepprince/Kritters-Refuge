@@ -19,7 +19,7 @@ public sealed partial class AnomalyGeneratorComponent : Component
     /// <summary>
     /// The time at which the cooldown for generating another anomaly will be over
     /// </summary>
-    [DataField("cooldownEndTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField("cooldownEndTime", customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     [AutoPausedField]
     public TimeSpan CooldownEndTime = TimeSpan.Zero;
 

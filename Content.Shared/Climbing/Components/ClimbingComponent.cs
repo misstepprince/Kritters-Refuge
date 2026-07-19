@@ -35,7 +35,7 @@ public sealed partial class ClimbingComponent : Component
     /// <summary>
     /// Whether the owner is being moved onto the climbed entity.
     /// </summary>
-    [AutoNetworkedField, DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [AutoNetworkedField, DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan? NextTransition;
 

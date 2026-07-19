@@ -11,7 +11,7 @@ public sealed partial class ZombieRuleComponent : Component
     /// <summary>
     /// When the round will next check for round end.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan? NextRoundEndCheck;
 
     /// <summary>

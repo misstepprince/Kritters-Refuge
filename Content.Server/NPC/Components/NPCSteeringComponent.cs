@@ -54,7 +54,7 @@ public sealed partial class NPCSteeringComponent : Component
     [DataField("lastStuckCoordinates")]
     public EntityCoordinates LastStuckCoordinates;
 
-    [DataField("lastStuckTime", customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField("lastStuckTime", customTypeSerializer:typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan LastStuckTime;
 

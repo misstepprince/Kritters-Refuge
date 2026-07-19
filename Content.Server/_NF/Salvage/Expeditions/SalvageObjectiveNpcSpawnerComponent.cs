@@ -28,6 +28,6 @@ public sealed partial class SalvageObjectiveNpcSpawnerComponent : Component
     [DataField]
     public int MaxNearby = 5;
 
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextSpawn = TimeSpan.Zero;
 }

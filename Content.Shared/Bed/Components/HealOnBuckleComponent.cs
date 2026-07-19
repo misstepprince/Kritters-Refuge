@@ -28,7 +28,7 @@ namespace Content.Shared.Bed.Components
         /// <summary>
         /// Next time that <see cref="Damage"/> will be applied.
         /// </summary>
-        [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
+        [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField, AutoNetworkedField]
         public TimeSpan NextHealTime = TimeSpan.Zero; //Next heal
 
         /// <summary>

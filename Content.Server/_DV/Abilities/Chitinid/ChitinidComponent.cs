@@ -37,7 +37,7 @@ public sealed partial class ChitinidComponent : Component
     [DataField]
     public TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
 
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextUpdate;
 }

@@ -27,7 +27,7 @@ public sealed partial class PendingZombieComponent : Component
     [DataField("critDamageMultiplier")]
     public float CritDamageMultiplier = 10f;
 
-    [DataField("nextTick", customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField("nextTick", customTypeSerializer:typeof(TimeOffsetSerializer))]
     public TimeSpan NextTick;
 
     /// <summary>

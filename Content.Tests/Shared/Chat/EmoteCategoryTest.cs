@@ -20,6 +20,7 @@ public sealed class EmoteCategoryTest
     [TestCase(EmoteCategory.Moth)]
     [TestCase(EmoteCategory.Felinid)]
     [TestCase(EmoteCategory.Borg)]
+    [TestCase(EmoteCategory.Novakin)]
     public void VocalCategoriesUseVocalSounds(EmoteCategory category)
     {
         Assert.That(category.UsesVocalSounds(), Is.True);

@@ -11,7 +11,7 @@ public sealed partial class NewsWriterComponent : Component
     [ViewVariables(VVAccess.ReadWrite), DataField]
     public bool PublishEnabled;
 
-    [ViewVariables(VVAccess.ReadWrite), DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [ViewVariables(VVAccess.ReadWrite), DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextPublish;
 
     [ViewVariables(VVAccess.ReadWrite), DataField]

@@ -47,7 +47,7 @@ public sealed partial class NetworkConfiguratorComponent : Component
     [ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan UseDelay = TimeSpan.FromSeconds(0.5);
 
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan LastUseAttempt;
 
