@@ -12,8 +12,10 @@ using Content.Server._Kritters.Systems;
 using Content.Server.Medical.Components;
 using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
+using Content.Server.Tools;
 using Content.Shared._CS.Needs;
 using Content.Shared._DV.CCVars;
+using Content.Shared._Kritters;
 using Content.Shared._Kritters.Components;
 using Content.Shared._Kritters.EntityEffects;
 using Content.Shared._Kritters.Overlays;
@@ -50,6 +52,7 @@ using Content.Shared.StatusEffect;
 using Content.Shared.Stacks;
 using Content.Shared.Tag;
 using Content.Shared.Traits.Assorted;
+using Content.Shared.Tools.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Client.Graphics;
@@ -58,6 +61,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using DoAfterInstance = Content.Shared.DoAfter.DoAfter;
 
 namespace Content.IntegrationTests.Tests._Kritters;
 
@@ -91,6 +95,83 @@ public sealed class NovakinFoundationTest
       effects:
       - !type:FlammableReaction
 ";
+
+    [Test]
+    public async Task WelderRevivesFullyRepairedNovakinAlive()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var damageableSystem = entities.System<DamageableSystem>();
+        var mobStateSystem = entities.System<MobStateSystem>();
+        var toolSystem = entities.System<ToolSystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var coordinates = new MapCoordinates(Vector2.Zero, map.MapId);
+            var novakin = entities.SpawnEntity("MobNovakin", coordinates);
+            var welder = entities.SpawnEntity("Welder", coordinates);
+            var damageable = entities.GetComponent<DamageableComponent>(novakin);
+            toolSystem.TurnOn((welder, entities.GetComponent<WelderComponent>(welder)), novakin);
+
+            damageableSystem.TryChangeDamage(novakin,
+                new DamageSpecifier { DamageDict = { ["Heat"] = 200f } }, ignoreResistances: true);
+            Assert.That(mobStateSystem.IsDead(novakin), Is.True);
+
+            damageableSystem.SetAllDamage(novakin, damageable, FixedPoint2.Zero);
+            Assert.Multiple(() =>
+            {
+                Assert.That(damageable.TotalDamage, Is.EqualTo(FixedPoint2.Zero));
+                Assert.That(mobStateSystem.IsDead(novakin), Is.True);
+                Assert.That(entities.HasComponent<UnrevivableComponent>(novakin), Is.True);
+            });
+
+            RaiseCoreRestart(entities, novakin, welder);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(mobStateSystem.IsAlive(novakin), Is.True);
+                Assert.That(entities.HasComponent<UnrevivableComponent>(novakin), Is.False);
+                Assert.That(entities.HasComponent<NovakinDormantCoreComponent>(novakin), Is.False);
+                Assert.That(entities.GetComponent<MobThresholdsComponent>(novakin).AllowRevives, Is.False);
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task WelderRevivesDamagedNovakinCritical()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var damageableSystem = entities.System<DamageableSystem>();
+        var mobStateSystem = entities.System<MobStateSystem>();
+        var toolSystem = entities.System<ToolSystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var coordinates = new MapCoordinates(Vector2.Zero, map.MapId);
+            var novakin = entities.SpawnEntity("MobNovakin", coordinates);
+            var welder = entities.SpawnEntity("Welder", coordinates);
+            toolSystem.TurnOn((welder, entities.GetComponent<WelderComponent>(welder)), novakin);
+
+            damageableSystem.TryChangeDamage(novakin,
+                new DamageSpecifier { DamageDict = { ["Heat"] = 200f } }, ignoreResistances: true);
+            damageableSystem.TryChangeDamage(novakin,
+                new DamageSpecifier { DamageDict = { ["Heat"] = -50f } }, ignoreResistances: true);
+            Assert.That(mobStateSystem.IsDead(novakin), Is.True);
+
+            RaiseCoreRestart(entities, novakin, welder);
+
+            Assert.That(mobStateSystem.IsCritical(novakin), Is.True);
+        });
+
+        await pair.CleanReturnAsync();
+    }
 
     [Test]
     public async Task BloodlessCoreAcceptsCryotubeDoses()
@@ -1784,4 +1865,13 @@ public sealed class NovakinFoundationTest
 
     private static float GetDamage(DamageableComponent damageable, string damageType)
         => damageable.Damage.DamageDict.TryGetValue(damageType, out var damage) ? damage.Float() : 0f;
+
+    private static void RaiseCoreRestart(IEntityManager entities, EntityUid novakin, EntityUid welder)
+    {
+        var restart = new NovakinCoreRestartFinishedEvent();
+        var args = new DoAfterArgs(entities, novakin, 0f, restart, novakin, novakin, welder);
+        restart.DoAfter = new DoAfterInstance(0, args, TimeSpan.Zero);
+        entities.EventBus.RaiseLocalEvent(novakin, restart);
+        Assert.That(restart.Handled, Is.True);
+    }
 }

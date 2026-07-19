@@ -116,7 +116,9 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
             return;
 
         CleanupDormancy(entity);
-        _mobState.ChangeMobState(entity, MobState.Critical);
+        // Use the normal damage thresholds for the resulting Alive or Critical state, then restore the death lock.
+        _mobThreshold.SetAllowRevives(entity, true);
+        _mobThreshold.SetAllowRevives(entity, false);
         OpenReturnToBody(entity);
         args.Handled = true;
     }
