@@ -32,6 +32,10 @@
             "directions": 4
         },
         {
+            "name": "cowling_secondary",
+            "directions": 4
+        },
+        {
             "name": "motley_secondary",
             "directions": 4
         },
