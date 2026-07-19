@@ -278,8 +278,12 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
             rate *= physiology.ShellShattered
                 ? physiology.PressureSuitShellFailureReserveDrainMultiplier
                 : physiology.PressureSuitReserveDrainMultiplier;
-        if (applySsdMultiplier && IsPlayerSsd(uid) && _mobState.IsAlive(uid))
-            rate *= physiology.SsdReserveDrainMultiplier;
+        if (applySsdMultiplier && IsLivingPlayerSsd(uid))
+        {
+            rate *= IsInResourceStasis(EntityManager, uid)
+                ? 0f
+                : physiology.SsdReserveDrainMultiplier;
+        }
         return rate;
     }
 
@@ -301,7 +305,8 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
 
     private void DrainFuelForHeat(EntityUid uid, NovakinPhysiologyComponent physiology, NeedsComponent needs, TemperatureComponent temperature, float elapsed)
     {
-        if (!needs.Needs.TryGetValue(NeedType.Fuel, out var fuel))
+        if (!needs.Needs.TryGetValue(NeedType.Fuel, out var fuel)
+            || IsLivingPlayerSsd(uid) && IsInResourceStasis(EntityManager, uid))
             return;
         var extra = fuel.DecayRate * (GetHeatResourceMultiplier(physiology, temperature) - 1f) * elapsed;
         if (extra > 0f)
@@ -552,6 +557,9 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     private bool IsPlayerSsd(EntityUid uid)
         => TryComp<SSDIndicatorComponent>(uid, out var ssd) && ssd.IsSSD
            && TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind;
+
+    private bool IsLivingPlayerSsd(EntityUid uid)
+        => _mobState.IsAlive(uid) && IsPlayerSsd(uid);
 
     private void UpdateNightVision(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
     {

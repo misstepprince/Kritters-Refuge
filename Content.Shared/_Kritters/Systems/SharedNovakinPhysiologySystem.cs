@@ -1,6 +1,8 @@
 using Content.Shared._Kritters.Components;
+using Content.Shared.Buckle.Components;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Medical.Cryogenics;
 using Content.Shared.Movement.Systems;
 
 namespace Content.Shared._Kritters.Systems;
@@ -48,6 +50,16 @@ public abstract partial class SharedNovakinPhysiologySystem : EntitySystem
 
     protected static float GetValidMaxReserve(NovakinPhysiologyComponent component)
         => float.IsFinite(component.MaxReserve) ? Math.Max(0f, component.MaxReserve) : 0f;
+
+    public static bool IsInResourceStasis(IEntityManager entities, EntityUid uid)
+    {
+        if (entities.HasComponent<InsideCryoPodComponent>(uid))
+            return true;
+
+        return entities.TryGetComponent(uid, out BuckleComponent? buckle)
+            && buckle.BuckledTo is { } bed
+            && entities.HasComponent<NovakinResourceStasisComponent>(bed);
+    }
 
     private float NormalizeReserve(Entity<NovakinPhysiologyComponent> entity)
     {

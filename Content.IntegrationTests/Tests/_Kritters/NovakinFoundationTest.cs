@@ -21,6 +21,7 @@ using Content.Shared._Kritters.Systems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Body.Components;
+using Content.Shared.Buckle;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -38,6 +39,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.DoAfter;
 using Content.Shared.Drunk;
 using Content.Shared.Medical;
+using Content.Shared.Medical.Cryogenics;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -1044,6 +1046,84 @@ public sealed class NovakinFoundationTest
                 Assert.That(GetDamage(damage, "Heat"), Is.GreaterThan(0f));
                 Assert.That(GetDamage(damage, "Bloodloss"), Is.GreaterThan(0f));
             });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task SsdMedicalStasisStopsNovakinFuelAndReserveDrainOnlyWhileProtected()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+        var timing = server.ResolveDependency<IGameTiming>();
+        var buckleSystem = entities.System<SharedBuckleSystem>();
+        var needSystem = entities.System<NeedSystem>();
+        var physiologySystem = entities.System<NovakinPhysiologySystem>();
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var ssdOnStasisBed = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.Zero, map.MapId));
+            var activeOnStasisBed = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.One, map.MapId));
+            var ssdOutsideStasis = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.UnitY, map.MapId));
+            var ssdInsideCryo = entities.SpawnEntity("MobNovakin", new MapCoordinates(Vector2.One, map.MapId));
+            var ssdBed = entities.SpawnEntity("StasisBed", new MapCoordinates(Vector2.Zero, map.MapId));
+            var activeBed = entities.SpawnEntity("StasisBed", new MapCoordinates(Vector2.One, map.MapId));
+
+            Assert.That(buckleSystem.TryBuckle(ssdOnStasisBed, ssdOnStasisBed, ssdBed), Is.True);
+            Assert.That(buckleSystem.TryBuckle(activeOnStasisBed, activeOnStasisBed, activeBed), Is.True);
+            entities.AddComponent<InsideCryoPodComponent>(ssdInsideCryo);
+
+            foreach (var uid in new[] { ssdOnStasisBed, ssdOutsideStasis, ssdInsideCryo })
+            {
+                entities.GetComponent<MindContainerComponent>(uid).Mind = uid;
+                entities.GetComponent<SSDIndicatorComponent>(uid).IsSSD = true;
+            }
+
+            foreach (var uid in new[] { ssdOnStasisBed, activeOnStasisBed, ssdOutsideStasis, ssdInsideCryo })
+            {
+                DisableEnvironmentalExchange(entities.GetComponent<NovakinPhysiologyComponent>(uid));
+                var needs = entities.GetComponent<NeedsComponent>(uid);
+                needs.MinUpdateTime = TimeSpan.FromSeconds(1f);
+                needs.NextUpdateTime = timing.CurTime;
+                needs.Needs[NeedType.Fuel].CurrentValue = 100f;
+            }
+
+            var protectedPhysiology = entities.GetComponent<NovakinPhysiologyComponent>(ssdOnStasisBed);
+            entities.GetComponent<TemperatureComponent>(ssdOnStasisBed).CurrentTemperature =
+                protectedPhysiology.MaximumHeatSpeedTemperature;
+
+            physiologySystem.Update(1f);
+            needSystem.Update(0f);
+
+            var activePhysiology = entities.GetComponent<NovakinPhysiologyComponent>(activeOnStasisBed);
+            var dormantPhysiology = entities.GetComponent<NovakinPhysiologyComponent>(ssdOutsideStasis);
+            var cryoPhysiology = entities.GetComponent<NovakinPhysiologyComponent>(ssdInsideCryo);
+            var fuelDecay = entities.GetComponent<NeedsComponent>(ssdOutsideStasis).Needs[NeedType.Fuel].DecayRate;
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(protectedPhysiology.CurrentReserve, Is.EqualTo(100f));
+                Assert.That(cryoPhysiology.CurrentReserve, Is.EqualTo(100f));
+                Assert.That(activePhysiology.CurrentReserve,
+                    Is.EqualTo(100f - activePhysiology.ReserveDrainPerSecond).Within(0.001f));
+                Assert.That(dormantPhysiology.CurrentReserve,
+                    Is.EqualTo(100f - dormantPhysiology.ReserveDrainPerSecond
+                        * dormantPhysiology.SsdReserveDrainMultiplier).Within(0.001f));
+                Assert.That(entities.GetComponent<NeedsComponent>(ssdOnStasisBed).Needs[NeedType.Fuel].CurrentValue,
+                    Is.EqualTo(100f));
+                Assert.That(entities.GetComponent<NeedsComponent>(ssdInsideCryo).Needs[NeedType.Fuel].CurrentValue,
+                    Is.EqualTo(100f));
+                Assert.That(entities.GetComponent<NeedsComponent>(activeOnStasisBed).Needs[NeedType.Fuel].CurrentValue,
+                    Is.EqualTo(100f - fuelDecay).Within(0.001f));
+                Assert.That(entities.GetComponent<NeedsComponent>(ssdOutsideStasis).Needs[NeedType.Fuel].CurrentValue,
+                    Is.EqualTo(100f - fuelDecay * dormantPhysiology.SsdFuelDecayMultiplier).Within(0.001f));
+            });
+
+            buckleSystem.Unbuckle(ssdOnStasisBed, ssdOnStasisBed);
+            buckleSystem.Unbuckle(activeOnStasisBed, activeOnStasisBed);
         });
 
         await pair.CleanReturnAsync();

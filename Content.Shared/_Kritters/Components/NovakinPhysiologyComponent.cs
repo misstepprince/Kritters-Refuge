@@ -191,3 +191,7 @@ public sealed partial class NovakinPhysiologyComponent : Component
 /// <summary>Marks pressure immunity owned exclusively by Novakin vacuum grace.</summary>
 [RegisterComponent]
 public sealed partial class NovakinPressureImmunityComponent : Component;
+
+/// <summary>Marks a stasis bed as capable of suspending an SSD Novakin's resource drain.</summary>
+[RegisterComponent]
+public sealed partial class NovakinResourceStasisComponent : Component;

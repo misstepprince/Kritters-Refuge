@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._CS.RolePlayIncentiveShared;
 using Content.Shared._Kritters.Components;
+using Content.Shared._Kritters.Systems;
 using Content.Shared.Alert;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Examine;
@@ -657,7 +658,9 @@ public abstract partial class SharedNeedsSystem : EntitySystem
                     && TryComp<NovakinPhysiologyComponent>(uid, out var physiology)
                     && IsPlayerSsdNovakin(uid))
                 {
-                    decaySeconds *= physiology.SsdFuelDecayMultiplier;
+                    decaySeconds *= SharedNovakinPhysiologySystem.IsInResourceStasis(EntityManager, uid)
+                        ? 0f
+                        : physiology.SsdFuelDecayMultiplier;
                 }
 
                 need.Decay(decaySeconds, sleeping);
