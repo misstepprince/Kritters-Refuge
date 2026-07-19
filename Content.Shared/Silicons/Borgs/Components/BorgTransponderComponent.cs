@@ -51,13 +51,13 @@ public sealed partial class BorgTransponderComponent : Component
     /// <summary>
     /// When to next broadcast data.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan NextBroadcast = TimeSpan.Zero;
 
     /// <summary>
     /// When to next disable the borg.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan? NextDisable;
 
     /// <summary>

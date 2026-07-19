@@ -26,7 +26,7 @@ public sealed partial class ConfirmableActionComponent : Component
     /// If not null, this is when the action can be confirmed at.
     /// This is the time of priming plus the delay.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoNetworkedField, AutoPausedField]
     public TimeSpan? NextConfirm;
 
@@ -34,7 +34,7 @@ public sealed partial class ConfirmableActionComponent : Component
     /// If not null, this is when the action will unprime at.
     /// This is <c>NextConfirm> plus <c>PrimeTime</c>
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoNetworkedField, AutoPausedField]
     public TimeSpan? NextUnprime;
 

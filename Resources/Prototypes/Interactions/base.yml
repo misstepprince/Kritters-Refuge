@@ -3,7 +3,7 @@
   id: Base
   abstract: true
   effectSuccess:
-    popup: Small
+    popup: Visible
   effectFailure:
     popup: SubtleFail
 

@@ -56,7 +56,7 @@ public sealed partial class NukeopsRuleComponent : Component
     /// <summary>
     ///     Indicates time when war has been declared, null if not declared
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan? WarDeclaredTime;
 
     /// <summary>

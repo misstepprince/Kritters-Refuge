@@ -52,7 +52,7 @@ public sealed partial class StationCargoBountyDatabaseComponent : Component
     /// <summary>
     /// The time at which players will be able to skip the next bounty.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan NextSkipTime = TimeSpan.Zero;
 
     /// <summary>

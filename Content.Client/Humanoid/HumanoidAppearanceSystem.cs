@@ -68,6 +68,9 @@ public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceS
         UpdateLayersAgain(component, sprite); // cool
 
         sprite[sprite.LayerMapReserveBlank(HumanoidVisualLayers.Eyes)].Color = component.EyeColor;
+
+        var ev = new HumanoidAppearanceUpdatedEvent();
+        RaiseLocalEvent(uid, ref ev);
     }
 
     private static bool IsHidden(HumanoidAppearanceComponent humanoid, HumanoidVisualLayers layer)
@@ -924,6 +927,9 @@ public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceS
         femaleDisplacementData = ldp.FemaleDisplacements!.GetValueOrDefault(slot, femaleDisplacementDataIn);
     }
 }
+
+[ByRefEvent]
+public readonly record struct HumanoidAppearanceUpdatedEvent;
 
 public sealed partial class ProfilePreviewSettings(
     bool showUndies = true,

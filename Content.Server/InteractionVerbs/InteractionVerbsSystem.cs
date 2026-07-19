@@ -21,9 +21,10 @@ public sealed partial class InteractionVerbsSystem : SharedInteractionVerbsSyste
         _occluderQuery = GetEntityQuery<OccluderComponent>();
     }
 
-    protected override void SendChatLog(string message, EntityUid source, Filter filter, InteractionPopupPrototype popup, bool clip)
+    protected override void SendChatLog(string message, EntityUid source, Filter filter,
+        InteractionPopupPrototype popup, bool recordReplay, bool clip)
     {
-        if (filter.Count <= 0)
+        if (filter.Count <= 0 && !recordReplay)
             return;
 
         var color = popup.LogColor ?? InferColor(popup.PopupType);
@@ -35,9 +36,11 @@ public sealed partial class InteractionVerbsSystem : SharedInteractionVerbsSyste
             filter.RemoveWhereAttachedEntity(ent => !CanSee(ent, source, popup.VisibilityRange));
 
         if (filter.Count == 1)
-            _chatManager.ChatMessageToOne(popup.LogChannel, message, wrappedMessage, source, false, filter.Recipients.First().Channel, color);
+            _chatManager.ChatMessageToOne(popup.LogChannel, message, wrappedMessage, source, false,
+                filter.Recipients.First().Channel, color, recordReplay);
         else
-            _chatManager.ChatMessageToManyFiltered(filter, popup.LogChannel, message, wrappedMessage, source, false, false, color);
+            _chatManager.ChatMessageToManyFiltered(filter, popup.LogChannel, message, wrappedMessage, source, false,
+                recordReplay, color);
     }
 
     private Color InferColor(PopupType popup) => popup switch

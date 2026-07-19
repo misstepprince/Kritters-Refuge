@@ -175,8 +175,10 @@ public sealed partial class FloorTileSystem : EntitySystem
         _adminLogger.Add(LogType.Tile, LogImpact.Low, $"{ToPrettyString(user):actor} placed tile {_tileDefinitionManager[tileId].Name} at {ToPrettyString(gridUid)} {location}");
 
         var random = new System.Random((int) _timing.CurTick.Value);
-        var variant = _tile.PickVariant((ContentTileDefinition) _tileDefinitionManager[tileId], random);
-        _map.SetTile(gridUid, mapGrid,location.Offset(new Vector2(offset, offset)), new Tile(tileId, 0, variant));
+        var tileDefinition = (ContentTileDefinition) _tileDefinitionManager[tileId];
+        var variant = _tile.PickVariant(tileDefinition, random);
+        var tileRef = _map.GetTileRef(gridUid, mapGrid, location.Offset(new Vector2(offset, offset)));
+        _tile.ReplaceTile(tileRef, tileDefinition, gridUid, mapGrid, variant);
 
         _audio.PlayPredicted(placeSound, location, user);
     }

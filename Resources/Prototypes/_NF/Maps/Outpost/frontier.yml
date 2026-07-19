@@ -1,8 +1,6 @@
 - type: gameMap
   id: Frontier
   mapName: "Haven's Rest"
-  # Coyote: /Maps/_NF/Outpost/frontier.yml</Maps/_NF/Outpost/Nash.yml
-  # Kritters: /Maps/_NF/Outpost/Nash.yml</Maps/_Kritters/Outpost/Havens.yml
   mapPath: /Maps/_Kritters/Outpost/Havens.yml
   minPlayers: 0
   maxPlayers: 100

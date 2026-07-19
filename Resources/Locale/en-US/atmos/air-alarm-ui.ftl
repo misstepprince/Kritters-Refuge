@@ -65,12 +65,20 @@ air-alarm-ui-vent-pump-label = Vent direction
 air-alarm-ui-vent-pressure-label = Pressure bound
 air-alarm-ui-vent-external-bound-label = External bound
 air-alarm-ui-vent-internal-bound-label = Internal bound
+air-alarm-ui-vent-direction-siphoning = Siphoning
+air-alarm-ui-vent-direction-releasing = Releasing
+air-alarm-ui-vent-pressure-bound-none = None
+air-alarm-ui-vent-pressure-bound-internal = Internal
+air-alarm-ui-vent-pressure-bound-external = External
+air-alarm-ui-vent-pressure-bound-both = Internal and external
 
 ### Scrubbers
 
 air-alarm-ui-scrubber-pump-direction-label = Direction
 air-alarm-ui-scrubber-volume-rate-label = Rate (L)
 air-alarm-ui-scrubber-wide-net-label = WideNet
+air-alarm-ui-scrubber-direction-siphoning = Siphoning
+air-alarm-ui-scrubber-direction-scrubbing = Scrubbing
 
 ### Thresholds
 

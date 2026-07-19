@@ -63,7 +63,7 @@ public sealed partial class SingularityGeneratorComponent : Component
     /// <summary>
     /// How long until the generator can issue a failsafe warning again
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextFailsafe = TimeSpan.Zero;
 

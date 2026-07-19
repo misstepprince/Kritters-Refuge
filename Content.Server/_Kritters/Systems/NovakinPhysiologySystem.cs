@@ -15,6 +15,7 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Drunk;
 using Content.Shared.EntityEffects.Effects;
+using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
@@ -35,6 +36,7 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     private const float DangerousCold = 323.15f;
     private const float DangerousHeat = 700f;
     private const float ShellFailureDamage = 100f;
+    private const float StefanBoltzmannConstant = 5.670374419e-8f;
     private const string SlurredSpeechKey = "SlurredSpeech";
 
     [Dependency] private AtmosphereSystem _atmosphere = default!;
@@ -57,12 +59,12 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<NovakinPhysiologyComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovement);
         SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCryoPodInjectionEvent>(OnCryoPodInjection);
         SubscribeLocalEvent<NovakinPhysiologyComponent, NovakinCoreCoolingEvent>(OnCoreCooling);
         SubscribeLocalEvent<NovakinPhysiologyComponent, ReagentMetabolizedEvent>(OnReagentMetabolized);
         SubscribeLocalEvent<NovakinPhysiologyComponent, BeforeDamageChangedEvent>(OnBeforeDamageChanged);
         SubscribeLocalEvent<NovakinPhysiologyComponent, NeedExamineInfoEvent>(OnNeedExamineInfo);
+        SubscribeLocalEvent<NovakinPhysiologyComponent, ComponentStartup>(OnPhysiologyStartup);
     }
 
     public override void Update(float frameTime)
@@ -73,6 +75,22 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
 
         var elapsed = MathF.Floor(_accumulator / 0.5f) * 0.5f;
         _accumulator -= elapsed;
+
+        var environmentalQuery = EntityQueryEnumerator<NovakinPhysiologyComponent, TemperatureComponent>();
+        while (environmentalQuery.MoveNext(out var uid, out var physiology, out var temperature))
+        {
+            if (HasComp<NeedsComponent>(uid))
+                continue;
+
+            var remaining = elapsed;
+            while (remaining > 0f)
+            {
+                var step = Math.Min(remaining, 0.5f);
+                remaining -= step;
+                ApplyEnvironmentalTemperatureExchange(uid, physiology, temperature, step);
+            }
+        }
+
         var query = EntityQueryEnumerator<NovakinPhysiologyComponent, NeedsComponent, TemperatureComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var physiology, out var needs, out var temperature, out var transform))
         {
@@ -82,13 +100,14 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
                 var step = Math.Min(remaining, 0.5f);
                 remaining -= step;
                 ApplyPendingReagentHeat(uid, physiology, temperature, step);
-                UpdateThermalRegulation(uid, physiology, needs);
+                ApplyEnvironmentalTemperatureExchange(uid, physiology, temperature, step);
+                UpdateThermalRegulation(uid, physiology, needs, temperature);
                 CoolWhenFuelDepleted(uid, physiology, needs, temperature, step);
                 UpdateShellState(uid, physiology);
-                UpdateShellTemperatureTransfer(uid, physiology, temperature);
+                UpdateShellTemperatureTransfer(physiology, temperature);
                 ApplyThermalShellDamage(uid, physiology, temperature, step);
                 UpdateShellState(uid, physiology);
-                UpdateShellTemperatureTransfer(uid, physiology, temperature);
+                UpdateShellTemperatureTransfer(physiology, temperature);
                 DrainFuelForHeat(uid, physiology, needs, temperature, step);
 
                 var lost = RemoveReserve((uid, physiology), GetReserveDrainRate(uid, physiology) * step);
@@ -152,19 +171,83 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         Dirty(uid, physiology);
     }
 
-    private void UpdateShellTemperatureTransfer(EntityUid uid, NovakinPhysiologyComponent physiology,
+    private static void UpdateShellTemperatureTransfer(NovakinPhysiologyComponent physiology,
         TemperatureComponent temperature)
     {
         if (physiology.BaseAtmosTemperatureTransferEfficiency < 0f)
             physiology.BaseAtmosTemperatureTransferEfficiency = temperature.AtmosTemperatureTransferEfficiency;
 
-        var multiplier = physiology.ShellShattered
+        // Novakin environmental exchange is handled below without transferring heat into the gas.
+        temperature.AtmosTemperatureTransferEfficiency = 0f;
+    }
+
+    private void OnPhysiologyStartup(Entity<NovakinPhysiologyComponent> entity, ref ComponentStartup args)
+    {
+        if (!TryComp<TemperatureComponent>(entity, out var temperature))
+            return;
+
+        entity.Comp.BaseAtmosTemperatureTransferEfficiency = temperature.AtmosTemperatureTransferEfficiency;
+        temperature.AtmosTemperatureTransferEfficiency = 0f;
+    }
+
+    private void ApplyEnvironmentalTemperatureExchange(EntityUid uid, NovakinPhysiologyComponent physiology,
+        TemperatureComponent temperature, float elapsed)
+    {
+        var mixture = _atmosphere.GetContainingMixture(uid);
+        if (mixture == null || elapsed <= 0f)
+            return;
+
+        if (physiology.BaseAtmosTemperatureTransferEfficiency < 0f)
+            physiology.BaseAtmosTemperatureTransferEfficiency = temperature.AtmosTemperatureTransferEfficiency;
+        temperature.AtmosTemperatureTransferEfficiency = 0f;
+
+        var bodyTemperature = temperature.CurrentTemperature;
+        var bodyHeatCapacity = _temperature.GetHeatCapacity(uid, temperature);
+        if (!float.IsFinite(bodyTemperature) || !float.IsFinite(bodyHeatCapacity) || bodyHeatCapacity <= 0f)
+            return;
+
+        var transferMultiplier = physiology.ShellShattered
             ? physiology.ShellFailureTemperatureTransferMultiplier
             : 1f;
         if (physiology.ShellShattered && HasPressureSuit(uid))
-            multiplier *= physiology.PressureSuitShellFailureTemperatureTransferMultiplier;
+            transferMultiplier *= physiology.PressureSuitShellFailureTemperatureTransferMultiplier;
 
-        temperature.AtmosTemperatureTransferEfficiency = physiology.BaseAtmosTemperatureTransferEfficiency * multiplier;
+        var gasWeight = GetGasWeight(physiology, mixture);
+        var gasHeatCapacity = mixture.Immutable && mixture.TotalMoles <= Atmospherics.GasMinMoles
+            ? 0f
+            : _atmosphere.GetHeatCapacity(mixture, false);
+        var convectionHeat = 0f;
+        if (gasHeatCapacity > 0f && float.IsFinite(gasHeatCapacity) && float.IsFinite(mixture.Temperature))
+        {
+            var combinedHeatCapacity = gasHeatCapacity + bodyHeatCapacity;
+            convectionHeat = (mixture.Temperature - bodyTemperature)
+                * gasHeatCapacity * bodyHeatCapacity / combinedHeatCapacity
+                * physiology.BaseAtmosTemperatureTransferEfficiency * transferMultiplier * elapsed;
+        }
+
+        var radiationHeat = 0f;
+        if (bodyTemperature > Atmospherics.TCMB)
+        {
+            var bodyTemperatureSquared = bodyTemperature * bodyTemperature;
+            var cmbSquared = Atmospherics.TCMB * Atmospherics.TCMB;
+            radiationHeat = -StefanBoltzmannConstant * physiology.RadiativeEmissivity
+                * physiology.RadiativeSurfaceArea
+                * (bodyTemperatureSquared * bodyTemperatureSquared - cmbSquared * cmbSquared)
+                * transferMultiplier * elapsed;
+        }
+
+        var heat = convectionHeat * gasWeight + radiationHeat * (1f - gasWeight);
+        var targetTemperature = MathHelper.Lerp(Atmospherics.TCMB, mixture.Temperature, gasWeight);
+        var heatToTarget = (targetTemperature - bodyTemperature) * bodyHeatCapacity;
+        var maximumHeat = Math.Max(physiology.MaximumEnvironmentalTemperatureChangePerSecond, 0f)
+            * bodyHeatCapacity * elapsed;
+        heat = Math.Clamp(heat, -maximumHeat, maximumHeat);
+        heat = heatToTarget < 0f
+            ? Math.Max(heat, heatToTarget)
+            : Math.Min(heat, heatToTarget);
+
+        if (float.IsFinite(heat) && heat != 0f)
+            _temperature.ChangeHeat(uid, heat, temperature: temperature);
     }
 
     private void ApplyGasBloodloss(EntityUid uid, NovakinPhysiologyComponent physiology, float elapsed,
@@ -232,13 +315,14 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         {
             if (HasComp<StomachComponent>(organ.Id))
             {
-                _stomach.TryTransferSolution(organ.Id, args.Solution);
+                args.Accepted = _stomach.TryTransferSolution(organ.Id, args.Solution);
                 return;
             }
         }
     }
 
-    private void UpdateThermalRegulation(EntityUid uid, NovakinPhysiologyComponent physiology, NeedsComponent needs)
+    private void UpdateThermalRegulation(EntityUid uid, NovakinPhysiologyComponent physiology, NeedsComponent needs,
+        TemperatureComponent temperature)
     {
         if (!TryComp<ThermalRegulatorComponent>(uid, out var regulator)
             || !needs.Needs.TryGetValue(NeedType.Fuel, out var fuel))
@@ -254,15 +338,33 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
         // Kritters: an active flammable Core reaction briefly overpowers ordinary temperature regulation.
         var canRegulate = fuel.CurrentValue > fuel.MinValue
             && physiology.FlammableRegulationSuppressionRemaining <= 0f;
-        regulator.ImplicitHeatRegulation = canRegulate ? physiology.BaseImplicitHeatRegulation : 0f;
+        var gasWeight = _atmosphere.GetContainingMixture(uid) is { } mixture
+            ? GetGasWeight(physiology, mixture)
+            : 0f;
+        // Thin atmosphere must not let Core warming cancel radiative vacuum cooling.
+        var warmingMultiplier = temperature.CurrentTemperature < regulator.NormalBodyTemperature ? gasWeight : 1f;
+        regulator.ImplicitHeatRegulation = canRegulate
+            ? physiology.BaseImplicitHeatRegulation * warmingMultiplier
+            : 0f;
         regulator.SweatHeatRegulation = canRegulate ? physiology.BaseSweatHeatRegulation : 0f;
-        regulator.ShiveringHeatRegulation = canRegulate ? physiology.BaseShiveringHeatRegulation : 0f;
+        regulator.ShiveringHeatRegulation = canRegulate
+            ? physiology.BaseShiveringHeatRegulation * gasWeight
+            : 0f;
+    }
+
+    private static float GetGasWeight(NovakinPhysiologyComponent physiology, GasMixture mixture)
+    {
+        var molarDensity = mixture.Volume > 0f ? mixture.TotalMoles / mixture.Volume : 0f;
+        return Math.Clamp(molarDensity
+            / Math.Max(physiology.FullConvectionMoleDensity, float.Epsilon), 0f, 1f);
     }
 
     private void CoolWhenFuelDepleted(EntityUid uid, NovakinPhysiologyComponent physiology, NeedsComponent needs, TemperatureComponent temperature, float elapsed)
     {
         if (needs.Needs.TryGetValue(NeedType.Fuel, out var fuel) && fuel.CurrentValue <= fuel.MinValue)
-            _temperature.ForceChangeTemperature(uid, temperature.CurrentTemperature - physiology.FuelDepletedCoolingPerSecond * elapsed, temperature);
+            _temperature.ForceChangeTemperature(uid,
+                Math.Max(0f, temperature.CurrentTemperature - physiology.FuelDepletedCoolingPerSecond * elapsed),
+                temperature);
     }
 
     private void UpdateHeatSpeed(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)
@@ -321,16 +423,10 @@ public sealed partial class NovakinPhysiologySystem : SharedNovakinPhysiologySys
             physiology.GlowIntensity = progress;
             Dirty(uid, physiology);
         }
+        if (TryComp<HumanoidAppearanceComponent>(uid, out var appearance))
+            _lights.SetColor(uid, appearance.SkinColor);
         _lights.SetRadius(uid, MathHelper.Lerp(0.5f, 3f, progress));
         _lights.SetEnergy(uid, MathHelper.Lerp(0.35f, 1.5f, progress));
-    }
-
-    private static void OnRefreshMovement(Entity<NovakinPhysiologyComponent> entity,
-        ref RefreshMovementSpeedModifiersEvent args)
-    {
-        var multiplier = entity.Comp.HeatSpeedMultiplier * entity.Comp.ReserveSpeedMultiplier;
-        multiplier *= entity.Comp.ColdSpeedMultiplier;
-        args.ModifySpeed(multiplier, multiplier);
     }
 
     private void UpdateThermalWarning(EntityUid uid, NovakinPhysiologyComponent physiology, TemperatureComponent temperature)

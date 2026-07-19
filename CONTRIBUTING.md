@@ -1,4 +1,4 @@
-# Contributing to Coyote Sector
+# Contributing to Kritters Refuge
 
 If you're considering contributing to Kritters Refuge, [Wizard's Den's PR guidelines](https://docs.spacestation14.com/en/general-development/codebase-info/pull-request-guidelines.html) are a good starting point for code quality and version tracking etiquette. Note that we do not have the same master/stable branch distinction.
 
@@ -124,7 +124,7 @@ Currently, all changelogs go to the Kritters changelog. The ADMIN: prefix does n
 
 # Additional resources
 
-If you are new to contributing to SS14 in general, have a look at the [SS14 docs](https://docs.spacestation14.io/) or ask for help in `#dev-mentor` on [Discord](https://discord.gg/tpuAT7d3zm/)!
+If you are new to contributing to SS14 in general, have a look at the [SS14 docs](https://docs.spacestation14.io/) or ask for help on [Discord](https://discord.gg/rnxJk2Rf3m)!
 
 ## AI-Generated Content
 You may use AI tools to assist with code, but any AI-generated code must be thoroughly tested and audited before submission. Submitting untested or unaudited AI-generated code is not allowed.

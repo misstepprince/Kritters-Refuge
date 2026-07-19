@@ -53,6 +53,6 @@ public sealed partial class LogProbeCartridgeComponent : Component
     /// <summary>
     /// When anyone is allowed to spawn another printout.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextPrintAllowed = TimeSpan.Zero;
 }

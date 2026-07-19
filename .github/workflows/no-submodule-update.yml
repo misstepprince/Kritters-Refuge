@@ -1,4 +1,4 @@
-name: No submodule update checker
+name: RobustToolbox version checker
 
 on:
   pull_request:
@@ -6,9 +6,27 @@ on:
       - 'RobustToolbox'
 
 jobs:
-  this_aint_right:
-    name: Submodule update in pr found
+  validate-version:
+    name: Validate published RobustToolbox version
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - name: Fail
-        run: exit 1
+      - uses: actions/checkout@v4
+
+      - name: Validate submodule revision
+        shell: bash
+        run: |
+          engine_commit=$(git rev-parse HEAD:RobustToolbox)
+
+          if git ls-remote --tags https://github.com/space-wizards/RobustToolbox.git 'v*' |
+            awk -v commit="$engine_commit" '
+              $1 == commit && $2 ~ /^refs\/tags\/v[0-9]+\.[0-9]+\.[0-9]+(\^\{\})?$/ { found = 1 }
+              END { exit !found }
+            '
+          then
+            echo "RobustToolbox revision $engine_commit is a published version."
+          else
+            echo "::error::RobustToolbox revision $engine_commit is not a published upstream version tag."
+            exit 1
+          fi

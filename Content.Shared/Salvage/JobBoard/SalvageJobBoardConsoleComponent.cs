@@ -28,7 +28,7 @@ public sealed partial class SalvageJobBoardConsoleComponent : Component
     /// <summary>
     /// The time at which the console will be able to print a label again.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan NextPrintTime = TimeSpan.Zero;
 
     /// <summary>

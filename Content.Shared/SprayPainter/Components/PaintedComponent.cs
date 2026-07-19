@@ -13,6 +13,6 @@ public sealed partial class PaintedComponent : Component
     /// <summary>
     /// The time after which the entity is dried and does not appear as "freshly painted".
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan DryTime;
 }

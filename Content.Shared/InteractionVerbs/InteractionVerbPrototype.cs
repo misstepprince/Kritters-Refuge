@@ -200,7 +200,7 @@ public sealed partial class InteractionVerbPrototype : IPrototype, IInheritingPr
     }
 
     [DataDefinition, Serializable]
-    public partial class EffectSpecifier
+    public sealed partial class EffectSpecifier
     {
         [DataField]
         public EffectTargetSpecifier EffectTarget = EffectTargetSpecifier.TargetThenUser;

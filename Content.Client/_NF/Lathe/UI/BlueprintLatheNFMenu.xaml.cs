@@ -116,6 +116,9 @@ public sealed partial class BlueprintLatheNFMenu : DefaultWindow
             return;
         }
 
+        if (clientLathe.CurrentRecipes == null || clientLathe.CurrentRecipes.Length != recipeBitset.Length)
+            clientLathe.CurrentRecipes = new int[recipeBitset.Length];
+
         // Find bits in the bitset, add recipes for our current blueprint type.
         for (int i = 0; i < recipeBitset.Length; i++)
         {

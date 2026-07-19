@@ -60,7 +60,7 @@ public sealed partial class GatewayComponent : Component
     /// <summary>
     /// The time at which the portal can next be opened.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextReady;
 }

@@ -81,6 +81,8 @@ public sealed partial class AreaEchoSystem : EntitySystem
     {
         base.Initialize();
 
+        UpdatesOutsidePrediction = true;
+
         _configurationManager.OnValueChanged(MonoCVars.AreaEchoReflectionCount, x => _echoMaxReflections = x, invokeImmediately: true);
 
         _configurationManager.OnValueChanged(MonoCVars.AreaEchoEnabled, x => _echoEnabled = x, invokeImmediately: true);

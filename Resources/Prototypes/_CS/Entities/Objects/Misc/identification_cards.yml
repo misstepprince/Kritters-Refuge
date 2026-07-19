@@ -2,7 +2,7 @@
   name: Pilot ID card # Frontier: passenger<resident
   parent: [IDCardStandard, NotContraband]
   id: SmugglerIDCard
-  suffix: Coyote
+  suffix: Kritters Refuge
   categories: [ HideSpawnMenu ] # Coyote
   components:
   - type: PresetIdCard

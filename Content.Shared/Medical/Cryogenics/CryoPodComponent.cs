@@ -46,7 +46,7 @@ public sealed partial class CryoPodComponent : Component
     public TimeSpan BeakerTransferTime = TimeSpan.FromSeconds(2);
 
     [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("nextInjectionTime", customTypeSerializer:typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField("nextInjectionTime", customTypeSerializer:typeof(TimeOffsetSerializer))]
     public TimeSpan? NextInjectionTime;
 
     /// <summary>
@@ -75,7 +75,7 @@ public sealed partial class CryoPodComponent : Component
     /// <summary>
     /// The timestamp for the next UI update.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoNetworkedField, AutoPausedField]
     public TimeSpan NextUiUpdateTime = TimeSpan.Zero;
 

@@ -464,7 +464,7 @@ public abstract partial class SharedInteractionVerbsSystem : EntitySystem
         // Sending a chat message will result in a popup anyway
         // TODO this needs to be fixed probably. Popups and chat messages should be independent.
         if (popup.LogPopup)
-            SendChatLog(message, target, filter, popup, clip);
+            SendChatLog(message, target, filter, popup, recordReplay, clip);
         else
             _popups.PopupEntity(message, target, filter, recordReplay, popup.PopupType);
     }
@@ -487,7 +487,8 @@ public abstract partial class SharedInteractionVerbsSystem : EntitySystem
         return protoId;
     }
 
-    protected virtual void SendChatLog(string message, EntityUid source, Filter filter, InteractionPopupPrototype popup, bool clip)
+    protected virtual void SendChatLog(string message, EntityUid source, Filter filter,
+        InteractionPopupPrototype popup, bool recordReplay, bool clip)
     {
     }
 

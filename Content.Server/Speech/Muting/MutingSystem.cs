@@ -27,7 +27,7 @@ namespace Content.Server.Speech.Muting
                 return;
 
             //still leaves the text so it looks like they are pantomiming a laugh
-            if (args.Emote.Category.HasFlag(EmoteCategory.Vocal))
+            if (args.Emote.Category.UsesVocalSounds())
                 args.Handled = true;
         }
 

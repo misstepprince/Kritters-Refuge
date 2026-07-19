@@ -16,29 +16,39 @@ interaction-Hug-description = A hug a day keeps the psychological horrors beyond
 interaction-Hug-success-self-popup = You hug {THE($target)}.
 interaction-Hug-success-target-popup = {THE($user)} hugs you.
 interaction-Hug-success-others-popup = {THE($user)} hugs {THE($target)}.
+interaction-Hug-fail-self-popup = You fail to hug {THE($target)}.
+interaction-Hug-fail-target-popup = {THE($user)} fails to hug you.
 
 interaction-Pet-name = Pet
 interaction-Pet-description = Pet your co-worker to ease their stress.
 interaction-Pet-success-self-popup = You pet {THE($target)} on {POSS-ADJ($target)} head.
 interaction-Pet-success-target-popup = {THE($user)} pets you on your head.
 interaction-Pet-success-others-popup = {THE($user)} pets {THE($target)}.
+interaction-Pet-fail-self-popup = You fail to pet {THE($target)}.
+interaction-Pet-fail-target-popup = {THE($user)} fails to pet you.
 
 interaction-PetAnimal-name = {interaction-Pet-name}
 interaction-PetAnimal-description = Pet an animal.
 interaction-PetAnimal-success-self-popup = {interaction-Pet-success-self-popup}
 interaction-PetAnimal-success-target-popup = {interaction-Pet-success-target-popup}
 interaction-PetAnimal-success-others-popup = {interaction-Pet-success-others-popup}
+interaction-PetAnimal-fail-self-popup = {interaction-Pet-fail-self-popup}
+interaction-PetAnimal-fail-target-popup = {interaction-Pet-fail-target-popup}
 
 interaction-KnockOn-name = Knock
 interaction-KnockOn-description = Knock on the target to attract attention.
 interaction-KnockOn-success-self-popup = You knock on {THE($target)}.
 interaction-KnockOn-success-target-popup = {THE($user)} knocks on you.
 interaction-KnockOn-success-others-popup = {THE($user)} knocks on {THE($target)}.
+interaction-KnockOn-fail-self-popup = You fail to knock on {THE($target)}.
+interaction-KnockOn-fail-target-popup = {THE($user)} fails to knock on you.
 
 interaction-Rattle-name = Rattle
 interaction-Rattle-success-self-popup = You rattle {THE($target)}.
 interaction-Rattle-success-target-popup = {THE($user)} rattles you.
 interaction-Rattle-success-others-popup = {THE($user)} rattles {THE($target)}.
+interaction-Rattle-fail-self-popup = You fail to rattle {THE($target)}.
+interaction-Rattle-fail-target-popup = {THE($user)} fails to rattle you.
 
 # The below includes conditionals for if the user is holding an item
 interaction-WaveAt-name = Wave at
@@ -55,6 +65,8 @@ interaction-WaveAt-success-others-popup = {THE($user)} waves {$hasUsed ->
     [false] at {THE($target)}.
     *[true] {POSS-PRONOUN($user)} {$used} at {THE($target)}.
 }
+interaction-WaveAt-fail-self-popup = You fail to wave at {THE($target)}.
+interaction-WaveAt-fail-target-popup = {THE($user)} fails to wave at you.
 
 interaction-Nod-name = Nod
 interaction-Nod-success-self-popup = You nod at {THE($target)}.
@@ -90,6 +102,7 @@ interaction-BlushSelf-name = Blush
 interaction-BlushSelf-success-self-popup = You blush!
 interaction-BlushSelf-success-target-popup = {THE($user)} blushes!
 interaction-BlushSelf-success-others-popup = {THE($user)} blushes!
+interaction-BlushSelf-fail-self-popup = You fail to blush.
 
 interaction-Wink-name = Wink
 interaction-Wink-success-self-popup = You wink at {THE($target)}!
@@ -100,10 +113,9 @@ interaction-WinkSelf-name = Wink
 interaction-WinkSelf-success-self-popup = You wink!
 interaction-WinkSelf-success-target-popup = {THE($user)} winks!
 interaction-WinkSelf-success-others-popup = {THE($user)} winks!
+interaction-WinkSelf-fail-self-popup = You fail to wink.
 
 interaction-Nuzzle-name = Nuzzle
 interaction-Nuzzle-success-self-popup = You nuzzle {THE($target)}!
 interaction-Nuzzle-success-target-popup = {THE($user)} nuzzles you!
 interaction-Nuzzle-success-others-popup = {THE($user)} nuzzles {THE($target)}!
-
-

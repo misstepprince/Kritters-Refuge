@@ -107,7 +107,8 @@ public class ListContainer : Control
         // Ensure buttons are re-generated.
         foreach (var button in _buttons.Values)
         {
-            button.Dispose();
+            button.Group = null;
+            button.Orphan();
         }
         _buttons.Clear();
 

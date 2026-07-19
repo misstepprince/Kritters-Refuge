@@ -13,7 +13,7 @@ public sealed partial class RevolutionaryRuleComponent : Component
     /// <summary>
     /// When the round will if all the command are dead (Incase they are in space)
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan CommandCheck;
 
     /// <summary>

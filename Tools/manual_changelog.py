@@ -119,7 +119,7 @@ def parse_github_pull_request(changelog, stream):
 
 
 def main():
-    default_filename = 'Resources/Changelog/Coyote.yml' # Coyote: Frontier.yml<Coyote.yml
+    default_filename = 'Resources/Changelog/Kritters.yml'
 
     parser = argparse.ArgumentParser(description='Update the changelog manually.')
 

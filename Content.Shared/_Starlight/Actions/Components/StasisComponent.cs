@@ -19,7 +19,7 @@ public sealed partial class StasisComponent : Component
     [DataField, AutoNetworkedField]
     public bool IsInStasis;
 
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoNetworkedField, AutoPausedField]
     public TimeSpan NextHeal = TimeSpan.Zero;
 

@@ -35,7 +35,7 @@ namespace Content.Server.Shuttles.Components
         /// <summary>
         ///     While disabled by EMP
         /// </summary>
-        [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+        [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
         public TimeSpan TimeoutFromEmp = TimeSpan.Zero;
 
         [DataField]

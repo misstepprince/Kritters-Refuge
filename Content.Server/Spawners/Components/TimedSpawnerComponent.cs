@@ -48,7 +48,7 @@ public sealed partial class TimedSpawnerComponent : Component, ISerializationHoo
     /// <summary>
     /// The time at which the current interval will have elapsed and entities may be spawned.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextFire = TimeSpan.Zero;
 
     void ISerializationHooks.AfterDeserialization()

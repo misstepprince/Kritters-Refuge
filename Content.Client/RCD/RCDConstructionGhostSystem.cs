@@ -1,4 +1,4 @@
-using Content.Shared.Hands.Components;
+using Content.Client.Hands.Systems;
 using Content.Shared.Interaction;
 using Content.Shared.Maps;
 using Content.Shared.RCD;
@@ -18,9 +18,18 @@ public sealed partial class RCDConstructionGhostSystem : EntitySystem
     [Dependency] private IPlacementManager _placementManager = default!;
     [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private ITileDefinitionManager _tileDefs = default!;
+    [Dependency] private HandsSystem _hands = default!;
 
     private string _placementMode = typeof(AlignRCDConstruction).Name;
     private Direction _placementDirection = default;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        // Placement is client presentation state and must keep updating when prediction is disabled.
+        UpdatesOutsidePrediction = true;
+    }
 
     public override void Update(float frameTime)
     {
@@ -36,12 +45,13 @@ public sealed partial class RCDConstructionGhostSystem : EntitySystem
             return;
 
         // Determine if player is carrying an RCD in their active hand
-        var player = _playerManager.LocalSession?.AttachedEntity;
-
-        if (!TryComp<HandsComponent>(player, out var hands))
+        if (_playerManager.LocalSession?.AttachedEntity is not { } player)
             return;
 
-        var heldEntity = hands.ActiveHand?.HeldEntity;
+        _hands.TryGetActiveItem(player, out var heldEntity);
+
+        if (heldEntity != null && IsClientSide(heldEntity.Value))
+            return;
 
         if (!TryComp<RCDComponent>(heldEntity, out var rcd))
         {
