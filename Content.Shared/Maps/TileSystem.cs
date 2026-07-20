@@ -127,7 +127,8 @@ public sealed partial class TileSystem : EntitySystem
         return ReplaceTile(tileref, replacementTile, tileref.GridUid, grid);
     }
 
-    public bool ReplaceTile(TileRef tileref, ContentTileDefinition replacementTile, EntityUid grid, MapGridComponent? component = null)
+    public bool ReplaceTile(TileRef tileref, ContentTileDefinition replacementTile, EntityUid grid,
+        MapGridComponent? component = null, byte? variant = null)
     {
         DebugTools.Assert(tileref.GridUid == grid);
 
@@ -135,18 +136,18 @@ public sealed partial class TileSystem : EntitySystem
             return false;
 
 
-        var variant = PickVariant(replacementTile);
+        variant ??= PickVariant(replacementTile);
         var decals = _decal.GetDecalsInRange(tileref.GridUid, _turf.GetTileCenter(tileref).Position, 0.5f);
         foreach (var (id, _) in decals)
         {
             _decal.RemoveDecal(tileref.GridUid, id);
         }
 
-        _maps.SetTile(grid, component, tileref.GridIndices, new Tile(replacementTile.TileId, 0, variant));
+        _maps.SetTile(grid, component, tileref.GridIndices, new Tile(replacementTile.TileId, 0, variant.Value));
         return true;
     }
 
-    public bool DeconstructTile(TileRef tileRef)
+    public bool DeconstructTile(TileRef tileRef, bool spawnItem = true)
     {
         if (tileRef.Tile.IsEmpty)
             return false;
@@ -156,39 +157,34 @@ public sealed partial class TileSystem : EntitySystem
         if (string.IsNullOrEmpty(tileDef.BaseTurf))
             return false;
 
+        if (!_tileDefinitionManager.TryGetDefinition(tileDef.BaseTurf, out var baseTile)
+            || baseTile is not ContentTileDefinition baseTileDefinition)
+            return false;
+
         var gridUid = tileRef.GridUid;
         var mapGrid = Comp<MapGridComponent>(gridUid);
 
         // Frontier
-        var ev = new FloorTileAttemptEvent();
-        RaiseLocalEvent(mapGrid);
+        var ev = new FloorTileAttemptEvent(tileRef.GridIndices);
+        RaiseLocalEvent(gridUid, ref ev);
 
         if (((TryComp<ProtectedGridComponent>(gridUid, out var prot) && prot.PreventFloorRemoval) || ev.Cancelled) && tileDef.ID == "Plating")
             return false;
         // Frontier
 
-        const float margin = 0.1f;
-        var bounds = mapGrid.TileSize - margin * 2;
-        var indices = tileRef.GridIndices;
-        var coordinates = _maps.GridTileToLocal(gridUid, mapGrid, indices)
-            .Offset(new Vector2(
-                (_robustRandom.NextFloat() - 0.5f) * bounds,
-                (_robustRandom.NextFloat() - 0.5f) * bounds));
-
-        //Actually spawn the relevant tile item at the right position and give it some random offset.
-        var tileItem = Spawn(tileDef.ItemDropPrototypeName, coordinates);
-        Transform(tileItem).LocalRotation = _robustRandom.NextDouble() * Math.Tau;
-
-        // Destroy any decals on the tile
-        var decals = _decal.GetDecalsInRange(gridUid, coordinates.SnapToGrid(EntityManager).Position, 0.5f);
-        foreach (var (id, _) in decals)
+        if (spawnItem)
         {
-            _decal.RemoveDecal(tileRef.GridUid, id);
+            const float margin = 0.1f;
+            var bounds = mapGrid.TileSize - margin * 2;
+            var coordinates = _maps.GridTileToLocal(gridUid, mapGrid, tileRef.GridIndices)
+                .Offset(new Vector2(
+                    (_robustRandom.NextFloat() - 0.5f) * bounds,
+                    (_robustRandom.NextFloat() - 0.5f) * bounds));
+
+            var tileItem = Spawn(tileDef.ItemDropPrototypeName, coordinates);
+            Transform(tileItem).LocalRotation = _robustRandom.NextDouble() * Math.Tau;
         }
 
-        var plating = _tileDefinitionManager[tileDef.BaseTurf];
-        _maps.SetTile(gridUid, mapGrid, tileRef.GridIndices, new Tile(plating.TileId));
-
-        return true;
+        return ReplaceTile(tileRef, baseTileDefinition, gridUid, mapGrid);
     }
 }

@@ -16,10 +16,11 @@ using static Robust.UnitTesting.RobustIntegrationTest;
 
 namespace Content.MapRenderer.Painters
 {
-    public sealed class GridPainter
+    public sealed class GridPainter : IDisposable
     {
         private readonly EntityPainter _entityPainter;
         private readonly DecalPainter _decalPainter;
+        private readonly CpuRsiLoader _rsiLoader;
 
         private readonly IEntityManager _cEntityManager;
 
@@ -31,8 +32,9 @@ namespace Content.MapRenderer.Painters
 
         public GridPainter(ClientIntegrationInstance client, ServerIntegrationInstance server)
         {
-            _entityPainter = new EntityPainter(client, server);
-            _decalPainter = new DecalPainter(client, server);
+            _rsiLoader = new CpuRsiLoader(client.InstanceDependencyCollection);
+            _entityPainter = new EntityPainter(client, server, _rsiLoader);
+            _decalPainter = new DecalPainter(client, server, _rsiLoader);
 
             _cEntityManager = client.ResolveDependency<IEntityManager>();
 
@@ -41,6 +43,17 @@ namespace Content.MapRenderer.Painters
 
             _entities = GetEntities();
             _decals = GetDecals();
+        }
+
+        public void Preload()
+        {
+            _entityPainter.Preload(_entities.Values);
+            _decalPainter.Preload(_decals.Values);
+        }
+
+        public void Prepare()
+        {
+            _decalPainter.Prepare();
         }
 
         public void Run(Image gridCanvas, EntityUid gridUid, MapGridComponent grid, Vector2 customOffset = default)
@@ -142,6 +155,11 @@ namespace Content.MapRenderer.Painters
             var y = (position.Y + yOffset) * tileSize * TilePainter.TileImageSize;
 
             return (x, y);
+        }
+
+        public void Dispose()
+        {
+            _rsiLoader.Dispose();
         }
     }
 }

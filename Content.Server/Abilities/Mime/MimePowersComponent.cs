@@ -40,7 +40,7 @@ namespace Content.Server.Abilities.Mime
         /// <summary>
         /// Time when the mime can repent their vow
         /// </summary>
-        [DataField("vowRepentTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+        [DataField("vowRepentTime", customTypeSerializer: typeof(TimeOffsetSerializer))]
         public TimeSpan VowRepentTime = TimeSpan.Zero;
 
         /// <summary>

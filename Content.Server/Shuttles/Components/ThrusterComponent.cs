@@ -64,7 +64,7 @@ namespace Content.Server.Shuttles.Components
         [DataField]
         public TimeSpan FireCooldown = TimeSpan.FromSeconds(2);
 
-        [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+        [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
         public TimeSpan NextFire = TimeSpan.Zero;
 
         // Frontier: upgradeable parts, togglable thrust

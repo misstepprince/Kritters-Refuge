@@ -13,5 +13,7 @@ changelog-button-new-entries = Changelog (new!)
 
 # Frontier: Changelog<Upstream
 changelog-tab-title-Changelog = Upstream
+changelog-tab-title-Kritters = Kritters Refuge
+changelog-tab-title-Coyote = Coyote Sector
 changelog-tab-title-Admin = Admin
 changelog-tab-title-Maps = Maps

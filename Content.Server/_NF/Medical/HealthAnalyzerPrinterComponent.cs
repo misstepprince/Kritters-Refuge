@@ -10,7 +10,7 @@ public sealed partial class HealthAnalyzerPrinterComponent : Component
     /// <summary>
     /// Time when the component can print again
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan PrintAllowedAfter = TimeSpan.Zero;
 
     /// <summary>

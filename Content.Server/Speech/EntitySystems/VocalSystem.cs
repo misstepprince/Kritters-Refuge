@@ -54,9 +54,7 @@ public sealed partial class VocalSystem : EntitySystem
 
     private void OnEmote(EntityUid uid, VocalComponent component, ref EmoteEvent args)
     {
-        // if (args.Handled || !args.Emote.Category.HasFlag(EmoteCategory.Vocal))
-        //     return;
-        if (args.Handled)
+        if (args.Handled || !args.Emote.Category.UsesVocalSounds())
             return;
 
         // snowflake case for wilhelm scream easter egg

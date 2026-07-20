@@ -24,6 +24,8 @@ public sealed partial class StasisSystem : SharedStasisSystem
     {
         base.Initialize();
 
+        UpdatesOutsidePrediction = true;
+
         SubscribeNetworkEvent<StasisAnimationEvent>(OnStasisAnimation);
     }
 

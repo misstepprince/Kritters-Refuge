@@ -11,6 +11,6 @@ public sealed partial class DelayedStartRuleComponent : Component
     /// <summary>
     /// The time at which the rule will start properly.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan RuleStartTime;
 }

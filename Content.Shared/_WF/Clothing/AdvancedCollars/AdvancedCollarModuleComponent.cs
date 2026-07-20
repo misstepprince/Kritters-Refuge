@@ -8,13 +8,14 @@ namespace Content.Shared.Clothing.Components;
 /// </summary>
 [RegisterComponent]
 [NetworkedComponent]
+[AutoGenerateComponentState]
 [Access(typeof(AdvancedCollarSystem))]
 public sealed partial class AdvancedCollarModuleComponent : Component
 {
     /// <summary>
     /// The collar this module is currently installed in, if any.
     /// </summary>
-    [DataField]
+    [DataField, AutoNetworkedField]
     public EntityUid? InstalledIn;
 
     /// <summary>

@@ -76,6 +76,33 @@ public sealed class ListContainerTest : RobustUnitTest
     }
 
     [Test]
+    public void TestRepopulateOrphansExistingButtons()
+    {
+        var root = new Control { MinSize = new Vector2(50, 10) };
+        var listContainer = new ListContainer { SeparationOverride = 0, Group = true };
+        root.AddChild(listContainer);
+        listContainer.GenerateItem += (_, button) =>
+            button.AddChild(new Control { MinSize = new Vector2(10, 10) });
+
+        listContainer.PopulateList([new TestListData(0)]);
+        root.Arrange(new UIBox2(0, 0, 50, 10));
+        var oldButton = listContainer.Children.OfType<ListContainerButton>().Single();
+
+        listContainer.PopulateList([new TestListData(1)]);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(oldButton.Parent, Is.Null);
+            Assert.That(oldButton.Disposed, Is.False);
+            Assert.That(oldButton.Group, Is.Null);
+        });
+
+        listContainer.Arrange(root.SizeBox);
+        var newButton = listContainer.Children.OfType<ListContainerButton>().Single();
+        Assert.That(newButton, Is.Not.SameAs(oldButton));
+    }
+
+    [Test]
     public void TestOnlyVisibleItemsAreAdded()
     {
         /*

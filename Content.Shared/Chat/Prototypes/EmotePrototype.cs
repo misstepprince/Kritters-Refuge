@@ -83,7 +83,7 @@ public sealed partial class EmotePrototype : IPrototype
 /// </summary>
 [Flags]
 [Serializable, NetSerializable]
-public enum EmoteCategory : ushort
+public enum EmoteCategory : uint
 {
     Invalid = 0,
     Vocal = 1 << 0,
@@ -102,6 +102,27 @@ public enum EmoteCategory : ushort
     Moth = 1 << 13,
     Borg = 1 << 14,
     Felinid = 1 << 15,
-    General = ushort.MaxValue,
+    Novakin = 1 << 16,
+    General = uint.MaxValue,
     Sex = 3
+}
+
+public static class EmoteCategoryExtensions
+{
+    public static bool UsesVocalSounds(this EmoteCategory category) => category is
+        EmoteCategory.Vocal
+        or EmoteCategory.Harpy
+        or EmoteCategory.Goblin
+        or EmoteCategory.Vulp
+        or EmoteCategory.Rodentia
+        or EmoteCategory.Diona
+        or EmoteCategory.Sheleg
+        or EmoteCategory.Male
+        or EmoteCategory.Female
+        or EmoteCategory.Avali
+        or EmoteCategory.Vox
+        or EmoteCategory.Moth
+        or EmoteCategory.Borg
+        or EmoteCategory.Felinid
+        or EmoteCategory.Novakin;
 }

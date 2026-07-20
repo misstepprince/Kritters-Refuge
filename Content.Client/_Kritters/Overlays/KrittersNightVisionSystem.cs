@@ -1,8 +1,10 @@
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Content.Shared._DV.CCVars;
 using Content.Shared._Kritters.Overlays;
 
 namespace Content.Client._Kritters.Overlays;
@@ -15,10 +17,12 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private FlashImmunitySystem _flashImmunity = default!;
     [Dependency] private PointLightSystem _lights = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private KrittersNightVisionOverlay _overlay = default!;
     [ViewVariables]
     private bool _active;
+    private bool _filterActive;
     private EntityUid? _effect;
     private const string ModernKrittersNightVisionShaderPrototype = "ModernKrittersNightVisionShader";
 
@@ -33,6 +37,7 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
         SubscribeLocalEvent<KrittersNightVisionComponent, LocalPlayerDetachedEvent>(OnPlayerDetached);
 
         SubscribeLocalEvent<KrittersNightVisionComponent, FlashImmunityCheckEvent>(OnFlashImmunityChanged);
+        Subs.CVar(_cfg, DCCVars.NoVisionFilters, OnNoVisionFiltersChanged);
 
         _overlay = new(_prototypeManager.Index<ShaderPrototype>(ModernKrittersNightVisionShaderPrototype));
     }
@@ -67,7 +72,7 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
             || !TryComp<KrittersNightVisionComponent>(uid, out var vision))
             return;
 
-        if (CanDisplayVision(uid, vision))
+        if (CanUseVision(uid, vision))
         {
             AttemptAddVision(uid);
             UpdateVisualState(vision);
@@ -82,19 +87,39 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
     {
         if (_player.LocalSession?.AttachedEntity != uid
             || !TryComp<KrittersNightVisionComponent>(uid, out var nightVision)
-            || !CanDisplayVision(uid, nightVision)
+            || !CanUseVision(uid, nightVision)
             || _effect != null)
             return;
 
-        _overlayMan.AddOverlay(_overlay);
         _effect = SpawnAttachedTo(nightVision.EffectPrototype, Transform(uid).Coordinates);
         _transform.SetParent(_effect.Value, uid);
         _active = true;
+        AttemptAddFilter();
         UpdateVisualState(nightVision);
     }
 
-    private bool CanDisplayVision(EntityUid uid, KrittersNightVisionComponent vision)
-        => vision.Active && vision.Illumination > 0.001f && !_flashImmunity.HasFlashImmunityVisionBlockers(uid);
+    private bool CanUseVision(EntityUid uid, KrittersNightVisionComponent vision)
+        => vision.Active
+            && vision.Illumination > 0.001f
+            && !_flashImmunity.HasFlashImmunityVisionBlockers(uid);
+
+    private void AttemptAddFilter()
+    {
+        if (!_active || _filterActive || _cfg.GetCVar(DCCVars.NoVisionFilters))
+            return;
+
+        _overlayMan.AddOverlay(_overlay);
+        _filterActive = true;
+    }
+
+    private void AttemptRemoveFilter()
+    {
+        if (!_filterActive)
+            return;
+
+        _overlayMan.RemoveOverlay(_overlay);
+        _filterActive = false;
+    }
 
     private void UpdateVisualState(KrittersNightVisionComponent vision)
     {
@@ -118,9 +143,17 @@ public sealed partial class KrittersNightVisionSystem : EntitySystem
         if (!_active)
             return;
 
-        _overlayMan.RemoveOverlay(_overlay);
+        AttemptRemoveFilter();
         Del(_effect);
         _effect = null;
         _active = false;
+    }
+
+    private void OnNoVisionFiltersChanged(bool enabled)
+    {
+        if (enabled)
+            AttemptRemoveFilter();
+        else
+            AttemptAddFilter();
     }
 }

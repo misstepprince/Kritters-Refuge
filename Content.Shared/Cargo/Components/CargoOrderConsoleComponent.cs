@@ -50,7 +50,7 @@ public sealed partial class CargoOrderConsoleComponent : Component
     /// <summary>
     /// The time at which account actions can be performed again.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan NextAccountActionTime;
 
     [ViewVariables]
@@ -112,7 +112,7 @@ public sealed partial class CargoOrderConsoleComponent : Component
     /// <summary>
     /// The time at which the console will be able to print a slip again.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextPrintTime = TimeSpan.Zero;
 
     /// <summary>
@@ -136,7 +136,7 @@ public sealed partial class CargoOrderConsoleComponent : Component
     /// <summary>
     /// The time at which the console will be able to play the deny sound.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextDenySoundTime = TimeSpan.Zero;
 
     /// <summary>

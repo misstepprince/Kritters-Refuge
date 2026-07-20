@@ -42,7 +42,7 @@ public sealed partial class NFCargoOrderConsoleComponent : Component
     /// <summary>
     /// The time at which the console will be able to play the deny sound.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextDenySoundTime = TimeSpan.Zero;
 
     /// <summary>

@@ -24,6 +24,6 @@ public sealed partial class ShuttleCrewStatusComponent : Component
     /// <summary>
     /// The next time to check crew status.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan NextCheck = TimeSpan.Zero;
 }

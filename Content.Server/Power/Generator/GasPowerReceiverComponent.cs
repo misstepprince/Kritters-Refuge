@@ -39,7 +39,7 @@ public sealed partial class GasPowerReceiverComponent : Component
     [DataField("offVentGas"), ViewVariables(VVAccess.ReadWrite)]
     public bool OffVentGas;
 
-    [DataField("lastProcess", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField("lastProcess", customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan LastProcess = TimeSpan.Zero;
 
     [DataField("powered"), ViewVariables(VVAccess.ReadWrite)]

@@ -409,6 +409,7 @@
   name: meteor launcher
   parent: WeaponLauncherMultipleRocket
   id: WeaponLauncherAdmemeMeteorLarge
+  abstract: true
   suffix: Admeme
   description: It fires large meteors.
   components:

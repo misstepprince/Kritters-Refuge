@@ -31,7 +31,7 @@ public sealed partial class SexEmotesSystem : EntitySystem
             return;
 
         var cat = args.Emote.Category;
-        if (cat.HasFlag(EmoteCategory.Hands))
+        if (cat == EmoteCategory.Sex)
         {
             args.Handled = TryEmoteHands(uid, args.Emote, component);
         }

@@ -53,7 +53,7 @@ public sealed partial class PowerCellDrawComponent : Component
     /// <summary>
     /// When the next automatic power draw will occur
     /// </summary>
-    [DataField("nextUpdate", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField("nextUpdate", customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextUpdateTime;
 

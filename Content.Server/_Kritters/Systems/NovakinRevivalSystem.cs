@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using Content.Server.Body.Systems;
 using Content.Server.EUI;
 using Content.Server.Ghost;
 using Content.Shared._Kritters;
@@ -10,6 +12,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Rejuvenate;
 using Content.Shared.Tools.Components;
 using Content.Shared.Tools.Systems;
 using Content.Shared.Traits.Assorted;
@@ -23,8 +26,12 @@ namespace Content.Server._Kritters.Systems;
 /// </summary>
 public sealed partial class NovakinRevivalSystem : EntitySystem
 {
+    private const string NovakinCorePrototype = "OrganNovakinCore";
+
+    [Dependency] private BodySystem _body = default!;
     [Dependency] private EuiManager _eui = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private MobThresholdSystem _mobThreshold = default!;
     [Dependency] private ISharedPlayerManager _players = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
@@ -35,15 +42,23 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
         SubscribeLocalEvent<NovakinPhysiologyComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<NovakinDormantCoreComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<NovakinDormantCoreComponent, NovakinCoreRestartFinishedEvent>(OnRestartFinished);
+        SubscribeLocalEvent<NovakinDormantCoreComponent, RejuvenateEvent>(OnRejuvenate);
     }
 
     private void OnMobStateChanged(Entity<NovakinPhysiologyComponent> entity, ref MobStateChangedEvent args)
     {
         if (args.NewMobState != MobState.Dead)
+        {
+            CleanupDormancy(entity);
+            return;
+        }
+
+        var dormant = EnsureComp<NovakinDormantCoreComponent>(entity);
+        if (HasComp<UnrevivableComponent>(entity))
             return;
 
-        EnsureComp<NovakinDormantCoreComponent>(entity);
         EnsureComp<UnrevivableComponent>(entity).ReasonMessage = "novakin-core-dormant";
+        dormant.OwnsUnrevivable = true;
     }
 
     private void OnInteractUsing(Entity<NovakinDormantCoreComponent> entity, ref InteractUsingEvent args)
@@ -64,14 +79,21 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
             return;
         }
 
+        if (TryGetUnrelatedUnrevivable(entity, out var unrevivable))
+        {
+            _popup.PopupEntity(Loc.GetString(unrevivable.ReasonMessage), entity, args.User);
+            args.Handled = true;
+            return;
+        }
+
         var readiness = GetRestartReadiness(entity, physiology);
         if (!readiness.Ready)
         {
             _popup.PopupEntity(Loc.GetString("novakin-core-restart-requirements",
-                ("shell", NovakinDisplayFormat.Number(readiness.PhysicalDamage)),
-                ("total", NovakinDisplayFormat.Number(readiness.TotalDamage)),
-                ("gas", NovakinDisplayFormat.Number(readiness.ReservePercent)),
-                ("fuel", NovakinDisplayFormat.Number(readiness.FuelPercent))), entity, args.User);
+                ("shell", readiness.PhysicalDamage),
+                ("total", readiness.TotalDamage),
+                ("gas", readiness.ReservePercent),
+                ("fuel", readiness.FuelPercent)), entity, args.User);
             args.Handled = true;
             return;
         }
@@ -85,12 +107,18 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
     {
         if (args.Cancelled || !TryComp<NovakinPhysiologyComponent>(entity, out var physiology)
             || !GetRestartReadiness(entity, physiology).Ready
-            || args.Used is not { } used || !TryComp<WelderComponent>(used, out var welder) || !welder.Enabled)
+            || !_mobState.IsDead(entity) || TryGetUnrelatedUnrevivable(entity, out _)
+            || !HasNovakinCore(entity) || !HasShellRepair(entity)
+            || !IsBelowDeadThreshold(entity))
             return;
 
-        RemComp<UnrevivableComponent>(entity);
-        RemComp<NovakinDormantCoreComponent>(entity);
-        _mobState.ChangeMobState(entity, MobState.Critical);
+        if (args.Used is not { } used || !TryComp<WelderComponent>(used, out var welder) || !welder.Enabled)
+            return;
+
+        CleanupDormancy(entity);
+        // Use the normal damage thresholds for the resulting Alive or Critical state, then restore the death lock.
+        _mobThreshold.SetAllowRevives(entity, true);
+        _mobThreshold.SetAllowRevives(entity, false);
         OpenReturnToBody(entity);
         args.Handled = true;
     }
@@ -115,6 +143,52 @@ public sealed partial class NovakinRevivalSystem : EntitySystem
            + damageable.Damage.DamageDict.GetValueOrDefault("Piercing").Float();
 
     private readonly record struct RestartReadiness(bool Ready, float PhysicalDamage, float TotalDamage, float ReservePercent, float FuelPercent);
+
+    private void OnRejuvenate(Entity<NovakinDormantCoreComponent> entity, ref RejuvenateEvent args)
+    {
+        CleanupDormancy(entity);
+    }
+
+    private void CleanupDormancy(EntityUid uid)
+    {
+        if (!TryComp<NovakinDormantCoreComponent>(uid, out var dormant))
+            return;
+
+        if (dormant.OwnsUnrevivable)
+            RemComp<UnrevivableComponent>(uid);
+
+        RemComp<NovakinDormantCoreComponent>(uid);
+    }
+
+    private bool TryGetUnrelatedUnrevivable(Entity<NovakinDormantCoreComponent> entity,
+        [NotNullWhen(true)] out UnrevivableComponent? unrevivable)
+    {
+        if (!entity.Comp.OwnsUnrevivable && TryComp(entity, out unrevivable))
+            return true;
+
+        unrevivable = null;
+        return false;
+    }
+
+    private bool HasNovakinCore(EntityUid uid)
+    {
+        foreach (var organ in _body.GetBodyOrgans(uid))
+        {
+            if (MetaData(organ.Id).EntityPrototype?.ID == NovakinCorePrototype)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool IsBelowDeadThreshold(EntityUid uid)
+        => _mobThreshold.TryGetThresholdForState(uid, MobState.Dead, out var threshold)
+           && TryComp<DamageableComponent>(uid, out var damageable)
+           && damageable.TotalDamage < threshold;
+
+    private bool HasShellRepair(EntityUid uid)
+        => TryComp<DamageableComponent>(uid, out var damageable)
+           && (!damageable.DamagePerGroup.TryGetValue("Brute", out var brute) || brute < 100);
 
     private void OpenReturnToBody(EntityUid uid)
     {

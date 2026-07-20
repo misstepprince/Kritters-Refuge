@@ -38,6 +38,7 @@ namespace Content.MapRenderer.Painters
                 DummyTicker = false,
                 Connected = true,
                 Fresh = true,
+                Destructive = true,
                 // Seriously whoever made MapPainter use GameMapPrototype I wish you step on a lego one time.
                 Map = mapIsFilename ? "Empty" : map,
             });
@@ -149,7 +150,7 @@ namespace Content.MapRenderer.Painters
             var sMapSystem = server.System<SharedMapSystem>();
 
             var tilePainter = new TilePainter(client, server);
-            var entityPainter = new GridPainter(client, server);
+            using var entityPainter = new GridPainter(client, server);
             var xformQuery = sEntityManager.GetEntityQuery<TransformComponent>();
             var xformSystem = sEntityManager.System<SharedTransformSystem>();
 
@@ -173,10 +174,13 @@ namespace Content.MapRenderer.Painters
                     var gridXform = xformQuery.GetComponent(uid);
                     xformSystem.SetWorldRotation(gridXform, Angle.Zero);
                 }
+
+                entityPainter.Prepare();
             });
 
             await pair.RunTicksSync(10);
             await Task.WhenAll(client.WaitIdleAsync(), server.WaitIdleAsync());
+            await client.WaitPost(entityPainter.Preload);
 
             foreach (var (uid, grid) in grids)
             {

@@ -11,7 +11,7 @@ public sealed partial class CargoDeliveryDataComponent : Component
     /// <summary>
     /// The time at which the next delivery will spawn.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextDelivery;
 
     /// <summary>

@@ -99,8 +99,12 @@ public partial class ChatSystem
         if (emote.ChatMessages.Count != 0)
         {
             // not all emotes are loc'd, but for the ones that are we pass in entity
-            var action = Loc.GetString(_random.Pick(emote.ChatMessages), ("entity", source));
-            SendEntityEmote(source, action, range, nameOverride, hideLog: hideLog, checkEmote: false, ignoreActionBlocker: ignoreActionBlocker);
+            var message = _random.Pick(emote.ChatMessages);
+            if (Loc.TryGetString(message, out var action, ("entity", source)) ||
+                !message.StartsWith("chat-emote-", StringComparison.Ordinal))
+            {
+                SendEntityEmote(source, action ?? message, range, nameOverride, hideLog: hideLog, checkEmote: false, ignoreActionBlocker: ignoreActionBlocker);
+            }
         }
 
         // do the rest of emote event logic here

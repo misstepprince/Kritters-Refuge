@@ -1,5 +1,6 @@
-using Robust.Shared.GameStates;
+using Content.Shared.Atmos;
 using Content.Shared.Damage;
+using Robust.Shared.GameStates;
 
 namespace Content.Shared._Kritters.Components;
 
@@ -44,6 +45,20 @@ public sealed partial class NovakinPhysiologyComponent : Component
 
     [DataField]
     public float PressureSuitShellFailureTemperatureTransferMultiplier = 0.25f;
+
+    /// <summary>Molar density at which environmental exchange is entirely convective.</summary>
+    [DataField]
+    public float FullConvectionMoleDensity = Atmospherics.MolesCellStandard / Atmospherics.CellVolume * 0.005f;
+
+    [DataField]
+    public float RadiativeEmissivity = 0.85f;
+
+    [DataField]
+    public float RadiativeSurfaceArea = 1.8f;
+
+    /// <summary>Safety bound for environmental temperature changes, before clothing protection.</summary>
+    [DataField]
+    public float MaximumEnvironmentalTemperatureChangePerSecond = 8f;
 
     [DataField]
     public float MaximumHeatResourceDrainMultiplier = 1.5f;
@@ -172,3 +187,11 @@ public sealed partial class NovakinPhysiologyComponent : Component
     [DataField, AutoNetworkedField]
     public bool ShellShattered;
 }
+
+/// <summary>Marks pressure immunity owned exclusively by Novakin vacuum grace.</summary>
+[RegisterComponent]
+public sealed partial class NovakinPressureImmunityComponent : Component;
+
+/// <summary>Marks a stasis bed as capable of suspending an SSD Novakin's resource drain.</summary>
+[RegisterComponent]
+public sealed partial class NovakinResourceStasisComponent : Component;

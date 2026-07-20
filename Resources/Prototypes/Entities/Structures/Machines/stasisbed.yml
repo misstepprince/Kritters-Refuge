@@ -6,6 +6,7 @@
   components:
   - type: StasisBed
     baseMultiplier: 10.0
+  - type: NovakinResourceStasis
   - type: AntiRotOnBuckle
   - type: HealOnBuckle
     damage:

@@ -38,6 +38,8 @@ public sealed partial class AdvancedCollarSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<AdvancedCollarComponent, ComponentInit>(OnCollarInit);
+        SubscribeLocalEvent<AdvancedCollarComponent, ComponentShutdown>(OnCollarShutdown);
+        SubscribeLocalEvent<AdvancedCollarComponent, MapInitEvent>(OnCollarMapInit);
         SubscribeLocalEvent<AdvancedCollarComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<AdvancedCollarComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<AdvancedCollarComponent, GetVerbsEvent<InteractionVerb>>(OnGetVerbs);
@@ -53,16 +55,41 @@ public sealed partial class AdvancedCollarSystem : EntitySystem
         collar.Comp.ModuleContainer = _container.EnsureContainer<Container>(collar, ModuleContainerName);
     }
 
+    private void OnCollarMapInit(Entity<AdvancedCollarComponent> collar, ref MapInitEvent args)
+    {
+        ReconcileModuleEffects(collar);
+    }
+
+    private void OnCollarShutdown(Entity<AdvancedCollarComponent> collar, ref ComponentShutdown args)
+    {
+        if (TerminatingOrDeleted(collar))
+            return;
+
+        foreach (var moduleUid in collar.Comp.ModuleContainer.ContainedEntities)
+        {
+            if (TryComp<AdvancedCollarModuleComponent>(moduleUid, out var module))
+                SetInstalledIn((moduleUid, module), null);
+        }
+
+        foreach (var componentName in collar.Comp.ModuleOwnedComponents)
+        {
+            if (_componentFactory.TryGetRegistration(componentName, out var registration))
+                RemComp(collar, registration.Type);
+        }
+
+        collar.Comp.ModuleOwnedComponents.Clear();
+    }
+
     private void OnModuleInserted(Entity<AdvancedCollarComponent> collar, ref EntInsertedIntoContainerMessage args)
     {
         if (args.Container.ID != ModuleContainerName)
             return;
 
-        // Apply the module's effect
-        if (TryComp<AdvancedCollarModuleComponent>(args.Entity, out var module))
-        {
-            ApplyModuleEffect(collar, (args.Entity, module));
-        }
+        if (!TryComp<AdvancedCollarModuleComponent>(args.Entity, out var module))
+            return;
+
+        SetInstalledIn((args.Entity, module), collar);
+        ReconcileModuleEffects(collar);
     }
 
     private void OnModuleRemoved(Entity<AdvancedCollarComponent> collar, ref EntRemovedFromContainerMessage args)
@@ -70,11 +97,11 @@ public sealed partial class AdvancedCollarSystem : EntitySystem
         if (args.Container.ID != ModuleContainerName)
             return;
 
-        // Remove the module's effect
-        if (TryComp<AdvancedCollarModuleComponent>(args.Entity, out var module))
-        {
-            RemoveModuleEffect(collar, (args.Entity, module));
-        }
+        if (!TryComp<AdvancedCollarModuleComponent>(args.Entity, out var module))
+            return;
+
+        SetInstalledIn((args.Entity, module), null);
+        ReconcileModuleEffects(collar);
     }
 
     private void OnExamined(Entity<AdvancedCollarComponent> collar, ref ExaminedEvent args)
@@ -222,98 +249,88 @@ public sealed partial class AdvancedCollarSystem : EntitySystem
         // Install the module
         if (_container.Insert(module.Owner, collar.Comp.ModuleContainer))
         {
-            module.Comp.InstalledIn = collar;
-            Dirty(module);
-
             _popup.PopupClient(Loc.GetString("advanced-collar-module-installed",
                 ("module", Name(module))), collar, user);
             _audio.PlayPredicted(collar.Comp.ModuleInsertionSound, collar, user);
         }
     }
 
-    private void ApplyModuleEffect(EntityUid collar, Entity<AdvancedCollarModuleComponent> module)
+    private void SetInstalledIn(Entity<AdvancedCollarModuleComponent> module, EntityUid? collar)
     {
-        // Handle single component (legacy)
-        if (!string.IsNullOrEmpty(module.Comp.ComponentToAdd))
-        {
-            ApplySingleComponent(collar, module.Owner, module.Comp.ComponentToAdd);
-        }
-
-        // Handle multiple components
-        foreach (var componentName in module.Comp.ComponentsToAdd)
-        {
-            if (!string.IsNullOrEmpty(componentName))
-            {
-                ApplySingleComponent(collar, module.Owner, componentName);
-            }
-        }
-    }
-
-    private void ApplySingleComponent(EntityUid collar, EntityUid moduleEntity, string componentName)
-    {
-        // Try to get the component registration - it may not exist on the client for server-only components
-        if (!_componentFactory.TryGetRegistration(componentName, out var registration))
-        {
-            // Component doesn't exist on this side (likely server-only component on client)
-            // This is fine - server will add it when it processes the module
-            return;
-        }
-
-        var componentType = registration.Type;
-
-        // Check if the collar already has this component
-        if (HasComp(collar, componentType))
+        if (module.Comp.InstalledIn == collar || TerminatingOrDeleted(module))
             return;
 
-        // Check if the module entity has this component with configuration
-        if (EntityManager.TryGetComponent(moduleEntity, componentType, out var moduleComponent))
-        {
-            // Clone the component from the module to preserve configuration
-            var component = (Component)_componentFactory.GetComponent(componentType);
-            var temp = (object)component;
-            _serializationManager.CopyTo(moduleComponent, ref temp);
-            AddComp(collar, (Component)temp!);
-        }
-        else
-        {
-            // Add the component with default values
-            var component = (Component)_componentFactory.GetComponent(componentType);
-            AddComp(collar, component);
-        }
+        module.Comp.InstalledIn = collar;
+        Dirty(module);
     }
 
-    private void RemoveModuleEffect(EntityUid collar, Entity<AdvancedCollarModuleComponent> module)
+    private void ReconcileModuleEffects(Entity<AdvancedCollarComponent> collar)
     {
-        // Handle single component (legacy)
-        if (!string.IsNullOrEmpty(module.Comp.ComponentToAdd))
-        {
-            RemoveSingleComponent(collar, module.Comp.ComponentToAdd);
-        }
-
-        // Handle multiple components
-        foreach (var componentName in module.Comp.ComponentsToAdd)
-        {
-            if (!string.IsNullOrEmpty(componentName))
-            {
-                RemoveSingleComponent(collar, componentName);
-            }
-        }
-    }
-
-    private void RemoveSingleComponent(EntityUid collar, string componentName)
-    {
-        // Try to get the component registration - it may not exist on the client for server-only components
-        if (!_componentFactory.TryGetRegistration(componentName, out var registration))
-        {
-            // Component doesn't exist on this side (likely server-only component on client)
-            // This is fine - server will remove it when it processes the module removal
+        if (TerminatingOrDeleted(collar))
             return;
+
+        var requested = new Dictionary<Type, (string Name, EntityUid Module)>();
+        foreach (var moduleUid in collar.Comp.ModuleContainer.ContainedEntities)
+        {
+            if (!TryComp<AdvancedCollarModuleComponent>(moduleUid, out var module))
+                continue;
+
+            SetInstalledIn((moduleUid, module), collar);
+            AddRequestedComponent(module.ComponentToAdd, moduleUid, requested);
+
+            foreach (var componentName in module.ComponentsToAdd)
+                AddRequestedComponent(componentName, moduleUid, requested);
         }
 
-        var componentType = registration.Type;
+        var changed = false;
+        foreach (var componentName in collar.Comp.ModuleOwnedComponents.ToArray())
+        {
+            // Missing registrations are expected client-side for server-only components.
+            if (!_componentFactory.TryGetRegistration(componentName, out var registration) ||
+                requested.ContainsKey(registration.Type))
+                continue;
 
-        // Remove the component from the collar
-        RemComp(collar, componentType);
+            RemComp(collar, registration.Type);
+            collar.Comp.ModuleOwnedComponents.Remove(componentName);
+            changed = true;
+        }
+
+        foreach (var (componentType, request) in requested)
+        {
+            if (HasComp(collar, componentType))
+                continue;
+
+            AddModuleComponent(collar, request.Module, componentType);
+            changed |= collar.Comp.ModuleOwnedComponents.Add(request.Name);
+        }
+
+        if (changed)
+            Dirty(collar);
+    }
+
+    private void AddRequestedComponent(
+        string? componentName,
+        EntityUid module,
+        Dictionary<Type, (string Name, EntityUid Module)> requested)
+    {
+        if (string.IsNullOrEmpty(componentName) ||
+            !_componentFactory.TryGetRegistration(componentName, out var registration))
+            return;
+
+        requested.TryAdd(registration.Type, (registration.Name, module));
+    }
+
+    private void AddModuleComponent(EntityUid collar, EntityUid module, Type componentType)
+    {
+        var component = (Component)_componentFactory.GetComponent(componentType);
+        if (EntityManager.TryGetComponent(module, componentType, out var moduleComponent))
+        {
+            var copy = (object)component;
+            _serializationManager.CopyTo(moduleComponent, ref copy);
+            component = (Component)copy!;
+        }
+
+        AddComp(collar, component);
     }
 
     public void RemoveAllModules(Entity<AdvancedCollarComponent> collar, EntityUid user)
@@ -335,11 +352,6 @@ public sealed partial class AdvancedCollarSystem : EntitySystem
         // Eject each module to user's hands or drop nearby
         foreach (var moduleUid in modulesToClear)
         {
-            if (TryComp<AdvancedCollarModuleComponent>(moduleUid, out var module))
-            {
-                module.InstalledIn = null;
-            }
-
             _hands.PickupOrDrop(user, moduleUid, dropNear: true);
         }
 

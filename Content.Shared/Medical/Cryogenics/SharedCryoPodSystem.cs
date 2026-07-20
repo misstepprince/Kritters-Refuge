@@ -20,7 +20,6 @@ using Content.Shared.Examine;
 using Content.Shared.FixedPoint;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
-using Content.Shared.MedicalScanner;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
@@ -138,7 +137,11 @@ public abstract partial class SharedCryoPodSystem: EntitySystem
 
         // Frontier
         // Filter out a fixed amount of each reagent from the cryo pod's beaker
-        var solutionToInject = _solutionContainer.SplitSolutionPerReagentWithOnly(injectingSolution.Value, entity.Comp.BeakerTransferAmount, CryogenicsReagents);
+        var withdrawnSolution = _solutionContainer.SplitSolutionPerReagentWithOnly(
+            injectingSolution.Value,
+            entity.Comp.BeakerTransferAmount,
+            CryogenicsReagents);
+        var solutionToInject = withdrawnSolution.Clone();
 
         // For every .25 units used, .5 units per second are added to the body, making cryo-pod more efficient than injections.
         solutionToInject.ScaleSolution(entity.Comp.PotencyMultiplier);
@@ -156,8 +159,10 @@ public abstract partial class SharedCryoPodSystem: EntitySystem
             }
             else
             {
-                // Kritters: preserve the normal cryopod dose while delegating its destination to Novakin physiology.
-                EntityManager.EventBus.RaiseLocalEvent(patient.Value, new NovakinCryoPodInjectionEvent(solutionToInject));
+                var injection = new NovakinCryoPodInjectionEvent(solutionToInject);
+                EntityManager.EventBus.RaiseLocalEvent(patient.Value, injection);
+                if (!injection.Accepted)
+                    _solutionContainer.TryAddSolution(injectingSolution.Value, withdrawnSolution);
             }
         }
     }
@@ -233,7 +238,7 @@ public abstract partial class SharedCryoPodSystem: EntitySystem
         else
         {
             RemComp<ActiveCryoPodComponent>(ent);
-            UI.CloseUi(ent.Owner, HealthAnalyzerUiKey.Key);
+            UI.CloseUi(ent.Owner, CryoPodUiKey.Key);
         }
 
         UpdateAppearance(ent.Owner, ent.Comp);

@@ -21,13 +21,13 @@ public sealed partial class DoAfter
     /// <summary>
     ///     Time at which this do after was started.
     /// </summary>
-    [DataField("startTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer), required:true)]
+    [DataField("startTime", customTypeSerializer: typeof(TimeOffsetSerializer), required:true)]
     public TimeSpan StartTime;
 
     /// <summary>
     ///     The time at which this do after was canceled
     /// </summary>
-    [DataField("cancelledTime", customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer), required:true)]
+    [DataField("cancelledTime", customTypeSerializer: typeof(TimeOffsetSerializer), required:true)]
     public TimeSpan? CancelledTime;
 
     /// <summary>

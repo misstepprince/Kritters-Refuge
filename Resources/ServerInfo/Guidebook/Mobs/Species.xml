@@ -50,7 +50,7 @@
   <Box>
   <GuideEntityEmbed Entity="MobNovakin" Caption="Novakin"/>
   </Box>
-  # Coyote Sector specific species
+  # Kritters Refuge-specific species
   <Box>
   <GuideEntityEmbed Entity="MobAnthromorph" Caption="Anthromorph"/>
   </Box>

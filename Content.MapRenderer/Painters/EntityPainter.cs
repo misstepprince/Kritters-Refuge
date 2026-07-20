@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Numerics;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.ResourceManagement;
-using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -16,23 +15,32 @@ namespace Content.MapRenderer.Painters;
 
 public sealed class EntityPainter
 {
-    private readonly IResourceManager _resManager;
-
-    private readonly Dictionary<(string path, string state), Image> _images;
-    private readonly Image _errorImage;
+    private readonly CpuRsiLoader _rsiLoader;
 
     private readonly IEntityManager _sEntityManager;
     private readonly SpriteSystem _sprite;
 
-    public EntityPainter(ClientIntegrationInstance client, ServerIntegrationInstance server)
+    public EntityPainter(
+        ClientIntegrationInstance client,
+        ServerIntegrationInstance server,
+        CpuRsiLoader rsiLoader)
     {
-        _resManager = client.ResolveDependency<IResourceManager>();
-
+        _rsiLoader = rsiLoader;
         _sEntityManager = server.ResolveDependency<IEntityManager>();
         _sprite = client.ResolveDependency<IEntityManager>().System<SpriteSystem>();
+    }
 
-        _images = new Dictionary<(string path, string state), Image>();
-        _errorImage = Image.Load<Rgba32>(_resManager.ContentFileRead("/Textures/error.rsi/error.png"));
+    public void Preload(IEnumerable<List<EntityData>> entityLists)
+    {
+        _rsiLoader.Load(CpuRsiLoader.ErrorPath);
+
+        foreach (var entities in entityLists)
+        foreach (var entity in entities)
+        foreach (var layer in entity.Sprite.AllLayers)
+        {
+            if (layer.ActualRsi is { } rsi)
+                _rsiLoader.Load(rsi.Path);
+        }
     }
 
     public void Run(Image canvas, List<EntityData> entities, Vector2 customOffset = default)
@@ -73,82 +81,52 @@ public sealed class EntityPainter
             }
 
             var rsi = layer.ActualRsi;
-            Image image;
-
-            if (rsi == null || !rsi.TryGetState(layer.RsiState, out var state))
-            {
-                image = _errorImage;
-            }
-            else
-            {
-                var key = (rsi.Path!.ToString(), state.StateId.Name!);
-
-                if (!_images.TryGetValue(key, out image!))
-                {
-                    var stream = _resManager.ContentFileRead($"{rsi.Path}/{state.StateId}.png");
-                    image = Image.Load<Rgba32>(stream);
-
-                    _images[key] = image;
-                }
-            }
-
-            image = image.CloneAs<Rgba32>();
-
-            (int, int, int, int) GetRsiFrame(RSI? rsi, Image image, EntityData entity, ISpriteLayer layer, int direction)
-            {
-                if (rsi is null)
-                    return (0, 0, EyeManager.PixelsPerMeter, EyeManager.PixelsPerMeter);
-
-                var statesX = image.Width / rsi.Size.X;
-                var statesY = image.Height / rsi.Size.Y;
-                var stateCount = statesX * statesY;
-                var frames = stateCount / _sprite.LayerGetDirectionCount((SpriteComponent.Layer)layer);
-                var target = direction * frames;
-                var targetY = target / statesX;
-                var targetX = target % statesX;
-                return (targetX * rsi.Size.X, targetY * rsi.Size.Y, rsi.Size.X, rsi.Size.Y);
-            }
-
             var dir = _sprite.LayerGetDirectionCount((SpriteComponent.Layer)layer) switch
             {
                 0 => 0,
                 _ => (int)layer.EffectiveDirection(worldRotation)
             };
 
-            var (x, y, width, height) = GetRsiFrame(rsi, image, entity, layer, dir);
-
-            var rect = new Rectangle(x, y, width, height);
-            if (!new Rectangle(Point.Empty, image.Size).Contains(rect))
+            Image<Rgba32>? clonedImage = null;
+            if (rsi == null ||
+                !rsi.TryGetState(layer.RsiState, out var state) ||
+                !_rsiLoader.TryGetFrame(rsi.Path, state.StateId, dir, layer.AnimationFrame, out clonedImage))
             {
-                Console.WriteLine($"Invalid layer {rsi!.Path}/{layer.RsiState.Name}.png for entity {_sEntityManager.ToPrettyString(entity.Owner)} at ({entity.X}, {entity.Y})");
-                return;
+                _rsiLoader.TryGetFrame(CpuRsiLoader.ErrorPath, "error", 0, 0, out clonedImage);
             }
 
-            image.Mutate(o => o.Crop(rect));
-
-            var spriteRotation = 0f;
-            if (!entity.Sprite.NoRotation && !entity.Sprite.SnapCardinals && _sprite.LayerGetDirectionCount((SpriteComponent.Layer)layer) == 1)
+            if (clonedImage == null)
             {
-                spriteRotation = (float)worldRotation.Degrees;
+                Console.WriteLine($"Unable to load layer {rsi?.Path}/{layer.RsiState.Name} for entity {_sEntityManager.ToPrettyString(entity.Owner)} at ({entity.X}, {entity.Y})");
+                continue;
             }
 
-            var colorMix = entity.Sprite.Color * layer.Color;
-            var imageColor = Color.FromRgba(colorMix.RByte, colorMix.GByte, colorMix.BByte, colorMix.AByte);
-            var coloredImage = new Image<Rgba32>(image.Width, image.Height);
-            coloredImage.Mutate(o => o.BackgroundColor(imageColor));
+            using (clonedImage)
+            {
+                var spriteRotation = 0f;
+                if (!entity.Sprite.NoRotation && !entity.Sprite.SnapCardinals && _sprite.LayerGetDirectionCount((SpriteComponent.Layer)layer) == 1)
+                {
+                    spriteRotation = (float)worldRotation.Degrees;
+                }
 
-            var (imgX, imgY) = rsi?.Size ?? (EyeManager.PixelsPerMeter, EyeManager.PixelsPerMeter);
-            var offsetX = (int)(entity.Sprite.Offset.X + customOffset.X) * EyeManager.PixelsPerMeter;
-            var offsetY = (int)(entity.Sprite.Offset.Y + customOffset.X) * EyeManager.PixelsPerMeter;
-            image.Mutate(o => o
-                .DrawImage(coloredImage, PixelColorBlendingMode.Multiply, PixelAlphaCompositionMode.SrcAtop, 1)
-                .Resize(imgX, imgY)
-                .Flip(FlipMode.Vertical)
-                .Rotate(spriteRotation));
+                var colorMix = entity.Sprite.Color * layer.Color;
+                var imageColor = Color.FromRgba(colorMix.RByte, colorMix.GByte, colorMix.BByte, colorMix.AByte);
+                using var coloredImage = new Image<Rgba32>(clonedImage.Width, clonedImage.Height);
+                coloredImage.Mutate(o => o.BackgroundColor(imageColor));
 
-            var pointX = (int)entity.X + offsetX - imgX / 2;
-            var pointY = (int)entity.Y + offsetY - imgY / 2;
-            canvas.Mutate(o => o.DrawImage(image, new Point(pointX, pointY), 1));
+                var (imgX, imgY) = rsi?.Size ?? (EyeManager.PixelsPerMeter, EyeManager.PixelsPerMeter);
+                var offsetX = (int)(entity.Sprite.Offset.X + customOffset.X) * EyeManager.PixelsPerMeter;
+                var offsetY = (int)(entity.Sprite.Offset.Y + customOffset.Y) * EyeManager.PixelsPerMeter;
+                clonedImage.Mutate(o => o
+                    .DrawImage(coloredImage, PixelColorBlendingMode.Multiply, PixelAlphaCompositionMode.SrcAtop, 1)
+                    .Resize(imgX, imgY)
+                    .Flip(FlipMode.Vertical)
+                    .Rotate(spriteRotation));
+
+                var pointX = (int)entity.X + offsetX - imgX / 2;
+                var pointY = (int)entity.Y + offsetY - imgY / 2;
+                canvas.Mutate(o => o.DrawImage(clonedImage, new Point(pointX, pointY), 1));
+            }
         }
     }
 }

@@ -92,6 +92,7 @@
   rules:
   - IsWindow
   rotation: User
+  allowMultiDirection: true
   fx: EffectRCDConstruct2
 
 - type: rcd
@@ -121,6 +122,7 @@
   rules:
   - IsWindow
   rotation: User
+  allowMultiDirection: true
   fx: EffectRCDConstruct2
 
 #region Airlocks

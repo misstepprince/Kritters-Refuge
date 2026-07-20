@@ -124,7 +124,7 @@ public sealed partial class MaterialReclaimerComponent : Component
     /// <summary>
     /// When the next sound will be allowed to be played. Used to prevent spam.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextSound;
 

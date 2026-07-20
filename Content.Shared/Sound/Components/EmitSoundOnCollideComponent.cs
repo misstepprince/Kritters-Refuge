@@ -17,6 +17,6 @@ public sealed partial class EmitSoundOnCollideComponent : BaseEmitSoundComponent
     /// <summary>
     /// To avoid sound spam add a cooldown to it.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextSound;
 }

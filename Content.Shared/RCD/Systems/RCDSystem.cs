@@ -41,6 +41,7 @@ public sealed partial class RCDSystem : EntitySystem
     [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private TileSystem _tile = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
@@ -91,11 +92,13 @@ public sealed partial class RCDSystem : EntitySystem
         if (!component.AvailablePrototypes.Contains(args.ProtoId))
             return;
 
-        if (!_protoManager.HasIndex(args.ProtoId))
+        if (!_protoManager.TryIndex(args.ProtoId, out var prototype))
             return;
 
         // Set the current RCD prototype to the one supplied
         component.ProtoId = args.ProtoId;
+        _adminLogger.Add(LogType.RCD, LogImpact.Low,
+            $"{args.Actor} set RCD mode to: {prototype.Mode} : {prototype.Prototype}");
         Dirty(uid, component);
     }
 
@@ -136,105 +139,41 @@ public sealed partial class RCDSystem : EntitySystem
         if (!location.IsValid(EntityManager))
             return;
 
-        var gridUid = _transform.GetGrid(location);
+        var gridUid = _transform.GetGrid(location) ?? _transform.GetGrid(user);
 
         if (!TryComp<MapGridComponent>(gridUid, out var mapGrid))
         {
             _popup.PopupClient(Loc.GetString("rcd-component-no-valid-grid"), uid, user);
             return;
         }
-        var tile = _mapSystem.GetTileRef(gridUid.Value, mapGrid, location);
         var position = _mapSystem.TileIndicesFor(gridUid.Value, mapGrid, location);
+        var tile = _mapSystem.GetTileRef(gridUid.Value, mapGrid, position);
 
-        if (!IsRCDOperationStillValid(uid, component, gridUid.Value, mapGrid, tile, position, args.Target, args.User))
+        var operation = GetOperationData(prototype, tile, args.Target);
+
+        if (!IsRCDOperationStillValid(uid, component, gridUid.Value, mapGrid, tile, position,
+                component.ConstructionDirection, operation.Cost, args.Target, user))
             return;
 
-        // Frontier: grid-access restrictions
-        // Frontier - Remove all RCD use on outpost.
-        if (TryComp<ProtectedGridComponent>(gridUid.Value, out var prot) && prot.PreventRCDUse)
-        {
-            _popup.PopupClient(Loc.GetString("rcd-component-use-blocked"), used, user);
+        if (!CanUseRcdOnGrid(used, gridUid.Value, user))
             return;
-        }
-
-        // Frontier - Grid access restriction
-        if (TryComp<GridAccessComponent>(args.Used, out var gridAccessComponent))
-        {
-            if (!GridAccessSystem.IsAuthorized(gridUid.Value, gridAccessComponent, out var popupMessage))
-            {
-                if (popupMessage != null)
-                {
-                    _popup.PopupClient(Loc.GetString("rcd-component-" + popupMessage), used, user);
-                }
-                return;
-            }
-        }
-        // End Frontier: grid-access restrictions
 
         if (!_net.IsServer)
             return;
 
-        // Get the starting cost, delay, and effect from the prototype
-        var cost = prototype.Cost;
-        var delay = prototype.Delay;
-        var effectPrototype = prototype.Effect;
-
-        #region: Operation modifiers
-
-        // Deconstruction modifiers
-        switch (prototype.Mode)
-        {
-            case RcdMode.Deconstruct:
-
-                // Deconstructing an object
-                if (args.Target != null)
-                {
-                    if (TryComp<RCDDeconstructableComponent>(args.Target, out var destructible))
-                    {
-                        cost = destructible.Cost;
-                        delay = destructible.Delay;
-                        effectPrototype = destructible.Effect;
-                    }
-                }
-
-                // Deconstructing a tile
-                else
-                {
-                    var deconstructedTile = _mapSystem.GetTileRef(gridUid.Value, mapGrid, location);
-                    var protoName = !deconstructedTile.IsSpace() ? _deconstructTileProto : _deconstructLatticeProto;
-
-                    if (_protoManager.TryIndex(protoName, out var deconProto))
-                    {
-                        cost = deconProto.Cost;
-                        delay = deconProto.Delay;
-                        effectPrototype = deconProto.Effect;
-                    }
-                }
-
-                break;
-
-            case RcdMode.ConstructTile:
-
-                // If replacing a tile, make the construction instant
-                var contructedTile = _mapSystem.GetTileRef(gridUid.Value, mapGrid, location);
-
-                if (!contructedTile.Tile.IsEmpty)
-                {
-                    delay = _instantConstructionDelay;
-                    effectPrototype = _instantConstructionFx;
-                }
-
-                break;
-        }
-
-        #endregion
-
         // Try to start the do after
-        var effect = Spawn(effectPrototype, location);
-        var ev = new RCDDoAfterEvent(GetNetCoordinates(location), component.ConstructionDirection, component.ProtoId, cost, EntityManager.GetNetEntity(effect));
+        var effect = Spawn(operation.Effect, _mapSystem.ToCenterCoordinates(tile, mapGrid));
+        var ev = new RCDDoAfterEvent(
+            GetNetCoordinates(location),
+            GetNetEntity(gridUid.Value),
+            component.ConstructionDirection,
+            component.ProtoId,
+            operation.Cost,
+            GetNetEntity(effect));
 
-        var doAfterArgs = new DoAfterArgs(EntityManager, user, delay, ev, uid, target: args.Target, used: uid)
+        var doAfterArgs = new DoAfterArgs(EntityManager, user, operation.Delay, ev, uid, target: args.Target, used: uid)
         {
+            NeedHand = true,
             BreakOnDamage = true,
             BreakOnHandChange = true,
             BreakOnMove = true,
@@ -263,8 +202,7 @@ public sealed partial class RCDSystem : EntitySystem
 
         // Ensure the RCD operation is still valid
         var location = GetCoordinates(args.Event.Location);
-
-        var gridUid = _transform.GetGrid(location);
+        var gridUid = GetEntity(args.Event.TargetGridId);
 
         if (!TryComp<MapGridComponent>(gridUid, out var mapGrid))
         {
@@ -273,10 +211,16 @@ public sealed partial class RCDSystem : EntitySystem
         }
 
 
-        var tile = _mapSystem.GetTileRef(gridUid.Value, mapGrid, location);
-        var position = _mapSystem.TileIndicesFor(gridUid.Value, mapGrid, location);
+        var position = _mapSystem.TileIndicesFor(gridUid, mapGrid, location);
+        var tile = _mapSystem.GetTileRef(gridUid, mapGrid, position);
+        if (!CanUseRcdOnGrid(uid, gridUid, args.Event.User, false))
+        {
+            args.Cancel();
+            return;
+        }
 
-        if (!IsRCDOperationStillValid(uid, component, gridUid.Value, mapGrid, tile, position, args.Event.Target, args.Event.User))
+        if (!IsRCDOperationStillValid(uid, component, gridUid, mapGrid, tile, position,
+                args.Event.Direction, args.Event.Cost, args.Event.Target, args.Event.User))
             args.Cancel();
     }
 
@@ -296,21 +240,24 @@ public sealed partial class RCDSystem : EntitySystem
         args.Handled = true;
 
         var location = GetCoordinates(args.Location);
-
-        var gridUid = _transform.GetGrid(location);
+        var gridUid = GetEntity(args.TargetGridId);
 
         if (!TryComp<MapGridComponent>(gridUid, out var mapGrid))
             return;
 
-        var tile = _mapSystem.GetTileRef(gridUid.Value, mapGrid, location);
-        var position = _mapSystem.TileIndicesFor(gridUid.Value, mapGrid, location);
+        var position = _mapSystem.TileIndicesFor(gridUid, mapGrid, location);
+        var tile = _mapSystem.GetTileRef(gridUid, mapGrid, position);
+        if (!CanUseRcdOnGrid(uid, gridUid, args.User, false))
+            return;
 
         // Ensure the RCD operation is still valid
-        if (!IsRCDOperationStillValid(uid, component, gridUid.Value, mapGrid, tile, position, args.Target, args.User))
+        if (!IsRCDOperationStillValid(uid, component, gridUid, mapGrid, tile, position,
+                args.Direction, args.Cost, args.Target, args.User))
             return;
 
         // Finalize the operation (this should handle prediction properly)
-        FinalizeRCDOperation(uid, component, gridUid.Value, mapGrid, tile, position, args.Direction, args.Target, args.User);
+        if (!FinalizeRCDOperation(uid, component, gridUid, mapGrid, tile, position, args.Direction, args.Target, args.User))
+            return;
 
         // Play audio and consume charges
         _audio.PlayPredicted(component.SuccessSound, uid, args.User);
@@ -344,6 +291,16 @@ public sealed partial class RCDSystem : EntitySystem
     public bool IsRCDOperationStillValid(EntityUid uid, RCDComponent component, EntityUid gridUid, MapGridComponent mapGrid, TileRef tile, Vector2i position, EntityUid? target, EntityUid user, bool popMsgs = true)
     {
         var prototype = _protoManager.Index(component.ProtoId);
+        var operation = GetOperationData(prototype, tile, target);
+        return IsRCDOperationStillValid(uid, component, gridUid, mapGrid, tile, position,
+            component.ConstructionDirection, operation.Cost, target, user, popMsgs);
+    }
+
+    public bool IsRCDOperationStillValid(EntityUid uid, RCDComponent component, EntityUid gridUid,
+        MapGridComponent mapGrid, TileRef tile, Vector2i position, Direction direction, int operationCost,
+        EntityUid? target, EntityUid user, bool popMsgs = true)
+    {
+        var prototype = _protoManager.Index(component.ProtoId);
 
         // Check that the RCD has enough ammo to get the job done
         var charges = _sharedCharges.GetCurrentCharges(uid);
@@ -357,7 +314,7 @@ public sealed partial class RCDSystem : EntitySystem
             return false;
         }
 
-        if (prototype.Cost > charges)
+        if (operationCost > charges)
         {
             if (popMsgs)
                 _popup.PopupClient(Loc.GetString("rcd-component-insufficient-ammo-message"), uid, user);
@@ -378,7 +335,8 @@ public sealed partial class RCDSystem : EntitySystem
         {
             case RcdMode.ConstructTile:
             case RcdMode.ConstructObject:
-                return IsConstructionLocationValid(uid, component, gridUid, mapGrid, tile, position, user, popMsgs);
+                return IsConstructionLocationValid(uid, component, gridUid, mapGrid, tile, position, direction, user,
+                    popMsgs);
             case RcdMode.Deconstruct:
                 return IsDeconstructionStillValid(uid, tile, target, user, popMsgs);
         }
@@ -386,7 +344,9 @@ public sealed partial class RCDSystem : EntitySystem
         return false;
     }
 
-    private bool IsConstructionLocationValid(EntityUid uid, RCDComponent component, EntityUid gridUid, MapGridComponent mapGrid, TileRef tile, Vector2i position, EntityUid user, bool popMsgs = true)
+    private bool IsConstructionLocationValid(EntityUid uid, RCDComponent component, EntityUid gridUid,
+        MapGridComponent mapGrid, TileRef tile, Vector2i position, Direction direction, EntityUid user,
+        bool popMsgs = true)
     {
         var prototype = _protoManager.Index(component.ProtoId);
 
@@ -453,6 +413,20 @@ public sealed partial class RCDSystem : EntitySystem
 
         foreach (var ent in _intersectingEntities)
         {
+            if (prototype.Prototype != null && MetaData(ent).EntityPrototype?.ID == prototype.Prototype)
+            {
+                var sameDirection = !prototype.AllowMultiDirection
+                    || Transform(ent).LocalRotation.GetCardinalDir() == direction;
+
+                if (sameDirection)
+                {
+                    if (popMsgs)
+                        _popup.PopupClient(Loc.GetString("rcd-component-cannot-build-identical-entity"), uid, user);
+
+                    return false;
+                }
+            }
+
             if (isWindow && HasComp<SharedCanBuildWindowOnTopComponent>(ent))
                 continue;
 
@@ -474,7 +448,8 @@ public sealed partial class RCDSystem : EntitySystem
 
                     // Continue if our custom collision bounds are not intersected
                     if (prototype.CollisionPolygon != null &&
-                        !DoesCustomBoundsIntersectWithFixture(prototype.CollisionPolygon, component.ConstructionTransform, ent, fixture))
+                        !DoesCustomBoundsIntersectWithFixture(prototype.CollisionPolygon,
+                            new Transform(new(), direction.ToAngle()), ent, fixture))
                         continue;
 
                     // Collision was detected
@@ -544,22 +519,28 @@ public sealed partial class RCDSystem : EntitySystem
 
     #region Entity construction/deconstruction
 
-    private void FinalizeRCDOperation(EntityUid uid, RCDComponent component, EntityUid gridUid, MapGridComponent mapGrid, TileRef tile, Vector2i position, Direction direction, EntityUid? target, EntityUid user)
+    private bool FinalizeRCDOperation(EntityUid uid, RCDComponent component, EntityUid gridUid,
+        MapGridComponent mapGrid, TileRef tile, Vector2i position, Direction direction, EntityUid? target,
+        EntityUid user)
     {
         if (!_net.IsServer)
-            return;
+            return false;
 
         var prototype = _protoManager.Index(component.ProtoId);
 
         if (prototype.Prototype == null)
-            return;
+            return false;
 
         switch (prototype.Mode)
         {
             case RcdMode.ConstructTile:
-                _mapSystem.SetTile(gridUid, mapGrid, position, new Tile(_tileDefMan[prototype.Prototype].TileId));
+                if (!_tileDefMan.TryGetDefinition(prototype.Prototype, out var tileDefinition)
+                    || tileDefinition is not ContentTileDefinition contentTileDefinition
+                    || !_tile.ReplaceTile(tile, contentTileDefinition, gridUid, mapGrid))
+                    return false;
+
                 _adminLogger.Add(LogType.RCD, LogImpact.High, $"{ToPrettyString(user):user} used RCD to set grid: {gridUid} {position} to {prototype.Prototype}");
-                break;
+                return true;
 
             case RcdMode.ConstructObject:
                 var ent = Spawn(prototype.Prototype, _mapSystem.GridTileToLocal(gridUid, mapGrid, position));
@@ -578,15 +559,15 @@ public sealed partial class RCDSystem : EntitySystem
                 }
 
                 _adminLogger.Add(LogType.RCD, LogImpact.High, $"{ToPrettyString(user):user} used RCD to spawn {ToPrettyString(ent)} at {position} on grid {gridUid}");
-                break;
+                return true;
 
             case RcdMode.Deconstruct:
 
                 if (target == null)
                 {
-                    // Deconstruct tile (either converts the tile to lattice, or removes lattice)
-                    var tileDef = (tile.Tile.GetContentTileDefinition().ID != "Lattice") ? new Tile(_tileDefMan["Lattice"].TileId) : Tile.Empty;
-                    _mapSystem.SetTile(gridUid, mapGrid, position, tileDef);
+                    if (!_tile.DeconstructTile(tile, spawnItem: false))
+                        return false;
+
                     _adminLogger.Add(LogType.RCD, LogImpact.High, $"{ToPrettyString(user):user} used RCD to set grid: {gridUid} tile: {position} open to space");
                 }
                 else
@@ -596,13 +577,60 @@ public sealed partial class RCDSystem : EntitySystem
                     QueueDel(target);
                 }
 
-                break;
+                return true;
         }
+
+        return false;
     }
 
     #endregion
 
     #region Utility functions
+
+    private (int Cost, float Delay, EntProtoId? Effect) GetOperationData(RCDPrototype prototype, TileRef tile,
+        EntityUid? target)
+    {
+        var operation = (prototype.Cost, prototype.Delay, prototype.Effect);
+
+        if (prototype.Mode == RcdMode.Deconstruct)
+        {
+            if (target != null && TryComp<RCDDeconstructableComponent>(target, out var deconstructable))
+                return (deconstructable.Cost, deconstructable.Delay, deconstructable.Effect);
+
+            if (target == null)
+            {
+                var protoId = !tile.IsSpace() ? _deconstructTileProto : _deconstructLatticeProto;
+                if (_protoManager.TryIndex(protoId, out var deconstructPrototype))
+                    return (deconstructPrototype.Cost, deconstructPrototype.Delay, deconstructPrototype.Effect);
+            }
+        }
+        else if (prototype.Mode == RcdMode.ConstructTile && !tile.Tile.IsEmpty)
+        {
+            return (prototype.Cost, _instantConstructionDelay, _instantConstructionFx);
+        }
+
+        return operation;
+    }
+
+    private bool CanUseRcdOnGrid(EntityUid rcd, EntityUid grid, EntityUid user, bool popMsgs = true)
+    {
+        if (TryComp<ProtectedGridComponent>(grid, out var protectedGrid) && protectedGrid.PreventRCDUse)
+        {
+            if (popMsgs)
+                _popup.PopupClient(Loc.GetString("rcd-component-use-blocked"), rcd, user);
+
+            return false;
+        }
+
+        if (!TryComp<GridAccessComponent>(rcd, out var gridAccess)
+            || GridAccessSystem.IsAuthorized(grid, gridAccess, out var popupMessage))
+            return true;
+
+        if (popMsgs && popupMessage != null)
+            _popup.PopupClient(Loc.GetString("rcd-component-" + popupMessage), rcd, user);
+
+        return false;
+    }
 
     private bool DoesCustomBoundsIntersectWithFixture(PolygonShape boundingPolygon, Transform boundingTransform, EntityUid fixtureOwner, Fixture fixture)
     {
@@ -621,6 +649,9 @@ public sealed partial class RCDDoAfterEvent : DoAfterEvent
     [DataField(required: true)]
     public NetCoordinates Location { get; private set; }
 
+    [DataField(required: true)]
+    public NetEntity TargetGridId { get; private set; }
+
     [DataField]
     public Direction Direction { get; private set; }
 
@@ -635,9 +666,11 @@ public sealed partial class RCDDoAfterEvent : DoAfterEvent
 
     private RCDDoAfterEvent() { }
 
-    public RCDDoAfterEvent(NetCoordinates location, Direction direction, ProtoId<RCDPrototype> startingProtoId, int cost, NetEntity? effect = null)
+    public RCDDoAfterEvent(NetCoordinates location, NetEntity targetGridId, Direction direction,
+        ProtoId<RCDPrototype> startingProtoId, int cost, NetEntity? effect = null)
     {
         Location = location;
+        TargetGridId = targetGridId;
         Direction = direction;
         StartingProtoId = startingProtoId;
         Cost = cost;

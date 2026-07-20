@@ -31,7 +31,7 @@ public sealed partial class ReleaseGasOnTriggerComponent : Component
     /// Time at which the next release will occur.
     /// This is automatically set when the grenade activates.
     /// </summary>
-    [DataField(customTypeSerializer: typeof(Content.Shared.Serialization.ContentTimeOffsetSerializer))]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan NextReleaseTime = TimeSpan.Zero;
 

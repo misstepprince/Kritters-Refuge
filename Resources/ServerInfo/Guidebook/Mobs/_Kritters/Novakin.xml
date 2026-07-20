@@ -12,6 +12,8 @@ Below 25% N2 reserve, Novakin suffer blood-loss damage. They have no bloodstream
 
 Alcohol can heat the core, but be careful because Novakin overheat beyond 700 K.
 
+Atmospheric temperature affects the Core directly when meaningful gas is present. In vacuum or extremely thin gas, the shell instead cools gradually toward deep-space temperature; standing on an evacuated floor does not provide the extreme cooling previously associated with open space. Insulating clothing and pressure suits still reduce environmental heat transfer.
+
 Temperatures below 323 K or at and above 700 K damage the shell. The shell also fails at 100 brute damage. A breached shell leaks N2 quickly and takes Cold or Heat damage depending on what temperature it fails at; more remaining N2 makes this thermal damage worse.
 
 Empty shells still take slow thermal damage.
